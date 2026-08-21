@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<title>Lifts</title>
+<meta name="theme-color" content="#1A0B33" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Lifts" />
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='180'%20height='180'%3E%3Crect%20width='180'%20height='180'%20rx='40'%20fill='%230E141B'/%3E%3Ctext%20x='90'%20y='120'%20font-size='96'%20font-family='Arial'%20font-weight='bold'%20fill='%23F6A623'%20text-anchor='middle'%3EL%3C/text%3E%3C/svg%3E" />
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Lifts%22%2C%22short_name%22%3A%22Lifts%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230E141B%22%2C%22theme_color%22%3A%22%230E141B%22%2C%22start_url%22%3A%22.%2F%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D%2527http%253A%252F%252Fwww.w3.org%252F2000%252Fsvg%2527%2520width%253D%2527192%2527%2520height%253D%2527192%2527%253E%253Crect%2520width%253D%2527192%2527%2520height%253D%2527192%2527%2520fill%253D%2527%25230E141B%2527%252F%253E%253Ctext%2520x%253D%252796%2527%2520y%253D%2527128%2527%2520font-size%253D%2527104%2527%2520font-family%253D%2527Arial%2527%2520font-weight%253D%2527bold%2527%2520fill%253D%2527%2523F6A623%2527%2520text-anchor%253D%2527middle%2527%253EL%253C%252Ftext%253E%253C%252Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D" />
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; overscroll-behavior: none; }
+  body { background: linear-gradient(180deg, #1A0B33 0%, #2A1150 40%, #3A1560 72%, #2A0E3F 100%); background-attachment: fixed; min-height: 100vh; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+  #root { min-height: 100vh; }
+  input, textarea, button { font-family: inherit; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+</style>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+/* ---------------- theme ---------------- */
+const T = {
+  bg: "#1A0B33", surface: "#241048", surfaceHi: "#351C66", line: "#4B2E7D",
+  text: "#F3E9FF", muted: "#A98FD6", amber: "#FF5FB8", emerald: "#39F2E4", red: "#FF5C8A",
+};
+
+/* ---------------- plan data ---------------- */
+const WORKOUTS = [
+  { id: "UA", label: "Upper A", tag: "Push focus", ex: [
+    { n: "Barbell bench press", s: 4, r: "5–8", note: "Heavy. Stop 1–2 shy of failure. 2–3 min rest." },
+    { n: "Pull-ups", s: 3, r: "6–10", note: "Add weight once 10+ is easy." },
+    { n: "Standing BB overhead press", s: 3, r: "8–12", note: "Moderate load, higher reps — Upper B is your heavy 5–8 press day." },
+    { n: "One-arm DB row", s: 3, r: "8–12", note: "Heavy loadable DBs → straight sets, don't reload to superset." },
+    { n: "DB lateral raise", s: 3, r: "12–15", note: "Superset w/ skull crushers. Light — near failure." },
+    { n: "Skull crushers", s: 3, r: "10–15", note: "Superset w/ lateral raise (barbell = no DB reload)." },
+    { n: "DB curl", s: 3, r: "10–15", note: "Straight sets or pair w/ carries." },
+    { n: "Farmer's carries", s: 2, r: "~40 m", note: "Grip. Log load carried." },
+  ]},
+  { id: "LA", label: "Lower A", tag: "Squat / quad focus", ex: [
+    { n: "Barbell back squat", s: 4, r: "5–8", note: "Stiff-back day → goblet/front squat. Stop if adductor pain." },
+    { n: "Romanian deadlift", s: 3, r: "8–10", note: "Moderate load, no grinding." },
+    { n: "Bulgarian split squat", s: 3, r: "8–12", note: "Log per leg. Superset w/ calf." },
+    { n: "Standing calf raise", s: 3, r: "10–15", note: "Full stretch below step, slow." },
+    { n: "Seated calf raise (soleus)", s: 3, r: "12–20", note: "Bent knee = soleus." },
+    { n: "Eccentric heel drops", s: 3, r: "10", note: "3–4 sec lower. Achilles." },
+    { n: "Adductor isometric squeeze", s: 3, r: "20–30 s", note: "Ball between knees, pain-free hold. Build before Copenhagens." },
+    { n: "Hanging leg raises", s: 2, r: "max", note: "Slow, no swing." },
+  ]},
+  { id: "UB", label: "Upper B", tag: "Pull focus", ex: [
+    { n: "Barbell overhead press", s: 3, r: "5–8", note: "Heavy. Brace, don't lean back. Log working sets only, not warmups." },
+    { n: "Barbell row", s: 4, r: "6–10", note: "Chest-supported on cranky days." },
+    { n: "Incline DB press", s: 3, r: "8–12", note: "Upper chest." },
+    { n: "DB rear-delt raise", s: 3, r: "12–15", note: "Superset w/ hammer curl." },
+    { n: "Hammer curl", s: 3, r: "10–15", note: "Superset." },
+    { n: "Close-grip bench / dips", s: 3, r: "8–12", note: "Add weight if bodyweight dips are easy for 15." },
+    { n: "Wrist curls (both ways)", s: 3, r: "12–20", note: "Flexor + reverse." },
+  ]},
+  { id: "LB", label: "Lower B", tag: "Hinge / glute focus", ex: [
+    { n: "Barbell hip thrust", s: 4, r: "8–12", note: "PRIORITY. Pause + squeeze at top." },
+    { n: "Front / goblet squat", s: 3, r: "8–12", note: "Upright torso, easier on back." },
+    { n: "DB leg curl / Nordic", s: 3, r: "8–12", note: "Hamstrings. Superset w/ calf." },
+    { n: "Seated calf raise (soleus)", s: 3, r: "12–20", note: "Bent knee." },
+    { n: "Eccentric heel drops", s: 2, r: "10", note: "3–4 sec lower. Achilles." },
+    { n: "Adductor isometric squeeze", s: 3, r: "20–30 s", note: "Pain-free hold. Progress toward Copenhagen only when painless." },
+    { n: "Hanging leg raise / dead bug", s: 2, r: "10–15", note: "Anti-tilt core." },
+  ]},
+  { id: "BON", label: "Bonus", tag: "Optional 5th/6th · won't advance", bonus: true, ex: [
+    { n: "DB / KB curls", s: 3, r: "10–15", note: "Low fatigue only." },
+    { n: "Triceps pushdown / ext", s: 3, r: "10–15", note: "Pump, not heavy." },
+    { n: "Lateral raises", s: 3, r: "15–20", note: "Volume." },
+    { n: "Standing + seated calf", s: 3, r: "12–20", note: "Extra Achilles volume." },
+    { n: "Farmer's carries / hangs", s: 3, r: "40 m / 60 s", note: "Grip." },
+    { n: "Glute bridges + hip mobility", s: 3, r: "15", note: "Activation." },
+  ]},
+];
+const ROTATION = ["UA", "LA", "UB", "LB"];
+
+const MOBILITY = [
+  { n: "Half-kneeling hip flexor stretch", t: "45 s / side", cue: "Squeeze down-leg glute, TUCK pelvis under — don't just lean and arch." },
+  { n: "90/90 hip switches", t: "60 s", cue: "Internal-rotation work. Slow, don't force end range." },
+  { n: "Glute bridges", t: "45 s", cue: "Heels, full lockout, 1-sec squeeze at top." },
+  { n: "Dead bugs", t: "60 s", cue: "Low back glued to floor. If it arches, shorten the range." },
+  { n: "Deep squat hold (optional)", t: "30 s", cue: "Heels down, elbows push knees out." },
+];
+
+const ZONES = [
+  { z: "Z2 · Easy", pct: "60–70%", bpm: "109–127", use: "Most riding. Base, doesn't hurt lifting recovery.", c: "#39F2E4" },
+  { z: "Z3 · Moderate", pct: "70–80%", bpm: "127–145", use: "Tempo.", c: "#F3E9FF" },
+  { z: "Z4 · Threshold", pct: "80–90%", bpm: "145–163", use: "Hard intervals. 1–2×/wk max.", c: "#FF5FB8" },
+  { z: "Z5 · Near max", pct: "90–100%", bpm: "163–181", use: "Short sprints only.", c: "#FF5C8A" },
+];
+
+/* ---------------- helpers ---------------- */
+const parseSetCount = (s) => (typeof s === "number" ? s : parseInt(String(s), 10) || 1);
+const exKey = (wid, name) => wid + "::" + name;
+const bestSet = (sets) => {
+  let best = null;
+  (sets || []).forEach((x) => {
+    const w = parseFloat(x.w), r = parseFloat(x.r);
+    if (isNaN(w) || isNaN(r)) return;
+    if (!best || w > best.w || (w === best.w && r > best.r)) best = { w, r };
+  });
+  return best;
+};
+const labelToId = (lbl) => (WORKOUTS.find((w) => w.label === lbl) || {}).id;
+
+/* ---------------- app ---------------- */
+function App() {
+  const [loaded, setLoaded] = useState(false);
+  const [rotIdx, setRotIdx] = useState(0);
+  const [logs, setLogs] = useState({});
+  const [selId, setSelId] = useState("UA");
+  const [draft, setDraft] = useState({});
+  const [tab, setTab] = useState("train");
+  const [toast, setToast] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [resetArm, setResetArm] = useState(false);
+  const [expFmt, setExpFmt] = useState("md");
+  const [importText, setImportText] = useState("");
+  const [showImport, setShowImport] = useState(false);
+
+  /* load once */
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("hf_state");
+      if (raw) {
+        const st = JSON.parse(raw);
+        if (typeof st.rotIdx === "number") { setRotIdx(st.rotIdx); setSelId(ROTATION[st.rotIdx] || "UA"); }
+        if (st.logs) setLogs(st.logs);
+      }
+    } catch (e) {}
+    setLoaded(true);
+  }, []);
+
+  /* auto-persist on any change */
+  useEffect(() => {
+    if (!loaded) return;
+    try { localStorage.setItem("hf_state", JSON.stringify({ logs, rotIdx })); } catch (e) {}
+  }, [logs, rotIdx, loaded]);
+
+  /* init draft on workout switch */
+  useEffect(() => {
+    const w = WORKOUTS.find((x) => x.id === selId);
+    if (!w) return;
+    const d = {};
+    w.ex.forEach((e) => { d[exKey(w.id, e.n)] = Array.from({ length: parseSetCount(e.s) }, () => ({ w: "", r: "" })); });
+    setDraft(d);
+  }, [selId]);
+
+  const setDraftCell = (k, i, field, val) => {
+    setDraft((prev) => {
+      const rows = (prev[k] || []).map((row, idx) => (idx === i ? { ...row, [field]: val } : row));
+      return { ...prev, [k]: rows };
+    });
+  };
+  const flash = (msg) => { setToast(msg); setTimeout(() => setToast(""), 2600); };
+
+  const saveSession = () => {
+    const w = WORKOUTS.find((x) => x.id === selId);
+    const nextLogs = { ...logs };
+    let logged = 0;
+    w.ex.forEach((e) => {
+      const k = exKey(w.id, e.n);
+      const rows = (draft[k] || []).filter((x) => x.w !== "" || x.r !== "");
+      if (rows.length) {
+        nextLogs[k] = [...(nextLogs[k] || []), { date: new Date().toISOString(), sets: rows }].slice(-20);
+        logged++;
+      }
+    });
+    if (!logged) { flash("Nothing logged — enter a set first."); return; }
+    let nextRot = rotIdx, advanced = false;
+    if (!w.bonus && w.id === ROTATION[rotIdx]) { nextRot = (rotIdx + 1) % ROTATION.length; advanced = true; }
+    setLogs(nextLogs); setRotIdx(nextRot);
+    if (advanced) {
+      const nextW = WORKOUTS.find((x) => x.id === ROTATION[nextRot]);
+      flash("Saved. Up next → " + nextW.label);
+      setSelId(ROTATION[nextRot]);
+    } else {
+      flash("Session saved.");
+      const d = {};
+      w.ex.forEach((e) => { d[exKey(w.id, e.n)] = Array.from({ length: parseSetCount(e.s) }, () => ({ w: "", r: "" })); });
+      setDraft(d);
+    }
+  };
+
+  const buildExport = () => {
+    if (expFmt === "json") {
+      const payload = { exported: new Date().toISOString().slice(0, 10), upNext: WORKOUTS.find((x) => x.id === ROTATION[rotIdx]).label, rotIdx, workouts: {} };
+      WORKOUTS.forEach((w) => {
+        const ex = {};
+        w.ex.forEach((e) => {
+          const hist = logs[exKey(w.id, e.n)] || [];
+          if (hist.length) ex[e.n] = hist.map((s) => ({ date: (s.date || "").slice(0, 10), sets: s.sets.map((x) => ({ weight: Number(x.w) || null, reps: Number(x.r) || null })) }));
+        });
+        if (Object.keys(ex).length) payload.workouts[w.label] = ex;
+      });
+      return JSON.stringify(payload, null, 2);
+    }
+    const lines = ["# Workout Log", "_Exported " + new Date().toLocaleDateString() + " · Up next: " + WORKOUTS.find((x) => x.id === ROTATION[rotIdx]).label + "_"];
+    let any = false;
+    WORKOUTS.forEach((w) => {
+      const exWithLogs = w.ex.filter((e) => (logs[exKey(w.id, e.n)] || []).length);
+      if (!exWithLogs.length) return;
+      any = true;
+      lines.push("\n## " + w.label + " — " + w.tag);
+      exWithLogs.forEach((e) => {
+        lines.push("\n**" + e.n + "**  _(target " + e.s + "×" + e.r + ")_");
+        (logs[exKey(w.id, e.n)] || []).forEach((s) => {
+          const d = new Date(s.date).toLocaleDateString();
+          const sets = s.sets.map((x) => (x.w || "–") + "×" + (x.r || "–")).join(", ");
+          lines.push("- " + d + ": " + sets);
+        });
+      });
+    });
+    if (!any) lines.push("\n_No sessions logged yet._");
+    return lines.join("\n");
+  };
+
+  const copyExport = async () => {
+    const text = buildExport();
+    try { await navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2200); }
+    catch (e) { const ta = document.getElementById("exportArea"); if (ta) { ta.focus(); ta.select(); } flash("Select the text and copy manually."); }
+  };
+
+  const doImport = () => {
+    let payload;
+    try { payload = JSON.parse(importText); } catch (e) { flash("That's not valid JSON. Paste a JSON export."); return; }
+    if (!payload || !payload.workouts) { flash("No 'workouts' found in that JSON."); return; }
+    const merged = { ...logs };
+    let count = 0;
+    Object.keys(payload.workouts).forEach((lbl) => {
+      const wid = labelToId(lbl);
+      if (!wid) return;
+      const exObj = payload.workouts[lbl];
+      Object.keys(exObj).forEach((exName) => {
+        const k = exKey(wid, exName);
+        const sessions = exObj[exName].map((s) => ({
+          date: s.date ? new Date(s.date).toISOString() : new Date().toISOString(),
+          sets: (s.sets || []).map((x) => ({ w: x.weight != null ? String(x.weight) : (x.w != null ? String(x.w) : ""), r: x.reps != null ? String(x.reps) : (x.r != null ? String(x.r) : "") })),
+        }));
+        merged[k] = [...(merged[k] || []), ...sessions].slice(-20);
+        count += sessions.length;
+      });
+    });
+    setLogs(merged);
+    if (typeof payload.rotIdx === "number") setRotIdx(payload.rotIdx);
+    setImportText(""); setShowImport(false);
+    flash("Imported " + count + " session(s).");
+  };
+
+  const resetAll = () => {
+    if (!resetArm) { setResetArm(true); setTimeout(() => setResetArm(false), 4000); return; }
+    setLogs({}); setRotIdx(0); setResetArm(false);
+    try { localStorage.removeItem("hf_state"); } catch (e) {}
+    flash("All logs cleared.");
+  };
+
+  if (!loaded) return <div style={{ background: T.bg, color: T.muted, minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }} className="text-sm">Loading…</div>;
+
+  const nextW = WORKOUTS.find((x) => x.id === ROTATION[rotIdx]);
+  const sel = WORKOUTS.find((x) => x.id === selId);
+  const anyHistory = Object.keys(logs).length > 0;
+
+  const S = {
+    page: { background: "transparent", color: T.text, minHeight: "100vh" },
+    wrap: { maxWidth: 480, margin: "0 auto", padding: "0 0 40px" },
+  };
+
+  return (
+    <div style={S.page}>
+    <div style={S.wrap}>
+      {/* header */}
+      <div style={{ padding: "24px 20px 12px" }}>
+        <div style={{ color: T.muted, fontSize: 11, letterSpacing: 2, textTransform: "uppercase", fontWeight: 600 }}>Recomp · 4-day rolling</div>
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginTop: 4 }}>
+          <div style={{ fontSize: 26, fontWeight: 700 }}>Lifts</div>
+          <div style={{ textAlign: "right" }}>
+            <div style={{ color: T.muted, fontSize: 11, textTransform: "uppercase" }}>Up next</div>
+            <div style={{ color: T.amber, fontSize: 14, fontWeight: 700 }}>{nextW.label}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* tabs */}
+      <div style={{ padding: "0 20px 12px", display: "flex", gap: 8 }}>
+        {[["train", "Train"], ["mobility", "Mobility"], ["zones", "Zones"], ["log", "Progress"]].map(([id, lbl]) => (
+          <button key={id} onClick={() => setTab(id)} style={{ border: "none", padding: "6px 14px", borderRadius: 999, fontSize: 14, fontWeight: 600, background: tab === id ? T.amber : T.surface, color: tab === id ? "#2A0A46" : T.muted }}>{lbl}</button>
+        ))}
+      </div>
+
+      {/* TRAIN */}
+      {tab === "train" && (
+        <div style={{ padding: "0 20px 160px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
+            {ROTATION.map((id, i) => {
+              const w = WORKOUTS.find((x) => x.id === id);
+              const isNext = i === rotIdx, isSel = id === selId;
+              return (
+                <button key={id} onClick={() => setSelId(id)} style={{ borderRadius: 12, padding: "8px 4px", textAlign: "center", background: isSel ? T.surfaceHi : T.surface, border: "1.5px solid " + (isSel ? T.amber : "transparent") }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: isSel ? T.text : T.muted }}>{w.label.split(" ")[1]}</div>
+                  <div style={{ fontSize: 10, marginTop: 2, color: isNext ? T.amber : T.muted }}>{isNext ? "next" : w.label.split(" ")[0].toLowerCase()}</div>
+                </button>
+              );
+            })}
+          </div>
+
+          <button onClick={() => setSelId("BON")} style={{ width: "100%", borderRadius: 12, padding: "8px", marginBottom: 16, fontSize: 14, fontWeight: 600, background: selId === "BON" ? T.surfaceHi : "transparent", border: "1.5px solid " + (selId === "BON" ? T.amber : T.line), color: selId === "BON" ? T.text : T.muted }}>+ Bonus day (optional · won't advance)</button>
+
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: 18, fontWeight: 700 }}>{sel.label}</div>
+            <div style={{ color: T.muted, fontSize: 12 }}>{sel.tag}</div>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {sel.ex.map((e) => {
+              const k = exKey(sel.id, e.n);
+              const hist = logs[k] || [];
+              const last = hist.length ? hist[hist.length - 1] : null;
+              const lastBest = last ? bestSet(last.sets) : null;
+              const todayBest = bestSet(draft[k]);
+              let beat = null;
+              if (lastBest && todayBest) beat = (todayBest.w > lastBest.w || (todayBest.w === lastBest.w && todayBest.r > lastBest.r));
+              return (
+                <div key={k} style={{ borderRadius: 16, padding: 16, background: T.surface }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
+                    <div>
+                      <div style={{ fontWeight: 600, lineHeight: 1.2 }}>{e.n}</div>
+                      <div style={{ color: T.muted, fontSize: 12, marginTop: 2 }}>{e.s} × {e.r} &nbsp;·&nbsp; {e.note}</div>
+                    </div>
+                    {beat !== null && (
+                      <div style={{ fontSize: 12, fontWeight: 700, padding: "4px 8px", borderRadius: 8, whiteSpace: "nowrap", color: beat ? "#0A2540" : "#2A0A46", background: beat ? T.emerald : T.amber }}>{beat ? "▲ beat last" : "hold"}</div>
+                    )}
+                  </div>
+                  {last && (
+                    <div className="mono" style={{ marginTop: 8, fontSize: 12, color: T.muted }}>last:&nbsp;{last.sets.map((x, i) => (<span key={i}>{(x.w || "–") + "×" + (x.r || "–") + (i < last.sets.length - 1 ? "  " : "")}</span>))}</div>
+                  )}
+                  <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+                    {(draft[k] || []).map((row, i) => {
+                      const ghost = last && last.sets[i] ? last.sets[i] : null;
+                      return (
+                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <div style={{ fontSize: 12, width: 36, color: T.muted }}>set {i + 1}</div>
+                          <input type="number" inputMode="decimal" value={row.w} onChange={(ev) => setDraftCell(k, i, "w", ev.target.value)} placeholder={ghost ? String(ghost.w) : "wt"} className="mono" style={{ width: "100%", borderRadius: 8, padding: "8px 12px", fontSize: 14, outline: "none", background: T.bg, color: T.text, border: "1px solid " + T.line }} />
+                          <span className="mono" style={{ color: T.muted, fontSize: 14 }}>×</span>
+                          <input type="number" inputMode="numeric" value={row.r} onChange={(ev) => setDraftCell(k, i, "r", ev.target.value)} placeholder={ghost ? String(ghost.r) : "reps"} className="mono" style={{ width: "100%", borderRadius: 8, padding: "8px 12px", fontSize: 14, outline: "none", background: T.bg, color: T.text, border: "1px solid " + T.line }} />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <button onClick={saveSession} style={{ width: "100%", borderRadius: 16, padding: 16, marginTop: 20, fontWeight: 700, fontSize: 16, border: "none", background: T.amber, color: "#2A0A46" }}>{!sel.bonus && sel.id === ROTATION[rotIdx] ? "Save & advance rotation" : "Save session"}</button>
+        </div>
+      )}
+
+      {/* MOBILITY */}
+      {tab === "mobility" && (
+        <div style={{ padding: "0 20px 24px" }}>
+          <MobilityList />
+          <div style={{ borderRadius: 16, padding: 16, marginTop: 16, fontSize: 12, lineHeight: 1.6, background: T.surface, color: T.muted }}>5 min won't undo 8 hrs of sitting. This maintains range + grooves glute firing. The real fix is the loaded glute/core work in your lifts and standing up hourly at your desk.</div>
+        </div>
+      )}
+
+      {/* ZONES */}
+      {tab === "zones" && (
+        <div style={{ padding: "0 20px 24px" }}>
+          <div style={{ color: T.muted, fontSize: 12, marginBottom: 12 }}>Est. max HR ≈ 181 bpm (age 39). ±10–12 bpm formula error — use your true max if known.</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {ZONES.map((z) => (
+              <div key={z.z} style={{ borderRadius: 16, padding: 16, background: T.surface }}>
+                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+                  <div style={{ fontWeight: 700, color: z.c }}>{z.z}</div>
+                  <div className="mono" style={{ fontSize: 14, color: T.text }}>{z.bpm} bpm</div>
+                </div>
+                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginTop: 4 }}>
+                  <div style={{ fontSize: 12, color: T.muted }}>{z.use}</div>
+                  <div className="mono" style={{ fontSize: 12, color: T.muted }}>{z.pct}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ borderRadius: 16, padding: 16, marginTop: 16, fontSize: 12, lineHeight: 1.6, background: T.surface, color: T.muted }}>Lifting has no useful target HR — gauge lifts by reps-in-reserve + beating last session, not the watch. Keep most Peloton riding in Z2; hammering Z4–5 before leg day steals recovery.</div>
+        </div>
+      )}
+
+      {/* LOG */}
+      {tab === "log" && (
+        <div style={{ padding: "0 20px 40px" }}>
+          <div style={{ color: T.muted, fontSize: 12, marginBottom: 12 }}>Saved on this device. Tap a month to review; export as a backup.</div>
+
+          <Calendar logs={logs} />
+          <Trends logs={logs} />
+          <ShareCard logs={logs} />
+
+          {/* history */}
+          {anyHistory ? WORKOUTS.map((w) => {
+            const exWithLogs = w.ex.filter((e) => (logs[exKey(w.id, e.n)] || []).length);
+            if (!exWithLogs.length) return null;
+            return (
+              <div key={w.id} style={{ marginBottom: 16 }}>
+                <div style={{ fontWeight: 700, color: T.amber, fontSize: 13, marginBottom: 6 }}>{w.label}</div>
+                {exWithLogs.map((e) => {
+                  const hist = logs[exKey(w.id, e.n)];
+                  return (
+                    <div key={e.n} style={{ borderRadius: 12, padding: 12, background: T.surface, marginBottom: 6 }}>
+                      <div style={{ fontWeight: 600, fontSize: 13 }}>{e.n}</div>
+                      {hist.map((s, i) => (
+                        <div key={i} className="mono" style={{ fontSize: 12, color: T.muted, marginTop: 3 }}>{new Date(s.date).toLocaleDateString()}: {s.sets.map((x) => (x.w || "–") + "×" + (x.r || "–")).join(", ")}</div>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          }) : <div style={{ borderRadius: 12, padding: 16, background: T.surface, color: T.muted, fontSize: 13, marginBottom: 16 }}>No sessions logged yet.</div>}
+
+          {/* export */}
+          <div style={{ display: "flex", gap: 8, marginBottom: 12, alignItems: "center", marginTop: 8 }}>
+            {[["md", "Markdown"], ["json", "JSON"]].map(([id, lbl]) => (
+              <button key={id} onClick={() => setExpFmt(id)} style={{ border: "none", padding: "6px 12px", borderRadius: 999, fontSize: 14, fontWeight: 600, background: expFmt === id ? T.amber : T.surface, color: expFmt === id ? "#2A0A46" : T.muted }}>{lbl}</button>
+            ))}
+            <button onClick={copyExport} style={{ marginLeft: "auto", padding: "6px 16px", borderRadius: 999, fontSize: 14, fontWeight: 700, background: copied ? T.emerald : T.surfaceHi, color: copied ? "#0A2540" : T.text, border: "1px solid " + T.line }}>{copied ? "Copied ✓" : "Copy"}</button>
+          </div>
+          <textarea id="exportArea" readOnly value={buildExport()} onFocus={(e) => e.target.select()} className="mono" style={{ width: "100%", borderRadius: 16, padding: 12, fontSize: 12, outline: "none", background: T.surface, color: T.text, border: "1px solid " + T.line, height: "34vh", resize: "none" }} />
+
+          {/* import */}
+          <button onClick={() => setShowImport(!showImport)} style={{ width: "100%", borderRadius: 12, padding: 10, marginTop: 12, fontSize: 14, fontWeight: 600, background: "transparent", border: "1px solid " + T.line, color: T.muted }}>{showImport ? "Hide import" : "Import from JSON backup"}</button>
+          {showImport && (
+            <div style={{ marginTop: 8 }}>
+              <textarea value={importText} onChange={(e) => setImportText(e.target.value)} placeholder="Paste a JSON export here…" className="mono" style={{ width: "100%", borderRadius: 12, padding: 12, fontSize: 12, outline: "none", background: T.bg, color: T.text, border: "1px solid " + T.line, height: "18vh", resize: "none" }} />
+              <button onClick={doImport} style={{ width: "100%", borderRadius: 12, padding: 12, marginTop: 8, fontSize: 14, fontWeight: 700, border: "none", background: T.emerald, color: "#0A2540" }}>Import (adds to history)</button>
+            </div>
+          )}
+
+          <button onClick={resetAll} style={{ width: "100%", borderRadius: 12, padding: 12, marginTop: 20, fontSize: 14, fontWeight: 700, background: resetArm ? T.red : "transparent", color: resetArm ? "#fff" : T.muted, border: "1px solid " + (resetArm ? T.red : T.line) }}>{resetArm ? "Tap again to confirm — clears ALL logs" : "Clear all logs"}</button>
+        </div>
+      )}
+
+      {tab === "train" && <RestTimer />}
+
+      {toast && (
+        <div style={{ position: "fixed", left: 0, right: 0, display: "flex", justifyContent: "center", padding: "0 20px", bottom: tab === "train" ? 96 : 24 }}>
+          <div style={{ borderRadius: 12, padding: "12px 16px", fontSize: 14, fontWeight: 600, background: T.emerald, color: "#0A2540", maxWidth: 440, boxShadow: "0 8px 24px rgba(0,0,0,.4)" }}>{toast}</div>
+        </div>
+      )}
+    </div>
+    </div>
+  );
+}
+
+function MobilityList() {
+  const [done, setDone] = useState({});
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      {MOBILITY.map((m, i) => (
+        <button key={i} onClick={() => setDone((p) => ({ ...p, [i]: !p[i] }))} style={{ borderRadius: 16, padding: 16, textAlign: "left", background: done[i] ? "#241A4E" : T.surface, border: "1px solid " + (done[i] ? T.emerald : "transparent") }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ fontWeight: 600, color: done[i] ? T.emerald : T.text }}>{m.n}</div>
+            <div className="mono" style={{ fontSize: 12, color: T.muted }}>{m.t}</div>
+          </div>
+          <div style={{ fontSize: 12, marginTop: 4, color: T.muted }}>{m.cue}</div>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function Stat({ label, val, accent }) {
+  return (
+    <div style={{ flex: 1, borderRadius: 12, padding: "8px 6px", background: T.surfaceHi, textAlign: "center" }}>
+      <div className="mono" style={{ fontSize: 20, fontWeight: 700, color: accent ? T.amber : T.text }}>{val}</div>
+      <div style={{ fontSize: 9, color: T.muted, textTransform: "uppercase", letterSpacing: 0.5 }}>{label}</div>
+    </div>
+  );
+}
+
+function Calendar({ logs }) {
+  const today = new Date();
+  const [cur, setCur] = useState({ y: today.getFullYear(), m: today.getMonth() });
+  const WCOLOR = { UA: "#FF5FB8", LA: "#39F2E4", UB: "#B85CFF", LB: "#FFB86B", BON: "#8A7BB0" };
+  const WNAME = { UA: "Upper A", LA: "Lower A", UB: "Upper B", LB: "Lower B", BON: "Bonus" };
+  const pad = (n) => String(n).padStart(2, "0");
+
+  const dayMap = {};
+  Object.keys(logs).forEach((k) => {
+    const wid = k.split("::")[0];
+    (logs[k] || []).forEach((s) => {
+      const day = (s.date || "").slice(0, 10);
+      if (!day) return;
+      (dayMap[day] = dayMap[day] || new Set()).add(wid);
+    });
+  });
+  const pairs = new Set();
+  Object.keys(dayMap).forEach((d) => dayMap[d].forEach((w) => pairs.add(d + "|" + w)));
+  const total = pairs.size;
+
+  const startOfWeek = (d) => { const x = new Date(d); x.setHours(0, 0, 0, 0); x.setDate(x.getDate() - x.getDay()); return x; };
+  const weekStart = startOfWeek(today);
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  let thisWeek = 0, thisMonth = 0;
+  pairs.forEach((p) => { const dt = new Date(p.split("|")[0] + "T00:00:00"); if (dt >= weekStart) thisWeek++; if (dt >= monthStart) thisMonth++; });
+  const weekHas = (ws) => { const we = new Date(ws); we.setDate(we.getDate() + 7); let h = false; pairs.forEach((p) => { const dt = new Date(p.split("|")[0] + "T00:00:00"); if (dt >= ws && dt < we) h = true; }); return h; };
+  let streak = 0; const c = new Date(weekStart);
+  if (!weekHas(c)) c.setDate(c.getDate() - 7);
+  while (weekHas(c)) { streak++; c.setDate(c.getDate() - 7); }
+
+  const first = new Date(cur.y, cur.m, 1);
+  const lead = first.getDay();
+  const dim = new Date(cur.y, cur.m + 1, 0).getDate();
+  const cells = [];
+  for (let i = 0; i < lead; i++) cells.push(null);
+  for (let d = 1; d <= dim; d++) cells.push(d);
+  const monthName = first.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+  const todayStr = today.getFullYear() + "-" + pad(today.getMonth() + 1) + "-" + pad(today.getDate());
+  const usedWids = Array.from(new Set(Array.from(pairs).map((p) => p.split("|")[1])));
+  const shift = (delta) => setCur((c2) => { let m = c2.m + delta, y = c2.y; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; } return { y, m }; });
+
+  return (
+    <div style={{ borderRadius: 16, padding: 16, background: T.surface, marginBottom: 16 }}>
+      <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+        <Stat label="This wk" val={thisWeek} />
+        <Stat label="This mo" val={thisMonth} />
+        <Stat label="Total" val={total} />
+        <Stat label="Wk streak" val={streak} accent />
+      </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+        <button onClick={() => shift(-1)} style={{ background: T.surfaceHi, border: "none", color: T.text, borderRadius: 8, padding: "4px 12px", fontWeight: 700, fontSize: 16 }}>‹</button>
+        <div style={{ fontWeight: 700, fontSize: 14 }}>{monthName}</div>
+        <button onClick={() => shift(1)} style={{ background: T.surfaceHi, border: "none", color: T.text, borderRadius: 8, padding: "4px 12px", fontWeight: 700, fontSize: 16 }}>›</button>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4, textAlign: "center" }}>
+        {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (<div key={i} style={{ fontSize: 10, color: T.muted, paddingBottom: 2 }}>{d}</div>))}
+        {cells.map((d, i) => {
+          if (d === null) return <div key={i} />;
+          const ds = cur.y + "-" + pad(cur.m + 1) + "-" + pad(d);
+          const wids = dayMap[ds] ? Array.from(dayMap[ds]) : [];
+          const isToday = ds === todayStr;
+          return (
+            <div key={i} style={{ aspectRatio: "1 / 1", borderRadius: 8, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: wids.length ? "#2E1A5C" : T.bg, border: isToday ? "1px solid " + T.amber : "1px solid transparent" }}>
+              <div style={{ fontSize: 11, color: wids.length ? T.text : T.muted }}>{d}</div>
+              <div style={{ display: "flex", gap: 2, marginTop: 2, minHeight: 6 }}>
+                {wids.map((w) => (<div key={w} style={{ width: 6, height: 6, borderRadius: 3, background: WCOLOR[w] || T.muted }} />))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {usedWids.length > 0 && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 12 }}>
+          {usedWids.map((w) => (
+            <div key={w} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <div style={{ width: 8, height: 8, borderRadius: 4, background: WCOLOR[w] || T.muted }} />
+              <span style={{ fontSize: 11, color: T.muted }}>{WNAME[w] || w}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LineChart({ points, color }) {
+  color = color || "#FF5FB8";
+  const w = 320, h = 130, pad = 26;
+  if (!points || points.length === 0) return <div style={{ color: "#A98FD6", fontSize: 12, padding: "8px 0" }}>No data yet.</div>;
+  if (points.length === 1) return <div style={{ color: "#A98FD6", fontSize: 12, padding: "8px 0" }}>Log 2+ sessions to see a trend. Latest: {points[0].v}</div>;
+  const vals = points.map((p) => p.v);
+  const min = Math.min(...vals), max = Math.max(...vals);
+  const span = (max - min) || 1;
+  const innerW = w - pad * 2, innerH = h - pad * 2;
+  const xy = points.map((p, i) => [pad + innerW * (i / (points.length - 1)), pad + innerH * (1 - (p.v - min) / span)]);
+  const path = xy.map((p, i) => (i === 0 ? "M" : "L") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
+  return (
+    <svg viewBox={"0 0 " + w + " " + h} style={{ width: "100%", height: "auto" }}>
+      <line x1={pad} y1={h - pad} x2={w - pad} y2={h - pad} stroke="#4B2E7D" strokeWidth="1" />
+      <path d={path} fill="none" stroke={color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
+      {xy.map((p, i) => (<circle key={i} cx={p[0]} cy={p[1]} r="3" fill={color} />))}
+      <text x={pad} y={pad - 8} fill="#A98FD6" fontSize="10">{max}</text>
+      <text x={pad} y={h - pad + 14} fill="#A98FD6" fontSize="10">{min}</text>
+    </svg>
+  );
+}
+
+function collectEntries(logs) {
+  const entries = [];
+  Object.keys(logs).forEach((k) => {
+    const wid = k.split("::")[0];
+    const exName = k.slice(wid.length + 2);
+    (logs[k] || []).forEach((s) => entries.push({ wid, exName, date: s.date, day: (s.date || "").slice(0, 10), sets: s.sets }));
+  });
+  return entries;
+}
+
+function Trends({ logs }) {
+  const entries = collectEntries(logs);
+  const exNames = Array.from(new Set(entries.map((e) => e.exName)));
+  const [selEx, setSelEx] = useState(exNames[0] || "");
+  if (!entries.length) return <div style={{ borderRadius: 16, padding: 16, background: "#241048", color: "#A98FD6", fontSize: 13, marginBottom: 16 }}>Trends appear once you log sessions.</div>;
+
+  const dayVol = {};
+  entries.forEach((e) => { let v = 0; e.sets.forEach((x) => { const w = parseFloat(x.w), r = parseFloat(x.r); if (!isNaN(w) && !isNaN(r)) v += w * r; }); dayVol[e.day] = (dayVol[e.day] || 0) + v; });
+  const days = Object.keys(dayVol).sort();
+  const overall = days.map((d) => ({ label: d, v: Math.round(dayVol[d]) }));
+
+  const cur = exNames.includes(selEx) ? selEx : exNames[0];
+  const exEntries = entries.filter((e) => e.exName === cur).sort((a, b) => new Date(a.date) - new Date(b.date));
+  const exPoints = exEntries.map((e) => { const b = bestSet(e.sets); return { label: e.day, v: b ? Math.round(b.w * (1 + b.r / 30)) : 0 }; });
+  const rangeTxt = (arr) => arr.length >= 2 ? (new Date(arr[0].label).toLocaleDateString() + " → " + new Date(arr[arr.length - 1].label).toLocaleDateString()) : "";
+
+  return (
+    <div style={{ marginBottom: 16 }}>
+      <div style={{ borderRadius: 16, padding: 16, background: "#241048", marginBottom: 12 }}>
+        <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 4 }}>Overall volume <span style={{ color: "#A98FD6", fontWeight: 400 }}>· lb per session</span></div>
+        <LineChart points={overall} color="#39F2E4" />
+        <div style={{ color: "#A98FD6", fontSize: 10, marginTop: 2 }}>{rangeTxt(overall)}</div>
+      </div>
+      <div style={{ borderRadius: 16, padding: 16, background: "#241048" }}>
+        <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 8 }}>Per exercise <span style={{ color: "#A98FD6", fontWeight: 400 }}>· est. 1RM</span></div>
+        <select value={cur} onChange={(e) => setSelEx(e.target.value)} style={{ width: "100%", padding: "8px 10px", borderRadius: 8, background: "#1A0B33", color: "#F3E9FF", border: "1px solid #4B2E7D", fontSize: 13, marginBottom: 8 }}>
+          {exNames.map((n) => (<option key={n} value={n}>{n}</option>))}
+        </select>
+        <LineChart points={exPoints} color="#FF5FB8" />
+        <div style={{ color: "#A98FD6", fontSize: 10, marginTop: 2 }}>{rangeTxt(exPoints)} · est. 1RM = weight × (1 + reps/30)</div>
+      </div>
+    </div>
+  );
+}
+
+function ShareCard({ logs }) {
+  const [url, setUrl] = useState("");
+  const build = () => {
+    const entries = collectEntries(logs);
+    if (!entries.length) return;
+    entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const latest = entries[0];
+    const sess = entries.filter((e) => e.wid === latest.wid && e.day === latest.day);
+    const W = WORKOUTS.find((x) => x.id === latest.wid) || { label: latest.wid };
+    const size = 1080, HZ = 724;
+    const cv = document.createElement("canvas"); cv.width = size; cv.height = size;
+    const ctx = cv.getContext("2d");
+    // sky
+    const sky = ctx.createLinearGradient(0, 0, 0, HZ);
+    sky.addColorStop(0, "#1A0B33"); sky.addColorStop(0.72, "#3A1560"); sky.addColorStop(1, "#FF5FA2");
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, size, HZ);
+    // ground
+    const gnd = ctx.createLinearGradient(0, HZ, 0, size);
+    gnd.addColorStop(0, "#FF5FA2"); gnd.addColorStop(0.25, "#2A0E3F"); gnd.addColorStop(1, "#150826");
+    ctx.fillStyle = gnd; ctx.fillRect(0, HZ, size, size - HZ);
+    // retro sun
+    const scx = 812, scy = 250, sr = 178;
+    ctx.save(); ctx.beginPath(); ctx.arc(scx, scy, sr, 0, Math.PI * 2); ctx.clip();
+    const sung = ctx.createLinearGradient(0, scy - sr, 0, scy + sr);
+    sung.addColorStop(0, "#FFE7A8"); sung.addColorStop(0.5, "#FF8FB8"); sung.addColorStop(1, "#B85CFF");
+    ctx.fillStyle = sung; ctx.fillRect(scx - sr, scy - sr, 2 * sr, 2 * sr);
+    ctx.fillStyle = sky;
+    let sy = scy + 12;
+    while (sy < scy + sr) { const h = Math.max(3, (sy - scy) / 22); ctx.fillRect(scx - sr, sy, 2 * sr, h); sy += 10 + (sy - scy) / 16; }
+    ctx.restore();
+    // grid
+    const vx = 540, vy = HZ;
+    ctx.strokeStyle = "rgba(57,242,228,0.26)"; ctx.lineWidth = 2;
+    for (let i = 1; i <= 11; i++) { const yy = vy + (size - vy) * Math.pow(i / 11, 1.9); ctx.beginPath(); ctx.moveTo(0, yy); ctx.lineTo(size, yy); ctx.stroke(); }
+    for (let x = -1200; x < 2400; x += 110) { ctx.beginPath(); ctx.moveTo(vx, vy); ctx.lineTo(x, size); ctx.stroke(); }
+    ctx.strokeStyle = "rgba(255,138,208,0.85)"; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(0, vy); ctx.lineTo(size, vy); ctx.stroke();
+    // scrim behind body text for contrast
+    const scrim = ctx.createLinearGradient(0, 470, 0, 900);
+    scrim.addColorStop(0, "rgba(20,8,40,0)"); scrim.addColorStop(0.5, "rgba(20,8,40,0.35)"); scrim.addColorStop(1, "rgba(20,8,40,0)");
+    ctx.fillStyle = scrim; ctx.fillRect(0, 470, size, 430);
+    // LIFTS
+    ctx.textAlign = "left";
+    ctx.save(); ctx.shadowColor = "#39F2E4"; ctx.shadowBlur = 16; ctx.fillStyle = "#39F2E4"; ctx.font = "bold 40px -apple-system, Arial"; ctx.fillText("L I F T S", 74, 140); ctx.restore();
+    // title (gradient + glow)
+    const tg = ctx.createLinearGradient(0, 250, 0, 360); tg.addColorStop(0, "#7DF9FF"); tg.addColorStop(1, "#FF64C4");
+    ctx.save(); ctx.shadowColor = "#FF3EA5"; ctx.shadowBlur = 30; ctx.fillStyle = tg; ctx.font = "bold 116px -apple-system, Arial"; ctx.fillText(W.label, 72, 360); ctx.restore();
+    // date
+    ctx.fillStyle = "#C79BFF"; ctx.font = "bold 38px -apple-system, Arial";
+    ctx.fillText(new Date(latest.date).toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" }).toUpperCase(), 74, 428);
+    // exercises
+    let y = 520, totalVol = 0; ctx.font = "37px -apple-system, Arial";
+    sess.slice(0, 6).forEach((e) => {
+      e.sets.forEach((x) => { const w = parseFloat(x.w), r = parseFloat(x.r); if (!isNaN(w) && !isNaN(r)) totalVol += w * r; });
+      const b = bestSet(e.sets);
+      let nm = e.exName; if (nm.length > 26) nm = nm.slice(0, 25) + "…";
+      ctx.textAlign = "left"; ctx.fillStyle = "#EAD9FF"; ctx.fillText(nm, 78, y);
+      ctx.textAlign = "right"; ctx.save(); ctx.shadowColor = "#FF3EA5"; ctx.shadowBlur = 12; ctx.fillStyle = "#FF7ACF"; ctx.fillText(b ? (b.w + " × " + b.r) : "—", size - 78, y); ctx.restore();
+      ctx.strokeStyle = "rgba(57,242,228,0.16)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(78, y + 16); ctx.lineTo(size - 78, y + 16); ctx.stroke();
+      y += 58;
+    });
+    ctx.textAlign = "left";
+    // total
+    ctx.fillStyle = "#39F2E4"; ctx.font = "bold 27px -apple-system, Arial"; ctx.fillText("TOTAL VOLUME", 78, size - 96);
+    const vg = ctx.createLinearGradient(0, size - 90, 0, size - 30); vg.addColorStop(0, "#7DF9FF"); vg.addColorStop(1, "#FF64C4");
+    ctx.save(); ctx.shadowColor = "#FF3EA5"; ctx.shadowBlur = 16; ctx.fillStyle = vg; ctx.font = "bold 58px -apple-system, Arial"; ctx.fillText(Math.round(totalVol).toLocaleString() + " lb", 78, size - 40); ctx.restore();
+    setUrl(cv.toDataURL("image/png"));
+  };
+  const share = async () => {
+    if (!url) return;
+    try {
+      const blob = await (await fetch(url)).blob();
+      const file = new File([blob], "lifts.png", { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: "Workout" }); return; }
+    } catch (e) {}
+    const a = document.createElement("a"); a.href = url; a.download = "lifts.png"; a.click();
+  };
+  const hasData = Object.keys(logs).length > 0;
+  return (
+    <div style={{ borderRadius: 16, padding: 16, background: "#241048", marginBottom: 16 }}>
+      <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 8 }}>Shareable image <span style={{ color: "#A98FD6", fontWeight: 400 }}>· latest session</span></div>
+      {!hasData ? <div style={{ color: "#A98FD6", fontSize: 12 }}>Log a session first.</div> : (
+        <div>
+          <button onClick={build} style={{ width: "100%", borderRadius: 10, padding: 10, fontSize: 14, fontWeight: 700, border: "none", background: "#351C66", color: "#F3E9FF" }}>{url ? "Regenerate" : "Create image"}</button>
+          {url && (
+            <div style={{ marginTop: 10 }}>
+              <img src={url} alt="share card" style={{ width: "100%", borderRadius: 12, display: "block" }} />
+              <button onClick={share} style={{ width: "100%", borderRadius: 10, padding: 12, marginTop: 8, fontSize: 14, fontWeight: 700, border: "none", background: "#FF5FB8", color: "#2A0A46" }}>Share / Save image</button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RestTimer() {
+  const [sec, setSec] = useState(0);
+  const [running, setRunning] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    if (running && sec > 0) ref.current = setTimeout(() => setSec((s) => s - 1), 1000);
+    else if (sec === 0) setRunning(false);
+    return () => clearTimeout(ref.current);
+  }, [running, sec]);
+  const mm = String(Math.floor(sec / 60));
+  const ss = String(sec % 60).padStart(2, "0");
+  return (
+    <div style={{ position: "fixed", left: 0, right: 0, bottom: 0 }}>
+      <div style={{ maxWidth: 480, margin: "0 auto" }}>
+        <div style={{ margin: 12, borderRadius: 16, padding: "12px 16px", display: "flex", alignItems: "center", gap: 12, background: T.surfaceHi, border: "1px solid " + T.line, boxShadow: "0 8px 24px rgba(0,0,0,.4)" }}>
+          <div className="mono" style={{ fontSize: 20, fontWeight: 700, color: sec > 0 && sec <= 5 ? T.amber : T.text, minWidth: 54 }}>{mm}:{ss}</div>
+          <div style={{ display: "flex", gap: 8, flex: 1 }}>
+            {[60, 90, 120, 180].map((s) => (
+              <button key={s} onClick={() => { setSec(s); setRunning(true); }} style={{ flex: 1, borderRadius: 8, padding: "6px 0", fontSize: 12, fontWeight: 700, border: "none", background: T.surface, color: T.muted }}>{s < 120 ? s + "s" : (s / 60) + "m"}</button>
+            ))}
+          </div>
+          <button onClick={() => { setRunning(false); setSec(0); }} style={{ borderRadius: 8, padding: "6px 12px", fontSize: 12, fontWeight: 700, border: "none", background: T.surface, color: T.muted }}>stop</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
