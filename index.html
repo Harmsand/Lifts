@@ -337,7 +337,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
   useRef
 } = React;
 
-/* ---------------- theme ---------------- */
+/* ---------------- theme (vaporwave) ---------------- */
 const T = {
   bg: "#1A0B33",
   surface: "#241048",
@@ -610,6 +610,16 @@ const SEED_LOGS = {
       r: "2"
     }]
   }],
+  "UA::DB lateral raise": [{
+    date: "2026-08-24T12:00:00Z",
+    sets: [{
+      w: "31",
+      r: "10"
+    }, {
+      w: "31",
+      r: "12"
+    }]
+  }],
   "UA::Pull-ups": [{
     date: "2026-08-24T12:00:00Z",
     sets: [{
@@ -658,16 +668,6 @@ const SEED_LOGS = {
     }, {
       w: "91",
       r: "6"
-    }]
-  }],
-  "UA::DB lateral raise": [{
-    date: "2026-08-24T12:00:00Z",
-    sets: [{
-      w: "31",
-      r: "10"
-    }, {
-      w: "31",
-      r: "12"
     }]
   }],
   "UA::Skull crushers": [{
@@ -721,6 +721,46 @@ const SEED_LOGS = {
       w: "235",
       r: "5"
     }]
+  }, {
+    date: "2026-08-30T12:00:00Z",
+    sets: [{
+      w: "215",
+      r: "8"
+    }, {
+      w: "265",
+      r: "5"
+    }, {
+      w: "285",
+      r: "4"
+    }, {
+      w: "265",
+      r: "5"
+    }]
+  }],
+  "LA::Standing calf raise": [{
+    date: "2026-08-25T12:00:00Z",
+    sets: [{
+      w: "215",
+      r: "15"
+    }, {
+      w: "215",
+      r: "18"
+    }, {
+      w: "215",
+      r: "15"
+    }]
+  }, {
+    date: "2026-08-30T12:00:00Z",
+    sets: [{
+      w: "215",
+      r: "25"
+    }, {
+      w: "265",
+      r: "16"
+    }, {
+      w: "285",
+      r: "18"
+    }]
   }],
   "LA::Romanian deadlift": [{
     date: "2026-08-25T12:00:00Z",
@@ -733,6 +773,18 @@ const SEED_LOGS = {
     }, {
       w: "145",
       r: "7"
+    }]
+  }, {
+    date: "2026-08-30T12:00:00Z",
+    sets: [{
+      w: "125",
+      r: "8"
+    }, {
+      w: "145",
+      r: "8"
+    }, {
+      w: "150",
+      r: "8"
     }]
   }],
   "LA::Bulgarian split squat": [{
@@ -747,18 +799,17 @@ const SEED_LOGS = {
       w: "72",
       r: "8"
     }]
-  }],
-  "LA::Standing calf raise": [{
-    date: "2026-08-25T12:00:00Z",
+  }, {
+    date: "2026-08-30T12:00:00Z",
     sets: [{
-      w: "215",
-      r: "15"
+      w: "",
+      r: "10"
     }, {
-      w: "215",
-      r: "18"
+      w: "31",
+      r: "11"
     }, {
-      w: "215",
-      r: "15"
+      w: "72",
+      r: "10"
     }]
   }],
   "UB::Barbell overhead press": [{
@@ -797,6 +848,43 @@ const SEED_LOGS = {
       w: "125",
       r: "3"
     }]
+  }, {
+    date: "2026-08-31T12:00:00Z",
+    sets: [{
+      w: "125",
+      r: "5"
+    }, {
+      w: "125",
+      r: "5"
+    }, {
+      w: "125",
+      r: "4"
+    }]
+  }],
+  "UB::DB rear-delt raise": [{
+    date: "2026-08-26T12:00:00Z",
+    sets: [{
+      w: "31",
+      r: "12"
+    }, {
+      w: "31",
+      r: "12"
+    }, {
+      w: "31",
+      r: "12"
+    }]
+  }, {
+    date: "2026-08-31T12:00:00Z",
+    sets: [{
+      w: "31",
+      r: "10"
+    }, {
+      w: "31",
+      r: "12"
+    }, {
+      w: "26",
+      r: "14"
+    }]
   }],
   "UB::Barbell row": [{
     date: "2026-08-26T12:00:00Z",
@@ -813,6 +901,18 @@ const SEED_LOGS = {
       w: "165",
       r: "6"
     }]
+  }, {
+    date: "2026-08-31T12:00:00Z",
+    sets: [{
+      w: "125",
+      r: "12"
+    }, {
+      w: "175",
+      r: "8"
+    }, {
+      w: "145",
+      r: "8"
+    }]
   }],
   "UB::Incline DB press": [{
     date: "2026-08-26T12:00:00Z",
@@ -826,31 +926,17 @@ const SEED_LOGS = {
       w: "145",
       r: "5"
     }]
-  }],
-  "UB::DB rear-delt raise": [{
-    date: "2026-08-26T12:00:00Z",
+  }, {
+    date: "2026-08-31T12:00:00Z",
     sets: [{
-      w: "31",
-      r: "12"
+      w: "51",
+      r: "13"
     }, {
-      w: "31",
-      r: "12"
+      w: "51",
+      r: "11"
     }, {
-      w: "31",
-      r: "12"
-    }]
-  }],
-  "UB::Hammer curl": [{
-    date: "2026-08-26T12:00:00Z",
-    sets: [{
-      w: "35",
-      r: "12"
-    }, {
-      w: "45",
+      w: "51",
       r: "7"
-    }, {
-      w: "45",
-      r: "5"
     }]
   }],
   "UB::Close-grip bench / dips": [{
@@ -865,6 +951,43 @@ const SEED_LOGS = {
       w: "25",
       r: "15"
     }]
+  }, {
+    date: "2026-08-31T12:00:00Z",
+    sets: [{
+      w: "",
+      r: "10"
+    }, {
+      w: "",
+      r: "10"
+    }, {
+      w: "",
+      r: "15"
+    }]
+  }],
+  "UB::Hammer curl": [{
+    date: "2026-08-26T12:00:00Z",
+    sets: [{
+      w: "35",
+      r: "12"
+    }, {
+      w: "45",
+      r: "7"
+    }, {
+      w: "45",
+      r: "5"
+    }]
+  }, {
+    date: "2026-08-31T12:00:00Z",
+    sets: [{
+      w: "46",
+      r: "6"
+    }, {
+      w: "36",
+      r: "9"
+    }, {
+      w: "36",
+      r: "8"
+    }]
   }],
   "UB::Wrist curls (both ways)": [{
     date: "2026-08-26T12:00:00Z",
@@ -877,6 +1000,44 @@ const SEED_LOGS = {
     }, {
       w: "31",
       r: "10"
+    }]
+  }, {
+    date: "2026-08-31T12:00:00Z",
+    sets: [{
+      w: "17.5",
+      r: "16"
+    }, {
+      w: "17.5",
+      r: "12"
+    }]
+  }],
+  "LB::Conventional deadlift": [{
+    date: "2026-09-01T12:00:00Z",
+    sets: [{
+      w: "125",
+      r: "5"
+    }, {
+      w: "215",
+      r: "5"
+    }, {
+      w: "305",
+      r: "2"
+    }, {
+      w: "305",
+      r: "2"
+    }]
+  }],
+  "LB::Single-leg standing calf raise (soleus)": [{
+    date: "2026-09-01T12:00:00Z",
+    sets: [{
+      w: "30",
+      r: "18"
+    }, {
+      w: "30",
+      r: "17"
+    }, {
+      w: "50",
+      r: "15"
     }]
   }],
   "LB::Barbell hip thrust": [{
@@ -894,6 +1055,21 @@ const SEED_LOGS = {
       w: "125",
       r: "13"
     }]
+  }, {
+    date: "2026-09-01T12:00:00Z",
+    sets: [{
+      w: "125",
+      r: "15"
+    }, {
+      w: "175",
+      r: "12"
+    }, {
+      w: "175",
+      r: "10"
+    }, {
+      w: "175",
+      r: "2"
+    }]
   }],
   "LB::Front / goblet squat": [{
     date: "2026-08-28T12:00:00Z",
@@ -906,6 +1082,25 @@ const SEED_LOGS = {
     }, {
       w: "125",
       r: "8"
+    }]
+  }, {
+    date: "2026-09-01T12:00:00Z",
+    sets: [{
+      w: "50",
+      r: "14"
+    }, {
+      w: "50",
+      r: "10"
+    }]
+  }],
+  "LB::Hanging leg raise / dead bug": [{
+    date: "2026-09-01T12:00:00Z",
+    sets: [{
+      w: "",
+      r: "8"
+    }, {
+      w: "",
+      r: "6"
     }]
   }],
   "BON::DB / KB curls": [{
@@ -1012,61 +1207,8 @@ const MOBILITY = [{
   t: "30 s",
   cue: "Heels down, elbows push knees out."
 }];
-const ZONES = [{
-  z: "Z2 · Easy",
-  pct: "60–70%",
-  bpm: "109–127",
-  use: "Most riding. Base, doesn't hurt lifting recovery.",
-  c: "#39F2E4"
-}, {
-  z: "Z3 · Moderate",
-  pct: "70–80%",
-  bpm: "127–145",
-  use: "Tempo.",
-  c: "#F3E9FF"
-}, {
-  z: "Z4 · Threshold",
-  pct: "80–90%",
-  bpm: "145–163",
-  use: "Hard intervals. 1–2×/wk max.",
-  c: "#FF5FB8"
-}, {
-  z: "Z5 · Near max",
-  pct: "90–100%",
-  bpm: "163–181",
-  use: "Short sprints only.",
-  c: "#FF5C8A"
-}];
 
-/* ---------------- helpers ---------------- */
-const parseSetCount = s => typeof s === "number" ? s : parseInt(String(s), 10) || 1;
-const exKey = (wid, name) => wid + "::" + name;
-const bestSet = sets => {
-  let best = null;
-  (sets || []).forEach(x => {
-    const w = parseFloat(x.w),
-      r = parseFloat(x.r);
-    if (isNaN(w) || isNaN(r)) return;
-    if (!best || w > best.w || w === best.w && r > best.r) best = {
-      w,
-      r
-    };
-  });
-  return best;
-};
-const labelToId = lbl => (WORKOUTS.find(w => w.label === lbl) || {}).id;
-const fmtSet = (x, hold) => {
-  if (!x) return "–";
-  if (hold) return (x.r || "–") + "s";
-  const w = parseFloat(x.w);
-  if (!x.w || w === 0) return "BW × " + (x.r || "–");
-  return x.w + " × " + (x.r || "–");
-};
-const exHold = (wid, name) => {
-  const w = WORKOUTS.find(x => x.id === wid);
-  const e = w && w.ex.find(y => y.n === name);
-  return !!(e && e.hold);
-};
+/* card themes per workout day */
 const CARD_THEMES = {
   UA: {
     horizon: "#FF5FA2",
@@ -1130,78 +1272,96 @@ const CARD_THEMES = {
   }
 };
 
-/* ---------------- app ---------------- */
-const REMY_IMG = "data:image/png;base64,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";
-function weekStartOf(d) {
-  const x = new Date(d);
-  x.setHours(0, 0, 0, 0);
-  x.setDate(x.getDate() - x.getDay());
-  return x;
-}
-function weekKeyOf(d) {
-  const w = weekStartOf(d);
-  return w.getFullYear() + "-" + String(w.getMonth() + 1).padStart(2, "0") + "-" + String(w.getDate()).padStart(2, "0");
-}
-function hashStr(s) {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) {
-    h = h * 31 + s.charCodeAt(i) >>> 0;
+/* strength standards: bodyweight-multiple thresholds, men (community reference, e.g. Strength Level style) */
+const STANDARDS_RATIOS = {
+  "Barbell bench press": [0.5, 0.75, 1.0, 1.5, 2.0],
+  "Barbell back squat": [0.75, 1.0, 1.5, 2.0, 2.5],
+  "Conventional deadlift": [1.0, 1.5, 2.0, 2.5, 3.0],
+  "Barbell overhead press": [0.35, 0.55, 0.8, 1.1, 1.3]
+};
+const STANDARDS_LABELS = ["Beginner", "Novice", "Intermediate", "Advanced", "Elite"];
+const STANDARDS_COLORS = ["#A98FD6", "#6FF0E6", "#39F2E4", "#FF7ACF", "#FFC98A"];
+
+/* internal lift-balance targets, anchored to squat */
+const RATIO_TARGETS = {
+  "Barbell bench press": {
+    label: "Bench Press",
+    lo: 0.70,
+    hi: 0.75
+  },
+  "Conventional deadlift": {
+    label: "Deadlift",
+    lo: 1.10,
+    hi: 1.25
+  },
+  "Barbell overhead press": {
+    label: "Overhead Press",
+    lo: 0.45,
+    hi: 0.50
   }
-  return h;
+};
+
+/* ---------------- helpers ---------------- */
+const parseSetCount = s => typeof s === "number" ? s : parseInt(String(s), 10) || 1;
+const exKey = (wid, name) => wid + "::" + name;
+const bestSet = sets => {
+  let best = null;
+  (sets || []).forEach(x => {
+    const w = parseFloat(x.w),
+      r = parseFloat(x.r);
+    if (isNaN(w) || isNaN(r)) return;
+    if (!best || w > best.w || w === best.w && r > best.r) best = {
+      w,
+      r
+    };
+  });
+  return best;
+};
+const labelToId = lbl => (WORKOUTS.find(w => w.label === lbl) || {}).id;
+const fmtSet = (x, hold) => {
+  if (!x) return "–";
+  if (hold) return (x.r || "–") + "s";
+  const w = parseFloat(x.w);
+  if (!x.w || w === 0) return "BW × " + (x.r || "–");
+  return x.w + " × " + (x.r || "–");
+};
+const exHold = (wid, name) => {
+  const w = WORKOUTS.find(x => x.id === wid);
+  const e = w && w.ex.find(y => y.n === name);
+  return !!(e && e.hold);
+};
+function collectEntries(logs) {
+  const entries = [];
+  Object.keys(logs).forEach(k => {
+    const wid = k.split("::")[0];
+    const exName = k.slice(wid.length + 2);
+    (logs[k] || []).forEach(s => entries.push({
+      wid,
+      exName,
+      date: s.date,
+      day: (s.date || "").slice(0, 10),
+      sets: s.sets
+    }));
+  });
+  return entries;
 }
-function remyForm(weekKey) {
-  return hashStr(weekKey) % 13;
-} // 0..12 weekly "form"
-const REMY_DAYS = [1, 2, 4, 6]; // Mon,Tue,Thu,Sat (Sun=0)
-function remyLive(weekKey, today, weekStart) {
-  const todayIdx = today >= weekStart ? today.getDay() : 6;
-  const passed = REMY_DAYS.filter(di => di <= todayIdx).length;
-  const form = todayIdx >= 6 ? remyForm(weekKey) : 0;
-  return passed * 12 + form;
-}
-function remyFull(weekKey) {
-  return REMY_DAYS.length * 12 + remyForm(weekKey);
-} // 48..60
-function estMetric(sets, hold) {
-  const b = bestSet(sets);
-  if (!b) return 0;
-  return hold ? b.r : b.w * (1 + b.r / 30);
-}
-function yourWeekScore(logs, weekStart) {
-  const ws = weekStart.getTime(),
-    we = ws + 7 * 864e5;
-  const entries = collectEntries(logs);
-  const sessionSet = new Set();
-  const byEx = {};
-  entries.forEach(e => {
-    const t = new Date(e.date).getTime();
-    const key = e.wid + "::" + e.exName;
-    (byEx[key] = byEx[key] || []).push({
-      t,
-      sets: e.sets,
-      wid: e.wid,
-      exName: e.exName
+function bestEst1RM(logs, wid, name) {
+  const hist = logs[exKey(wid, name)] || [];
+  let best = 0;
+  hist.forEach(s => {
+    (s.sets || []).forEach(x => {
+      const w = parseFloat(x.w),
+        r = parseFloat(x.r);
+      if (!isNaN(w) && !isNaN(r) && w > 0) {
+        const e1 = w * (1 + r / 30);
+        if (e1 > best) best = e1;
+      }
     });
-    if (t >= ws && t < we) sessionSet.add(e.day + "|" + e.wid);
   });
-  const sessions = sessionSet.size;
-  let hits = 0;
-  Object.keys(byEx).forEach(key => {
-    const arr = byEx[key];
-    const hold = exHold(arr[0].wid, arr[0].exName);
-    const inWeek = arr.filter(a => a.t >= ws && a.t < we);
-    if (!inWeek.length) return;
-    const weekBest = Math.max.apply(null, inWeek.map(a => estMetric(a.sets, hold)));
-    const prior = arr.filter(a => a.t < ws);
-    const priorBest = prior.length ? Math.max.apply(null, prior.map(a => estMetric(a.sets, hold))) : -1;
-    if (weekBest > priorBest) hits++;
-  });
-  return {
-    sessions,
-    hits,
-    score: Math.min(sessions, 5) * 12 + hits * 6
-  };
+  return Math.round(best);
 }
+
+/* ---------------- app ---------------- */
 function App() {
   const [loaded, setLoaded] = useState(false);
   const [rotIdx, setRotIdx] = useState(0);
@@ -1215,14 +1375,7 @@ function App() {
   const [expFmt, setExpFmt] = useState("md");
   const [importText, setImportText] = useState("");
   const [showImport, setShowImport] = useState(false);
-  const [duel, setDuel] = useState({
-    record: {
-      w: 0,
-      l: 0
-    },
-    lastWeekKey: null,
-    lastResult: null
-  });
+  const [showFullLog, setShowFullLog] = useState(false);
 
   /* load once */
   useEffect(() => {
@@ -1235,7 +1388,6 @@ function App() {
           setSelId(ROTATION[st.rotIdx] || "UA");
         }
         if (st.logs) setLogs(st.logs);
-        if (st.duel) setDuel(st.duel);
       } else {
         setLogs(SEED_LOGS);
       }
@@ -1247,47 +1399,16 @@ function App() {
     setLoaded(true);
   }, []);
 
-  /* auto-persist on any change */
+  /* auto-persist */
   useEffect(() => {
     if (!loaded) return;
     try {
       localStorage.setItem("hf_state", JSON.stringify({
         logs,
-        rotIdx,
-        duel
+        rotIdx
       }));
     } catch (e) {}
-  }, [logs, rotIdx, duel, loaded]);
-
-  /* resolve last week's duel on a new week */
-  useEffect(() => {
-    if (!loaded) return;
-    const ck = weekKeyOf(new Date());
-    setDuel(prev => {
-      if (!prev.lastWeekKey) return {
-        ...prev,
-        lastWeekKey: ck
-      };
-      if (prev.lastWeekKey === ck) return prev;
-      const ws = new Date(prev.lastWeekKey + "T00:00:00");
-      const you = yourWeekScore(logs, ws).score;
-      const rem = remyFull(prev.lastWeekKey);
-      const win = you >= rem && you > 0;
-      return {
-        record: {
-          w: prev.record.w + (win ? 1 : 0),
-          l: prev.record.l + (win ? 0 : 1)
-        },
-        lastWeekKey: ck,
-        lastResult: {
-          week: prev.lastWeekKey,
-          you,
-          rem,
-          win
-        }
-      };
-    });
-  }, [loaded]);
+  }, [logs, rotIdx, loaded]);
 
   /* init draft on workout switch */
   useEffect(() => {
@@ -1473,124 +1594,10 @@ function App() {
     setLogs({});
     setRotIdx(0);
     setResetArm(false);
-    setDuel({
-      record: {
-        w: 0,
-        l: 0
-      },
-      lastWeekKey: weekKeyOf(new Date()),
-      lastResult: null
-    });
     try {
       localStorage.removeItem("hf_state");
     } catch (e) {}
     flash("All logs cleared.");
-  };
-  const shareDuel = (youScore, remScore, win) => {
-    const img = new Image();
-    const draw = () => {
-      const size = 1080,
-        HZ = 724;
-      const cv = document.createElement("canvas");
-      cv.width = size;
-      cv.height = size;
-      const ctx = cv.getContext("2d");
-      const sky = ctx.createLinearGradient(0, 0, 0, HZ);
-      sky.addColorStop(0, "#1A0B33");
-      sky.addColorStop(0.72, "#3A1560");
-      sky.addColorStop(1, "#FF5FA2");
-      ctx.fillStyle = sky;
-      ctx.fillRect(0, 0, size, HZ);
-      const gnd = ctx.createLinearGradient(0, HZ, 0, size);
-      gnd.addColorStop(0, "#FF5FA2");
-      gnd.addColorStop(0.25, "#2A0E3F");
-      gnd.addColorStop(1, "#150826");
-      ctx.fillStyle = gnd;
-      ctx.fillRect(0, HZ, size, size - HZ);
-      ctx.strokeStyle = "rgba(57,242,228,0.26)";
-      ctx.lineWidth = 2;
-      for (let i = 1; i <= 11; i++) {
-        const yy = HZ + (size - HZ) * Math.pow(i / 11, 1.9);
-        ctx.beginPath();
-        ctx.moveTo(0, yy);
-        ctx.lineTo(size, yy);
-        ctx.stroke();
-      }
-      for (let x = -1200; x < 2400; x += 110) {
-        ctx.beginPath();
-        ctx.moveTo(540, HZ);
-        ctx.lineTo(x, size);
-        ctx.stroke();
-      }
-      ctx.strokeStyle = "rgba(255,138,208,0.85)";
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.moveTo(0, HZ);
-      ctx.lineTo(size, HZ);
-      ctx.stroke();
-      const scrim = ctx.createLinearGradient(0, 380, 0, 760);
-      scrim.addColorStop(0, "rgba(20,8,40,0)");
-      scrim.addColorStop(0.5, "rgba(20,8,40,0.4)");
-      scrim.addColorStop(1, "rgba(20,8,40,0)");
-      ctx.fillStyle = scrim;
-      ctx.fillRect(0, 380, size, 380);
-      ctx.textAlign = "left";
-      ctx.save();
-      ctx.shadowColor = "#39F2E4";
-      ctx.shadowBlur = 16;
-      ctx.fillStyle = "#39F2E4";
-      ctx.font = "bold 40px -apple-system, Arial";
-      ctx.fillText("L I F T S", 74, 130);
-      ctx.restore();
-      ctx.fillStyle = "#C79BFF";
-      ctx.font = "bold 44px -apple-system, Arial";
-      ctx.fillText("WEEKLY DUEL", 74, 190);
-      if (img && img.width) {
-        const pw = 300;
-        ctx.drawImage(img, size - pw - 70, 250, pw, pw * img.height / img.width);
-      }
-      ctx.fillStyle = "#F3E9FF";
-      ctx.font = "bold 66px -apple-system, Arial";
-      ctx.fillText("vs LE PROF", 74, 300);
-      ctx.font = "bold 120px -apple-system, Arial";
-      const tg = ctx.createLinearGradient(0, 380, 0, 470);
-      tg.addColorStop(0, "#7DF9FF");
-      tg.addColorStop(1, "#39F2E4");
-      ctx.fillStyle = tg;
-      ctx.fillText("YOU  " + youScore, 74, 470);
-      ctx.fillStyle = "#FF7ACF";
-      ctx.fillText("RÉMY  " + remScore, 74, 600);
-      ctx.save();
-      ctx.shadowColor = win ? "#35C08A" : "#FF5C8A";
-      ctx.shadowBlur = 34;
-      ctx.fillStyle = win ? "#35C08A" : "#FF5C8A";
-      ctx.font = "bold 150px -apple-system, Arial";
-      ctx.fillText(win ? "WIN" : "LOSS", 74, size - 110);
-      ctx.restore();
-      cv.toBlob(async blob => {
-        try {
-          const file = new File([blob], "duel.png", {
-            type: "image/png"
-          });
-          if (navigator.canShare && navigator.canShare({
-            files: [file]
-          })) {
-            await navigator.share({
-              files: [file],
-              title: "Weekly Duel"
-            });
-            return;
-          }
-        } catch (e) {}
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "duel.png";
-        a.click();
-      }, "image/png");
-    };
-    img.onload = draw;
-    img.onerror = draw;
-    img.src = REMY_IMG;
   };
   if (!loaded) return /*#__PURE__*/React.createElement("div", {
     style: {
@@ -1606,22 +1613,19 @@ function App() {
   const nextW = WORKOUTS.find(x => x.id === ROTATION[rotIdx]);
   const sel = WORKOUTS.find(x => x.id === selId);
   const anyHistory = Object.keys(logs).length > 0;
-  const S = {
-    page: {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
       background: "transparent",
       color: T.text,
       minHeight: "100vh"
     },
-    wrap: {
+    className: "font-sans"
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
       maxWidth: 480,
       margin: "0 auto",
       padding: "0 0 40px"
     }
-  };
-  return /*#__PURE__*/React.createElement("div", {
-    style: S.page
-  }, /*#__PURE__*/React.createElement("div", {
-    style: S.wrap
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       padding: "24px 20px 12px"
@@ -1666,10 +1670,9 @@ function App() {
     style: {
       padding: "0 20px 12px",
       display: "flex",
-      gap: 8,
-      flexWrap: "wrap"
+      gap: 8
     }
-  }, [["train", "Train"], ["rival", "Rival"], ["mobility", "Mobility"], ["zones", "Zones"], ["log", "Progress"]].map(([id, lbl]) => /*#__PURE__*/React.createElement("button", {
+  }, [["train", "Train"], ["mobility", "Mobility"], ["log", "Progress"]].map(([id, lbl]) => /*#__PURE__*/React.createElement("button", {
     key: id,
     onClick: () => setTab(id),
     style: {
@@ -1790,18 +1793,7 @@ function App() {
         color: "#2A0A10",
         verticalAlign: "middle"
       }
-    }, "🔺 ANCHOR"), e.cluster && /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 10,
-        fontWeight: 800,
-        marginLeft: 8,
-        padding: "2px 6px",
-        borderRadius: 6,
-        background: "#FF5FB8",
-        color: "#2A0A46",
-        verticalAlign: "middle"
-      }
-    }, "CLUSTER"), e.bonus && /*#__PURE__*/React.createElement("span", {
+    }, "🔺 ANCHOR"), e.bonus && /*#__PURE__*/React.createElement("span", {
       style: {
         fontSize: 10,
         fontWeight: 800,
@@ -1832,14 +1824,7 @@ function App() {
         marginTop: 3,
         fontWeight: 700
       }
-    }, "full rest between sets"), e.cluster && /*#__PURE__*/React.createElement("div", {
-      style: {
-        color: "#7DF9FF",
-        fontSize: 11,
-        marginTop: 3,
-        fontWeight: 700
-      }
-    }, "⏱ 10s rest between each mini-set · expect the reps to drop (8,8,8,6,5,4)")), beat !== null && /*#__PURE__*/React.createElement("div", {
+    }, "full rest between sets")), beat !== null && /*#__PURE__*/React.createElement("div", {
       style: {
         fontSize: 12,
         fontWeight: 700,
@@ -1958,229 +1943,7 @@ function App() {
       background: T.amber,
       color: "#2A0A46"
     }
-  }, !sel.bonus && sel.id === ROTATION[rotIdx] ? "Save & advance rotation" : "Save session")), tab === "rival" && (() => {
-    const today = new Date();
-    const ck = weekKeyOf(today);
-    const ws = weekStartOf(today);
-    const you = yourWeekScore(logs, ws);
-    const rem = remyLive(ck, today, ws);
-    const win = you.score >= rem;
-    const dow = today.getDay();
-    const daysLeft = 6 - dow;
-    const total = Math.max(1, you.score + rem);
-    const youPct = Math.round(100 * you.score / total);
-    let promo;
-    if (you.sessions === 0 && dow <= 1) promo = "\"Everybody looks strong on Monday, hmm? Let us see if you are still here on Thursday. I have my doubts. Prove me wrong — I would love it.\"";else if (win && you.sessions >= 2) promo = "\"Oh. Oh. You came back. Twice. Alors — maybe you are not like the others. Do not let it go to your head. Keep going.\"";else if (!win && daysLeft <= 2) promo = "\"The week is nearly done and I am ahead. Still — a strong finish, and who knows? I would enjoy being surprised.\"";else if (!win) promo = "\"One session so far? Adorable. I am not worried yet. Should I be worried? …Non. Not yet.\"";else promo = "\"You are serious this week. Bon. Now I must be serious also.\"";
-    const rr = duel.lastResult;
-    return /*#__PURE__*/React.createElement("div", {
-      style: {
-        padding: "0 20px 40px"
-      }
-    }, rr && /*#__PURE__*/React.createElement("div", {
-      style: {
-        borderRadius: 14,
-        padding: 14,
-        marginBottom: 14,
-        background: rr.win ? "#12241C" : "#241019",
-        border: "1px solid " + (rr.win ? T.emerald : T.red)
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontWeight: 800,
-        color: rr.win ? T.emerald : T.red,
-        fontSize: 15
-      }
-    }, rr.win ? "LAST WEEK: WIN" : "LAST WEEK: LOSS"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 12,
-        color: T.muted,
-        marginTop: 2
-      }
-    }, "You ", rr.you, " · Rémy ", rr.rem, ". ", rr.win ? "\"I am thrilled to lose — come back and do it again. I dare you.\"" : "\"Most people vanish. But you — I think you come back, non? À bientôt.\"")), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        gap: 14,
-        alignItems: "center",
-        marginBottom: 12
-      }
-    }, /*#__PURE__*/React.createElement("img", {
-      src: REMY_IMG,
-      alt: "Rémy",
-      style: {
-        width: 96,
-        borderRadius: 10,
-        border: "1px solid " + T.line,
-        imageRendering: "pixelated"
-      }
-    }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 11,
-        color: T.muted,
-        letterSpacing: 1
-      }
-    }, "WEEKLY RIVAL · ROOKIE"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 20,
-        fontWeight: 800
-      }
-    }, "Rémy Beaulieu"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 13,
-        color: "#FF64C4",
-        fontWeight: 700
-      }
-    }, "« Le Prof »"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 11,
-        color: T.muted,
-        marginTop: 2
-      }
-    }, "Record vs Rémy: ", /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: T.emerald
-      }
-    }, duel.record.w, "W"), " · ", /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: T.red
-      }
-    }, duel.record.l, "L")))), /*#__PURE__*/React.createElement("div", {
-      style: {
-        borderRadius: 14,
-        padding: 14,
-        marginBottom: 14,
-        background: T.surface,
-        color: "#C7B8E8",
-        fontSize: 13,
-        lineHeight: 1.5,
-        fontStyle: "italic"
-      }
-    }, promo), /*#__PURE__*/React.createElement("div", {
-      style: {
-        borderRadius: 16,
-        padding: 16,
-        background: T.surface
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "baseline"
-      }
-    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 11,
-        color: T.muted
-      }
-    }, "YOU"), /*#__PURE__*/React.createElement("div", {
-      className: "mono",
-      style: {
-        fontSize: 34,
-        fontWeight: 800,
-        color: win ? T.emerald : T.text
-      }
-    }, you.score)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 12,
-        color: T.muted,
-        fontWeight: 700
-      }
-    }, daysLeft > 0 ? daysLeft + " days left" : "final day"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        textAlign: "right"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 11,
-        color: T.muted
-      }
-    }, "RÉMY"), /*#__PURE__*/React.createElement("div", {
-      className: "mono",
-      style: {
-        fontSize: 34,
-        fontWeight: 800,
-        color: !win ? "#FF7ACF" : T.text
-      }
-    }, rem))), /*#__PURE__*/React.createElement("div", {
-      style: {
-        height: 12,
-        borderRadius: 6,
-        background: "#FF7ACF",
-        marginTop: 10,
-        overflow: "hidden"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        width: youPct + "%",
-        height: "100%",
-        background: T.emerald
-      }
-    })), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 12,
-        color: win ? T.emerald : "#FF7ACF",
-        fontWeight: 700,
-        marginTop: 8,
-        textAlign: "center"
-      }
-    }, win ? "You're ahead this week" : "Rémy's ahead — log a session")), /*#__PURE__*/React.createElement("div", {
-      style: {
-        borderRadius: 16,
-        padding: 16,
-        background: T.surface,
-        marginTop: 12
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 12,
-        color: T.muted,
-        marginBottom: 8,
-        fontWeight: 700
-      }
-    }, "YOUR WEEK"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        fontSize: 13,
-        marginBottom: 4
-      }
-    }, /*#__PURE__*/React.createElement("span", null, "Sessions logged (×12, max 5)"), /*#__PURE__*/React.createElement("span", {
-      className: "mono",
-      style: {
-        color: T.text
-      }
-    }, Math.min(you.sessions, 5), " → ", Math.min(you.sessions, 5) * 12)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        fontSize: 13
-      }
-    }, /*#__PURE__*/React.createElement("span", null, "Lifts you progressed (×6)"), /*#__PURE__*/React.createElement("span", {
-      className: "mono",
-      style: {
-        color: T.emerald
-      }
-    }, you.hits, " → ", you.hits * 6)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 11,
-        color: T.muted,
-        marginTop: 10,
-        lineHeight: 1.5
-      }
-    }, "Rest counts — sessions cap at 5, so 4 good workouts beat 6 exhausted ones. The duel rewards showing up and progressing, not grinding.")), /*#__PURE__*/React.createElement("button", {
-      onClick: () => shareDuel(you.score, rem, win),
-      style: {
-        width: "100%",
-        borderRadius: 14,
-        padding: 14,
-        marginTop: 14,
-        fontWeight: 800,
-        fontSize: 15,
-        border: "none",
-        background: "#FF5FB8",
-        color: "#2A0A46"
-      }
-    }, "Share this week's duel"));
-  })(), tab === "mobility" && /*#__PURE__*/React.createElement("div", {
+  }, !sel.bonus && sel.id === ROTATION[rotIdx] ? "Save & advance rotation" : "Save session")), tab === "mobility" && /*#__PURE__*/React.createElement("div", {
     style: {
       padding: "0 20px 24px"
     }
@@ -2194,75 +1957,7 @@ function App() {
       background: T.surface,
       color: T.muted
     }
-  }, "5 min won't undo 8 hrs of sitting. This maintains range + grooves glute firing. The real fix is the loaded glute/core work in your lifts and standing up hourly at your desk.")), tab === "zones" && /*#__PURE__*/React.createElement("div", {
-    style: {
-      padding: "0 20px 24px"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      color: T.muted,
-      fontSize: 12,
-      marginBottom: 12
-    }
-  }, "Est. max HR ≈ 181 bpm (age 39). ±10–12 bpm formula error — use your true max if known."), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 8
-    }
-  }, ZONES.map(z => /*#__PURE__*/React.createElement("div", {
-    key: z.z,
-    style: {
-      borderRadius: 16,
-      padding: 16,
-      background: T.surface
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "baseline",
-      justifyContent: "space-between"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontWeight: 700,
-      color: z.c
-    }
-  }, z.z), /*#__PURE__*/React.createElement("div", {
-    className: "mono",
-    style: {
-      fontSize: 14,
-      color: T.text
-    }
-  }, z.bpm, " bpm")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "baseline",
-      justifyContent: "space-between",
-      marginTop: 4
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      color: T.muted
-    }
-  }, z.use), /*#__PURE__*/React.createElement("div", {
-    className: "mono",
-    style: {
-      fontSize: 12,
-      color: T.muted
-    }
-  }, z.pct))))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      borderRadius: 16,
-      padding: 16,
-      marginTop: 16,
-      fontSize: 12,
-      lineHeight: 1.6,
-      background: T.surface,
-      color: T.muted
-    }
-  }, "Lifting has no useful target HR — gauge lifts by reps-in-reserve + beating last session, not the watch. Keep most Peloton riding in Z2; hammering Z4–5 before leg day steals recovery.")), tab === "log" && /*#__PURE__*/React.createElement("div", {
+  }, "5 min won't undo 8 hrs of sitting. This maintains range + grooves glute firing. The real fix is the loaded glute/core work in your lifts and standing up hourly at your desk.")), tab === "log" && /*#__PURE__*/React.createElement("div", {
     style: {
       padding: "0 20px 40px"
     }
@@ -2276,9 +1971,26 @@ function App() {
     logs: logs
   }), /*#__PURE__*/React.createElement(Trends, {
     logs: logs
+  }), /*#__PURE__*/React.createElement(StrengthStandards, {
+    logs: logs
+  }), /*#__PURE__*/React.createElement(LiftBalance, {
+    logs: logs
   }), /*#__PURE__*/React.createElement(ShareCard, {
     logs: logs
-  }), anyHistory ? WORKOUTS.map(w => {
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowFullLog(!showFullLog),
+    style: {
+      width: "100%",
+      borderRadius: 12,
+      padding: 10,
+      marginBottom: 12,
+      fontSize: 13,
+      fontWeight: 700,
+      background: "transparent",
+      border: "1px solid " + T.line,
+      color: T.muted
+    }
+  }, showFullLog ? "▲ Hide full log" : "▼ Show full log (every session, every exercise)"), showFullLog && (anyHistory ? WORKOUTS.map(w => {
     const exWithLogs = w.ex.filter(e => (logs[exKey(w.id, e.n)] || []).length);
     if (!exWithLogs.length) return null;
     return /*#__PURE__*/React.createElement("div", {
@@ -2327,7 +2039,7 @@ function App() {
       fontSize: 13,
       marginBottom: 16
     }
-  }, "No sessions logged yet."), /*#__PURE__*/React.createElement("div", {
+  }, "No sessions logged yet.")), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       gap: 8,
@@ -2460,6 +2172,8 @@ function App() {
     }
   }, toast))));
 }
+
+/* ---------------- mobility list ---------------- */
 function MobilityList() {
   const [done, setDone] = useState({});
   return /*#__PURE__*/React.createElement("div", {
@@ -2506,6 +2220,8 @@ function MobilityList() {
     }
   }, m.cue))));
 }
+
+/* ---------------- calendar ---------------- */
 function Stat({
   label,
   val,
@@ -2772,24 +2488,26 @@ function Calendar({
     }
   }, WNAME[w] || w)))));
 }
+
+/* ---------------- trends (overall + per-exercise w/ recent sessions) ---------------- */
 function LineChart({
   points,
   color
 }) {
-  color = color || "#FF5FB8";
+  color = color || T.amber;
   const w = 320,
     h = 130,
     pad = 26;
   if (!points || points.length === 0) return /*#__PURE__*/React.createElement("div", {
     style: {
-      color: "#A98FD6",
+      color: T.muted,
       fontSize: 12,
       padding: "8px 0"
     }
   }, "No data yet.");
   if (points.length === 1) return /*#__PURE__*/React.createElement("div", {
     style: {
-      color: "#A98FD6",
+      color: T.muted,
       fontSize: 12,
       padding: "8px 0"
     }
@@ -2813,7 +2531,7 @@ function LineChart({
     y1: h - pad,
     x2: w - pad,
     y2: h - pad,
-    stroke: "#4B2E7D",
+    stroke: T.line,
     strokeWidth: "1"
   }), /*#__PURE__*/React.createElement("path", {
     d: path,
@@ -2831,29 +2549,14 @@ function LineChart({
   })), /*#__PURE__*/React.createElement("text", {
     x: pad,
     y: pad - 8,
-    fill: "#A98FD6",
+    fill: T.muted,
     fontSize: "10"
   }, max), /*#__PURE__*/React.createElement("text", {
     x: pad,
     y: h - pad + 14,
-    fill: "#A98FD6",
+    fill: T.muted,
     fontSize: "10"
   }, min));
-}
-function collectEntries(logs) {
-  const entries = [];
-  Object.keys(logs).forEach(k => {
-    const wid = k.split("::")[0];
-    const exName = k.slice(wid.length + 2);
-    (logs[k] || []).forEach(s => entries.push({
-      wid,
-      exName,
-      date: s.date,
-      day: (s.date || "").slice(0, 10),
-      sets: s.sets
-    }));
-  });
-  return entries;
 }
 function Trends({
   logs
@@ -2865,8 +2568,8 @@ function Trends({
     style: {
       borderRadius: 16,
       padding: 16,
-      background: "#241048",
-      color: "#A98FD6",
+      background: T.surface,
+      color: T.muted,
       fontSize: 13,
       marginBottom: 16
     }
@@ -2896,6 +2599,7 @@ function Trends({
     };
   });
   const rangeTxt = arr => arr.length >= 2 ? new Date(arr[0].label).toLocaleDateString() + " → " + new Date(arr[arr.length - 1].label).toLocaleDateString() : "";
+  const exHoldCur = exEntries.length ? exHold(exEntries[0].wid, exEntries[0].exName) : false;
   return /*#__PURE__*/React.createElement("div", {
     style: {
       marginBottom: 16
@@ -2904,7 +2608,7 @@ function Trends({
     style: {
       borderRadius: 16,
       padding: 16,
-      background: "#241048",
+      background: T.surface,
       marginBottom: 12
     }
   }, /*#__PURE__*/React.createElement("div", {
@@ -2915,15 +2619,15 @@ function Trends({
     }
   }, "Overall volume ", /*#__PURE__*/React.createElement("span", {
     style: {
-      color: "#A98FD6",
+      color: T.muted,
       fontWeight: 400
     }
   }, "· lb per session")), /*#__PURE__*/React.createElement(LineChart, {
     points: overall,
-    color: "#39F2E4"
+    color: T.emerald
   }), /*#__PURE__*/React.createElement("div", {
     style: {
-      color: "#A98FD6",
+      color: T.muted,
       fontSize: 10,
       marginTop: 2
     }
@@ -2931,7 +2635,7 @@ function Trends({
     style: {
       borderRadius: 16,
       padding: 16,
-      background: "#241048"
+      background: T.surface
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -2941,7 +2645,7 @@ function Trends({
     }
   }, "Per exercise ", /*#__PURE__*/React.createElement("span", {
     style: {
-      color: "#A98FD6",
+      color: T.muted,
       fontWeight: 400
     }
   }, "· est. 1RM")), /*#__PURE__*/React.createElement("select", {
@@ -2951,9 +2655,9 @@ function Trends({
       width: "100%",
       padding: "8px 10px",
       borderRadius: 8,
-      background: "#1A0B33",
-      color: "#F3E9FF",
-      border: "1px solid #4B2E7D",
+      background: T.bg,
+      color: T.text,
+      border: "1px solid " + T.line,
       fontSize: 13,
       marginBottom: 8
     }
@@ -2962,15 +2666,415 @@ function Trends({
     value: n
   }, n))), /*#__PURE__*/React.createElement(LineChart, {
     points: exPoints,
-    color: "#FF5FB8"
+    color: T.amber
   }), /*#__PURE__*/React.createElement("div", {
     style: {
-      color: "#A98FD6",
+      color: T.muted,
       fontSize: 10,
       marginTop: 2
     }
-  }, rangeTxt(exPoints), " · est. 1RM = weight × (1 + reps/30)")));
+  }, rangeTxt(exPoints), " · est. 1RM = weight × (1 + reps/30)"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 12,
+      borderTop: "1px solid " + T.line,
+      paddingTop: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: T.muted,
+      fontWeight: 700,
+      marginBottom: 6,
+      textTransform: "uppercase",
+      letterSpacing: 0.5
+    }
+  }, "Recent sessions"), exEntries.slice().reverse().slice(0, 6).map((e, i, arr) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      gap: 8,
+      fontSize: 12,
+      padding: "5px 0",
+      borderBottom: i < arr.length - 1 ? "1px solid rgba(75,46,125,0.4)" : "none"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: T.muted,
+      minWidth: 62,
+      flexShrink: 0
+    }
+  }, new Date(e.date).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric"
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "mono",
+    style: {
+      color: T.text,
+      textAlign: "right"
+    }
+  }, e.sets.map(x => fmtSet(x, exHoldCur)).join(", ")))), exEntries.length > 6 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: T.muted,
+      marginTop: 6
+    }
+  }, "+", exEntries.length - 6, " earlier session", exEntries.length - 6 === 1 ? "" : "s", " · full log below"))));
 }
+
+/* ---------------- strength standards (vs. other men) ---------------- */
+function StrengthStandards({
+  logs
+}) {
+  const [bw, setBw] = useState(() => {
+    try {
+      const v = localStorage.getItem("hf_bw");
+      return v || "210";
+    } catch (e) {
+      return "210";
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem("hf_bw", bw);
+    } catch (e) {}
+  }, [bw]);
+  const bwNum = parseFloat(bw) || 0;
+  const LIFTS = [{
+    wid: "UA",
+    name: "Barbell bench press",
+    label: "Bench Press"
+  }, {
+    wid: "LA",
+    name: "Barbell back squat",
+    label: "Back Squat"
+  }, {
+    wid: "LB",
+    name: "Conventional deadlift",
+    label: "Deadlift"
+  }, {
+    wid: "UB",
+    name: "Barbell overhead press",
+    label: "Overhead Press"
+  }];
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderRadius: 16,
+      padding: 16,
+      background: T.surface,
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 700,
+      fontSize: 13,
+      marginBottom: 4
+    }
+  }, "Strength standards ", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: T.muted,
+      fontWeight: 400
+    }
+  }, "· vs. other men who lift")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 8,
+      marginTop: 8,
+      marginBottom: 14
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 12,
+      color: T.muted
+    }
+  }, "Bodyweight"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    inputMode: "decimal",
+    value: bw,
+    onChange: e => setBw(e.target.value),
+    className: "mono",
+    style: {
+      width: 70,
+      borderRadius: 8,
+      padding: "6px 8px",
+      fontSize: 13,
+      outline: "none",
+      background: T.bg,
+      color: T.text,
+      border: "1px solid " + T.line
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 12,
+      color: T.muted
+    }
+  }, "lb")), LIFTS.map(L => {
+    const e1 = bestEst1RM(logs, L.wid, L.name);
+    const ratios = STANDARDS_RATIOS[L.name];
+    const ratio = bwNum > 0 ? e1 / bwNum : 0;
+    let tierIdx = -1;
+    for (let i = ratios.length - 1; i >= 0; i--) {
+      if (ratio >= ratios[i]) {
+        tierIdx = i;
+        break;
+      }
+    }
+    const tierLabel = tierIdx >= 0 ? STANDARDS_LABELS[tierIdx] : "Beginner";
+    const nextIdx = Math.min(tierIdx + 1, ratios.length - 1);
+    const nextLabel = STANDARDS_LABELS[nextIdx];
+    const nextWeight = Math.round(ratios[nextIdx] * bwNum);
+    const prevRatio = tierIdx >= 0 ? ratios[tierIdx] : 0;
+    const spanRatio = ratios[nextIdx] - prevRatio;
+    const pct = spanRatio > 0 ? Math.max(0, Math.min(100, 100 * (ratio - prevRatio) / spanRatio)) : 100;
+    const tierColor = STANDARDS_COLORS[Math.max(0, tierIdx)];
+    return /*#__PURE__*/React.createElement("div", {
+      key: L.name,
+      style: {
+        marginBottom: 14
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "baseline"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 13,
+        fontWeight: 600
+      }
+    }, L.label), e1 > 0 ? /*#__PURE__*/React.createElement("div", {
+      className: "mono",
+      style: {
+        fontSize: 12,
+        color: T.muted
+      }
+    }, "est 1RM ", e1, " lb") : /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted
+      }
+    }, "no data yet")), e1 > 0 && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginTop: 4
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 13,
+        fontWeight: 700,
+        color: tierColor
+      }
+    }, tierLabel), /*#__PURE__*/React.createElement("span", {
+      className: "mono",
+      style: {
+        fontSize: 11,
+        color: T.muted
+      }
+    }, ratio.toFixed(2), "x bodyweight")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        height: 8,
+        borderRadius: 4,
+        background: T.bg,
+        marginTop: 6,
+        overflow: "hidden"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: pct + "%",
+        height: "100%",
+        background: tierColor
+      }
+    })), tierIdx < ratios.length - 1 && /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted,
+        marginTop: 4
+      }
+    }, nextWeight, " lb to reach ", nextLabel)));
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: T.muted,
+      marginTop: 4,
+      lineHeight: 1.5
+    }
+  }, "Widely-used community bodyweight-multiple standards (men), not a scientific consensus — orientation, not a verdict. Est. 1RM = weight × (1 + reps/30) from your best logged set."));
+}
+
+/* ---------------- lift balance (internal ratios, anchored to squat) ---------------- */
+function LiftBalance({
+  logs
+}) {
+  const squatE1 = bestEst1RM(logs, "LA", "Barbell back squat");
+  if (!squatE1) {
+    return /*#__PURE__*/React.createElement("div", {
+      style: {
+        borderRadius: 16,
+        padding: 16,
+        background: T.surface,
+        marginBottom: 16
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontWeight: 700,
+        fontSize: 13,
+        marginBottom: 4
+      }
+    }, "Lift balance ", /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: T.muted,
+        fontWeight: 400
+      }
+    }, "· vs. your own squat")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        marginTop: 6
+      }
+    }, "Log a squat to see how your other anchor lifts balance against it."));
+  }
+  const rows = [{
+    wid: "UA",
+    name: "Barbell bench press"
+  }, {
+    wid: "LB",
+    name: "Conventional deadlift"
+  }, {
+    wid: "UB",
+    name: "Barbell overhead press"
+  }];
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderRadius: 16,
+      padding: 16,
+      background: T.surface,
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 700,
+      fontSize: 13,
+      marginBottom: 4
+    }
+  }, "Lift balance ", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: T.muted,
+      fontWeight: 400
+    }
+  }, "· vs. your own squat")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: T.muted,
+      marginBottom: 12
+    }
+  }, "Squat est 1RM: ", /*#__PURE__*/React.createElement("span", {
+    className: "mono",
+    style: {
+      color: T.text
+    }
+  }, squatE1, " lb"), " (100% anchor)"), rows.map(L => {
+    const target = RATIO_TARGETS[L.name];
+    const e1 = bestEst1RM(logs, L.wid, L.name);
+    if (!e1) return /*#__PURE__*/React.createElement("div", {
+      key: L.name,
+      style: {
+        display: "flex",
+        justifyContent: "space-between",
+        fontSize: 13,
+        marginBottom: 10
+      }
+    }, /*#__PURE__*/React.createElement("span", null, target.label), /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: T.muted,
+        fontSize: 11
+      }
+    }, "no data yet"));
+    const ratio = e1 / squatE1;
+    const inRange = ratio >= target.lo && ratio <= target.hi;
+    const below = ratio < target.lo;
+    const statusColor = inRange ? T.emerald : "#FFC98A";
+    const pct = Math.round(ratio * 100);
+    const targetLo = Math.round(target.lo * 100),
+      targetHi = Math.round(target.hi * 100);
+    const scaleMax = 150;
+    const barPct = Math.min(100, pct / scaleMax * 100);
+    const rangeLoPct = targetLo / scaleMax * 100,
+      rangeHiPct = targetHi / scaleMax * 100;
+    return /*#__PURE__*/React.createElement("div", {
+      key: L.name,
+      style: {
+        marginBottom: 14
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "baseline"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 13,
+        fontWeight: 600
+      }
+    }, target.label), /*#__PURE__*/React.createElement("span", {
+      className: "mono",
+      style: {
+        fontSize: 12,
+        color: statusColor,
+        fontWeight: 700
+      }
+    }, pct, "% ", /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: T.muted,
+        fontWeight: 400
+      }
+    }, "(target ", targetLo, "–", targetHi, "%)"))), /*#__PURE__*/React.createElement("div", {
+      style: {
+        position: "relative",
+        height: 10,
+        borderRadius: 5,
+        background: T.bg,
+        marginTop: 6,
+        overflow: "hidden"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        position: "absolute",
+        left: rangeLoPct + "%",
+        width: Math.max(2, rangeHiPct - rangeLoPct) + "%",
+        top: 0,
+        bottom: 0,
+        background: "rgba(53,192,138,0.28)"
+      }
+    }), /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: barPct + "%",
+        height: "100%",
+        background: statusColor,
+        borderRadius: 5
+      }
+    })), !inRange && /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted,
+        marginTop: 4
+      }
+    }, below ? "Behind — expected as this lift builds back up" : "Ahead of the typical ratio — not a problem, just unusual"));
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: T.muted,
+      marginTop: 4,
+      lineHeight: 1.5
+    }
+  }, "General population ratio guidelines, anchored to your squat. Limb length and build shift the \"correct\" ratio ±10–15% — use this as a rough balance check, not a strict target."));
+}
+
+/* ---------------- shareable card ---------------- */
 function ShareCard({
   logs
 }) {
@@ -2990,23 +3094,19 @@ function ShareCard({
     cv.width = size;
     cv.height = size;
     const ctx = cv.getContext("2d");
-    // theme by workout day
-    var TH = CARD_THEMES[latest.wid] || CARD_THEMES.UA;
-    // sky
+    const TH = CARD_THEMES[latest.wid] || CARD_THEMES.UA;
     const sky = ctx.createLinearGradient(0, 0, 0, HZ);
     sky.addColorStop(0, "#1A0B33");
     sky.addColorStop(0.72, "#3A1560");
     sky.addColorStop(1, TH.horizon);
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, size, HZ);
-    // ground
     const gnd = ctx.createLinearGradient(0, HZ, 0, size);
     gnd.addColorStop(0, TH.horizon);
     gnd.addColorStop(0.25, "#2A0E3F");
     gnd.addColorStop(1, "#150826");
     ctx.fillStyle = gnd;
     ctx.fillRect(0, HZ, size, size - HZ);
-    // retro sun
     const scx = 812,
       scy = 250,
       sr = 178;
@@ -3028,7 +3128,6 @@ function ShareCard({
       sy += 10 + (sy - scy) / 16;
     }
     ctx.restore();
-    // grid
     const vx = 540,
       vy = HZ;
     ctx.strokeStyle = "rgba(" + TH.grid + ",0.26)";
@@ -3052,14 +3151,12 @@ function ShareCard({
     ctx.moveTo(0, vy);
     ctx.lineTo(size, vy);
     ctx.stroke();
-    // scrim behind body text for contrast
     const scrim = ctx.createLinearGradient(0, 470, 0, 900);
     scrim.addColorStop(0, "rgba(20,8,40,0)");
     scrim.addColorStop(0.5, "rgba(20,8,40,0.35)");
     scrim.addColorStop(1, "rgba(20,8,40,0)");
     ctx.fillStyle = scrim;
     ctx.fillRect(0, 470, size, 430);
-    // LIFTS
     ctx.textAlign = "left";
     ctx.save();
     ctx.shadowColor = TH.lifts;
@@ -3068,7 +3165,6 @@ function ShareCard({
     ctx.font = "bold 40px -apple-system, Arial";
     ctx.fillText("L I F T S", 74, 140);
     ctx.restore();
-    // title (gradient + glow)
     const tg = ctx.createLinearGradient(0, 250, 0, 360);
     tg.addColorStop(0, TH.tTop);
     tg.addColorStop(1, TH.tBot);
@@ -3079,7 +3175,6 @@ function ShareCard({
     ctx.font = "bold 116px -apple-system, Arial";
     ctx.fillText(W.label, 72, 360);
     ctx.restore();
-    // date
     ctx.fillStyle = TH.date;
     ctx.font = "bold 38px -apple-system, Arial";
     ctx.fillText(new Date(latest.date).toLocaleDateString(undefined, {
@@ -3087,39 +3182,56 @@ function ShareCard({
       month: "short",
       day: "numeric"
     }).toUpperCase(), 74, 428);
-    // exercises
     let y = 520,
-      totalVol = 0;
+      totalVol = 0,
+      totalSets = 0;
     ctx.font = "37px -apple-system, Arial";
     sess.slice(0, 6).forEach(e => {
+      const hold = exHold(latest.wid, e.exName);
       e.sets.forEach(x => {
         const w = parseFloat(x.w),
           r = parseFloat(x.r);
-        if (!isNaN(w) && !isNaN(r)) totalVol += w * r;
+        if (!hold && !isNaN(w) && !isNaN(r)) totalVol += w * r;
       });
+      totalSets += e.sets.length;
       const b = bestSet(e.sets);
       let nm = e.exName;
-      if (nm.length > 26) nm = nm.slice(0, 25) + "…";
+      if (nm.length > 22) nm = nm.slice(0, 21) + "…";
       ctx.textAlign = "left";
       ctx.fillStyle = "#EAD9FF";
+      ctx.font = "34px -apple-system, Arial";
       ctx.fillText(nm, 78, y);
       ctx.textAlign = "right";
       ctx.save();
       ctx.shadowColor = TH.glow;
       ctx.shadowBlur = 12;
       ctx.fillStyle = TH.val;
-      ctx.fillText(b ? fmtSet(b, exHold(latest.wid, e.exName)) : "—", size - 78, y);
+      ctx.font = "34px -apple-system, Arial";
+      const topStr = b ? fmtSet(b, hold) : "—";
+      ctx.fillText(topStr, size - 78, y);
       ctx.restore();
+      ctx.fillStyle = "#8FB8C4";
+      ctx.font = "28px -apple-system, Arial";
+      ctx.fillText(e.sets.length + "×", size - 78 - Math.max(160, ctx.measureText(topStr).width + 60), y);
       ctx.strokeStyle = "rgba(" + TH.grid + ",0.16)";
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(78, y + 16);
       ctx.lineTo(size - 78, y + 16);
       ctx.stroke();
-      y += 58;
+      y += 62;
     });
     ctx.textAlign = "left";
-    // total
+    ctx.save();
+    ctx.shadowColor = TH.lifts;
+    ctx.shadowBlur = 10;
+    ctx.fillStyle = TH.lifts;
+    ctx.font = "bold 30px -apple-system, Arial";
+    ctx.fillText(totalSets + " SETS", 78, y + 20);
+    ctx.restore();
+    ctx.fillStyle = "#8FB8C4";
+    ctx.font = "26px -apple-system, Arial";
+    ctx.fillText("·  " + sess.slice(0, 6).length + " exercises", 78 + ctx.measureText(totalSets + " SETS  ").width + 30, y + 20);
     ctx.fillStyle = TH.lifts;
     ctx.font = "bold 27px -apple-system, Arial";
     ctx.fillText("TOTAL VOLUME", 78, size - 96);
@@ -3162,7 +3274,7 @@ function ShareCard({
     style: {
       borderRadius: 16,
       padding: 16,
-      background: "#241048",
+      background: T.surface,
       marginBottom: 16
     }
   }, /*#__PURE__*/React.createElement("div", {
@@ -3173,12 +3285,12 @@ function ShareCard({
     }
   }, "Shareable image ", /*#__PURE__*/React.createElement("span", {
     style: {
-      color: "#A98FD6",
+      color: T.muted,
       fontWeight: 400
     }
   }, "· latest session")), !hasData ? /*#__PURE__*/React.createElement("div", {
     style: {
-      color: "#A98FD6",
+      color: T.muted,
       fontSize: 12
     }
   }, "Log a session first.") : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("button", {
@@ -3190,8 +3302,8 @@ function ShareCard({
       fontSize: 14,
       fontWeight: 700,
       border: "none",
-      background: "#351C66",
-      color: "#F3E9FF"
+      background: T.surfaceHi,
+      color: T.text
     }
   }, url ? "Regenerate" : "Create image"), url && /*#__PURE__*/React.createElement("div", {
     style: {
@@ -3215,11 +3327,13 @@ function ShareCard({
       fontSize: 14,
       fontWeight: 700,
       border: "none",
-      background: "#FF5FB8",
+      background: T.amber,
       color: "#2A0A46"
     }
   }, "Share / Save image"))));
 }
+
+/* ---------------- rest timer ---------------- */
 function RestTimer() {
   const [sec, setSec] = useState(0);
   const [running, setRunning] = useState(false);
