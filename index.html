@@ -14,7 +14,7 @@
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; overscroll-behavior: none; }
-  body { background: linear-gradient(180deg, #1A0B33 0%, #2A1150 40%, #3A1560 72%, #2A0E3F 100%); background-attachment: fixed; min-height: 100vh; }
+  body { background: linear-gradient(180deg, #120722 0%, #1A0B33 40%, #24103F 72%, #180929 100%); background-attachment: fixed; min-height: 100vh; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
   #root { min-height: 100vh; }
   input, textarea, button { font-family: inherit; }
@@ -340,9 +340,9 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
 /* ---------------- theme (vaporwave) ---------------- */
 const T = {
   bg: "#1A0B33",
-  surface: "#241048",
-  surfaceHi: "#351C66",
-  line: "#4B2E7D",
+  surface: "#2E1552",
+  surfaceHi: "#3D1F70",
+  line: "#553388",
   text: "#F3E9FF",
   muted: "#A98FD6",
   amber: "#FF5FB8",
@@ -578,610 +578,903 @@ const WORKOUTS = [{
   }]
 }];
 const ROTATION = ["UA", "LA", "UB", "LB"];
+
+/* Training paths. These are parameter overlays on the SAME exercises and rotation,
+   not separate programs, so logged history stays valid when the path changes. */
+const PATHS = {
+  strength: {
+    label: "Strength",
+    blurb: "Heavy anchors, low reps, long rest. Fewer accessories so recovery goes to the big lifts.",
+    anchor: {
+      sets: 5,
+      reps: "3–5",
+      rest: "3–5 min"
+    },
+    secondary: {
+      sets: 3,
+      reps: "5–6"
+    },
+    accessory: {
+      sets: 2,
+      reps: "8–12",
+      rest: "90 sec"
+    },
+    progression: "Add weight when you hit the top of the rep range on every set.",
+    demoteAccessories: 2
+  },
+  hybrid: {
+    label: "Strength + Hypertrophy (default)",
+    blurb: "Heavy-ish anchors with hypertrophy volume on the accessories. Good progress on both, fastest at neither.",
+    anchor: {
+      sets: 4,
+      reps: "5–8",
+      rest: "3–4 min"
+    },
+    secondary: {
+      sets: 3,
+      reps: "6–10"
+    },
+    accessory: {
+      sets: 3,
+      reps: "10–15",
+      rest: "60–90 sec"
+    },
+    progression: "Add a rep before you add weight. When you top the range on all sets, go up.",
+    demoteAccessories: 0
+  },
+  hypertrophy: {
+    label: "Hypertrophy",
+    blurb: "Moderate loads, more volume, shorter rest. Tension and full range over maximum weight.",
+    anchor: {
+      sets: 4,
+      reps: "6–10",
+      rest: "2–3 min"
+    },
+    secondary: {
+      sets: 3,
+      reps: "8–12"
+    },
+    accessory: {
+      sets: 4,
+      reps: "10–20",
+      rest: "45–75 sec"
+    },
+    progression: "Add reps first, then weight. Take isolation close to failure.",
+    demoteAccessories: -1
+  }
+};
+const PATH_IDS = ["hybrid", "strength", "hypertrophy"];
+
+/* Apply a path overlay to a workout's exercise list. */
+function applyPath(w, pathId) {
+  const P = PATHS[pathId] || PATHS.hybrid;
+  const nonBonus = w.ex.filter(e => !e.bonus);
+  const nonBonusCount = nonBonus.length;
+  let demoted = 0;
+  return {
+    ...w,
+    ex: w.ex.map(e => {
+      const out = {
+        ...e
+      };
+      if (e.anchor) {
+        out.s = P.anchor.sets;
+        out.r = P.anchor.reps;
+      } else if (e.hold) {
+        // holds keep their own prescription
+      } else if (e.paired) {
+        out.s = P.accessory.sets;
+        out.r = P.accessory.reps;
+      } else if (!e.bonus) {
+        // secondary compounds are the non-paired, non-anchor main-block lifts
+        const isSecondary = nonBonus.indexOf(e) <= 2;
+        if (isSecondary) {
+          out.s = P.secondary.sets;
+          out.r = P.secondary.reps;
+        } else {
+          out.s = P.accessory.sets;
+          out.r = P.accessory.reps;
+        }
+      } else {
+        out.s = P.accessory.sets;
+        out.r = P.accessory.reps;
+      }
+      // strength path trims the tail of the main block into bonus
+      if (P.demoteAccessories > 0 && !e.anchor && !e.paired && !e.bonus) {
+        const idx = nonBonus.indexOf(e);
+        if (idx >= nonBonusCount - P.demoteAccessories) {
+          out.bonus = true;
+          demoted++;
+        }
+      }
+      // hypertrophy path promotes one bonus item into the main block
+      if (P.demoteAccessories < 0 && e.bonus && !e.hold) {
+        const bonusList = w.ex.filter(x => x.bonus && !x.hold);
+        if (bonusList.indexOf(e) === 0) out.bonus = false;
+      }
+      return out;
+    })
+  };
+}
 const SEED_LOGS = {
   "UA::Barbell bench press": [{
-    date: "2026-08-24T12:00:00Z",
-    sets: [{
-      w: "185",
-      r: "10"
+    "date": "2026-08-24T12:00:00Z",
+    "sets": [{
+      "w": "185",
+      "r": "10"
     }, {
-      w: "205",
-      r: "6"
+      "w": "205",
+      "r": "6"
     }, {
-      w: "205",
-      r: "5"
+      "w": "205",
+      "r": "5"
     }, {
-      w: "205",
-      r: "4"
+      "w": "205",
+      "r": "4"
     }]
   }, {
-    date: "2026-08-29T12:00:00Z",
-    sets: [{
-      w: "175",
-      r: "8"
+    "date": "2026-08-29T12:00:00Z",
+    "sets": [{
+      "w": "175",
+      "r": "8"
     }, {
-      w: "215",
-      r: "6"
+      "w": "215",
+      "r": "6"
     }, {
-      w: "225",
-      r: "3"
+      "w": "225",
+      "r": "3"
     }, {
-      w: "235",
-      r: "2"
+      "w": "235",
+      "r": "2"
+    }]
+  }, {
+    "date": "2026-09-02T12:00:00Z",
+    "sets": [{
+      "w": "185",
+      "r": "8"
+    }, {
+      "w": "225",
+      "r": "5"
+    }, {
+      "w": "230",
+      "r": "3"
+    }, {
+      "w": "135",
+      "r": "5"
     }]
   }],
   "UA::DB lateral raise": [{
-    date: "2026-08-24T12:00:00Z",
-    sets: [{
-      w: "31",
-      r: "10"
+    "date": "2026-08-24T12:00:00Z",
+    "sets": [{
+      "w": "31",
+      "r": "10"
     }, {
-      w: "31",
-      r: "12"
+      "w": "31",
+      "r": "12"
+    }]
+  }, {
+    "date": "2026-09-02T12:00:00Z",
+    "sets": [{
+      "w": "25",
+      "r": "10"
+    }, {
+      "w": "25",
+      "r": "8"
+    }, {
+      "w": "20",
+      "r": "8"
     }]
   }],
   "UA::Pull-ups": [{
-    date: "2026-08-24T12:00:00Z",
-    sets: [{
-      w: "",
-      r: "8"
+    "date": "2026-08-24T12:00:00Z",
+    "sets": [{
+      "w": "",
+      "r": "8"
     }, {
-      w: "",
-      r: "7"
+      "w": "",
+      "r": "7"
     }, {
-      w: "",
-      r: "6"
+      "w": "",
+      "r": "6"
     }]
   }, {
-    date: "2026-08-29T12:00:00Z",
-    sets: [{
-      w: "",
-      r: "11"
+    "date": "2026-08-29T12:00:00Z",
+    "sets": [{
+      "w": "",
+      "r": "11"
     }, {
-      w: "10",
-      r: "5"
+      "w": "10",
+      "r": "5"
     }, {
-      w: "",
-      r: "6"
+      "w": "",
+      "r": "6"
+    }]
+  }, {
+    "date": "2026-09-02T12:00:00Z",
+    "sets": [{
+      "w": "",
+      "r": "10"
+    }, {
+      "w": "12",
+      "r": "6"
+    }, {
+      "w": "12",
+      "r": "5"
+    }, {
+      "w": "",
+      "r": "5"
+    }]
+  }],
+  "UA::Seated DB shoulder press": [{
+    "date": "2026-09-02T12:00:00Z",
+    "sets": [{
+      "w": "50",
+      "r": "12"
+    }, {
+      "w": "65",
+      "r": "5"
+    }, {
+      "w": "55",
+      "r": "7"
     }]
   }],
   "UA::One-arm DB row": [{
-    date: "2026-08-24T12:00:00Z",
-    sets: [{
-      w: "71",
-      r: "12"
+    "date": "2026-08-24T12:00:00Z",
+    "sets": [{
+      "w": "71",
+      "r": "12"
     }, {
-      w: "71",
-      r: "10"
+      "w": "71",
+      "r": "10"
     }, {
-      w: "71",
-      r: "8"
+      "w": "71",
+      "r": "8"
     }]
   }, {
-    date: "2026-08-29T12:00:00Z",
-    sets: [{
-      w: "71",
-      r: "14"
+    "date": "2026-08-29T12:00:00Z",
+    "sets": [{
+      "w": "71",
+      "r": "14"
     }, {
-      w: "91",
-      r: "6"
+      "w": "91",
+      "r": "6"
     }, {
-      w: "91",
-      r: "6"
+      "w": "91",
+      "r": "6"
+    }]
+  }, {
+    "date": "2026-09-02T12:00:00Z",
+    "sets": [{
+      "w": "75",
+      "r": "10"
+    }, {
+      "w": "85",
+      "r": "8"
+    }, {
+      "w": "85",
+      "r": "8"
+    }, {
+      "w": "85",
+      "r": "5"
     }]
   }],
   "UA::Skull crushers": [{
-    date: "2026-08-24T12:00:00Z",
-    sets: [{
-      w: "70",
-      r: "10"
+    "date": "2026-08-24T12:00:00Z",
+    "sets": [{
+      "w": "70",
+      "r": "10"
     }, {
-      w: "70",
-      r: "8"
+      "w": "70",
+      "r": "8"
     }, {
-      w: "70",
-      r: "6"
+      "w": "70",
+      "r": "6"
+    }]
+  }, {
+    "date": "2026-09-02T12:00:00Z",
+    "sets": [{
+      "w": "70",
+      "r": "10"
+    }, {
+      "w": "90",
+      "r": "8"
+    }, {
+      "w": "70",
+      "r": "8"
     }]
   }],
   "UA::DB curl": [{
-    date: "2026-08-24T12:00:00Z",
-    sets: [{
-      w: "31",
-      r: "12"
+    "date": "2026-08-24T12:00:00Z",
+    "sets": [{
+      "w": "31",
+      "r": "12"
     }, {
-      w: "31",
-      r: "10"
+      "w": "31",
+      "r": "10"
     }, {
-      w: "31",
-      r: "10"
+      "w": "31",
+      "r": "10"
     }]
   }],
   "UA::Farmer's carries": [{
-    date: "2026-08-24T12:00:00Z",
-    sets: [{
-      w: "100",
-      r: "70"
+    "date": "2026-08-24T12:00:00Z",
+    "sets": [{
+      "w": "100",
+      "r": "70"
     }, {
-      w: "60",
-      r: "70"
+      "w": "60",
+      "r": "70"
     }]
   }],
   "LA::Barbell back squat": [{
-    date: "2026-08-25T12:00:00Z",
-    sets: [{
-      w: "175",
-      r: "8"
+    "date": "2026-08-25T12:00:00Z",
+    "sets": [{
+      "w": "175",
+      "r": "8"
     }, {
-      w: "215",
-      r: "6"
+      "w": "215",
+      "r": "6"
     }, {
-      w: "225",
-      r: "7"
+      "w": "225",
+      "r": "7"
     }, {
-      w: "235",
-      r: "5"
+      "w": "235",
+      "r": "5"
     }]
   }, {
-    date: "2026-08-30T12:00:00Z",
-    sets: [{
-      w: "215",
-      r: "8"
+    "date": "2026-08-30T12:00:00Z",
+    "sets": [{
+      "w": "215",
+      "r": "8"
     }, {
-      w: "265",
-      r: "5"
+      "w": "265",
+      "r": "5"
     }, {
-      w: "285",
-      r: "4"
+      "w": "285",
+      "r": "4"
     }, {
-      w: "265",
-      r: "5"
+      "w": "265",
+      "r": "5"
     }]
   }],
   "LA::Standing calf raise": [{
-    date: "2026-08-25T12:00:00Z",
-    sets: [{
-      w: "215",
-      r: "15"
+    "date": "2026-08-25T12:00:00Z",
+    "sets": [{
+      "w": "215",
+      "r": "15"
     }, {
-      w: "215",
-      r: "18"
+      "w": "215",
+      "r": "18"
     }, {
-      w: "215",
-      r: "15"
+      "w": "215",
+      "r": "15"
     }]
   }, {
-    date: "2026-08-30T12:00:00Z",
-    sets: [{
-      w: "215",
-      r: "25"
+    "date": "2026-08-30T12:00:00Z",
+    "sets": [{
+      "w": "215",
+      "r": "25"
     }, {
-      w: "265",
-      r: "16"
+      "w": "265",
+      "r": "16"
     }, {
-      w: "285",
-      r: "18"
+      "w": "285",
+      "r": "18"
     }]
   }],
   "LA::Romanian deadlift": [{
-    date: "2026-08-25T12:00:00Z",
-    sets: [{
-      w: "125",
-      r: "10"
+    "date": "2026-08-25T12:00:00Z",
+    "sets": [{
+      "w": "125",
+      "r": "10"
     }, {
-      w: "145",
-      r: "8"
+      "w": "145",
+      "r": "8"
     }, {
-      w: "145",
-      r: "7"
+      "w": "145",
+      "r": "7"
     }]
   }, {
-    date: "2026-08-30T12:00:00Z",
-    sets: [{
-      w: "125",
-      r: "8"
+    "date": "2026-08-30T12:00:00Z",
+    "sets": [{
+      "w": "125",
+      "r": "8"
     }, {
-      w: "145",
-      r: "8"
+      "w": "145",
+      "r": "8"
     }, {
-      w: "150",
-      r: "8"
+      "w": "150",
+      "r": "8"
     }]
   }],
   "LA::Bulgarian split squat": [{
-    date: "2026-08-25T12:00:00Z",
-    sets: [{
-      w: "72",
-      r: "10"
+    "date": "2026-08-25T12:00:00Z",
+    "sets": [{
+      "w": "72",
+      "r": "10"
     }, {
-      w: "72",
-      r: "8"
+      "w": "72",
+      "r": "8"
     }, {
-      w: "72",
-      r: "8"
+      "w": "72",
+      "r": "8"
     }]
   }, {
-    date: "2026-08-30T12:00:00Z",
-    sets: [{
-      w: "",
-      r: "10"
+    "date": "2026-08-30T12:00:00Z",
+    "sets": [{
+      "w": "",
+      "r": "10"
     }, {
-      w: "31",
-      r: "11"
+      "w": "31",
+      "r": "11"
     }, {
-      w: "72",
-      r: "10"
+      "w": "72",
+      "r": "10"
     }]
   }],
   "UB::Barbell overhead press": [{
-    date: "2026-08-24T12:00:00Z",
-    sets: [{
-      w: "85",
-      r: "10"
+    "date": "2026-08-24T12:00:00Z",
+    "sets": [{
+      "w": "85",
+      "r": "10"
     }, {
-      w: "95",
-      r: "9"
+      "w": "95",
+      "r": "9"
     }, {
-      w: "95",
-      r: "5"
+      "w": "95",
+      "r": "5"
     }]
   }, {
-    date: "2026-08-26T12:00:00Z",
-    sets: [{
-      w: "95",
-      r: "8"
+    "date": "2026-08-26T12:00:00Z",
+    "sets": [{
+      "w": "95",
+      "r": "8"
     }, {
-      w: "115",
-      r: "6"
+      "w": "115",
+      "r": "6"
     }, {
-      w: "125",
-      r: "5"
+      "w": "125",
+      "r": "5"
     }]
   }, {
-    date: "2026-08-29T12:00:00Z",
-    sets: [{
-      w: "85",
-      r: "10"
+    "date": "2026-08-29T12:00:00Z",
+    "sets": [{
+      "w": "85",
+      "r": "10"
     }, {
-      w: "105",
-      r: "7"
+      "w": "105",
+      "r": "7"
     }, {
-      w: "125",
-      r: "3"
+      "w": "125",
+      "r": "3"
     }]
   }, {
-    date: "2026-08-31T12:00:00Z",
-    sets: [{
-      w: "125",
-      r: "5"
+    "date": "2026-08-31T12:00:00Z",
+    "sets": [{
+      "w": "125",
+      "r": "5"
     }, {
-      w: "125",
-      r: "5"
+      "w": "125",
+      "r": "5"
     }, {
-      w: "125",
-      r: "4"
+      "w": "125",
+      "r": "4"
     }]
   }],
   "UB::DB rear-delt raise": [{
-    date: "2026-08-26T12:00:00Z",
-    sets: [{
-      w: "31",
-      r: "12"
+    "date": "2026-08-26T12:00:00Z",
+    "sets": [{
+      "w": "31",
+      "r": "12"
     }, {
-      w: "31",
-      r: "12"
+      "w": "31",
+      "r": "12"
     }, {
-      w: "31",
-      r: "12"
+      "w": "31",
+      "r": "12"
     }]
   }, {
-    date: "2026-08-31T12:00:00Z",
-    sets: [{
-      w: "31",
-      r: "10"
+    "date": "2026-08-31T12:00:00Z",
+    "sets": [{
+      "w": "31",
+      "r": "10"
     }, {
-      w: "31",
-      r: "12"
+      "w": "31",
+      "r": "12"
     }, {
-      w: "26",
-      r: "14"
+      "w": "26",
+      "r": "14"
     }]
   }],
   "UB::Barbell row": [{
-    date: "2026-08-26T12:00:00Z",
-    sets: [{
-      w: "125",
-      r: "12"
+    "date": "2026-08-26T12:00:00Z",
+    "sets": [{
+      "w": "125",
+      "r": "12"
     }, {
-      w: "145",
-      r: "11"
+      "w": "145",
+      "r": "11"
     }, {
-      w: "165",
-      r: "7"
+      "w": "165",
+      "r": "7"
     }, {
-      w: "165",
-      r: "6"
+      "w": "165",
+      "r": "6"
     }]
   }, {
-    date: "2026-08-31T12:00:00Z",
-    sets: [{
-      w: "125",
-      r: "12"
+    "date": "2026-08-31T12:00:00Z",
+    "sets": [{
+      "w": "125",
+      "r": "12"
     }, {
-      w: "175",
-      r: "8"
+      "w": "175",
+      "r": "8"
     }, {
-      w: "145",
-      r: "8"
+      "w": "145",
+      "r": "8"
     }]
   }],
   "UB::Incline DB press": [{
-    date: "2026-08-26T12:00:00Z",
-    sets: [{
-      w: "125",
-      r: "12"
+    "date": "2026-08-26T12:00:00Z",
+    "sets": [{
+      "w": "125",
+      "r": "12"
     }, {
-      w: "145",
-      r: "6"
+      "w": "145",
+      "r": "6"
     }, {
-      w: "145",
-      r: "5"
+      "w": "145",
+      "r": "5"
     }]
   }, {
-    date: "2026-08-31T12:00:00Z",
-    sets: [{
-      w: "51",
-      r: "13"
+    "date": "2026-08-31T12:00:00Z",
+    "sets": [{
+      "w": "51",
+      "r": "13"
     }, {
-      w: "51",
-      r: "11"
+      "w": "51",
+      "r": "11"
     }, {
-      w: "51",
-      r: "7"
+      "w": "51",
+      "r": "7"
     }]
   }],
   "UB::Close-grip bench / dips": [{
-    date: "2026-08-26T12:00:00Z",
-    sets: [{
-      w: "",
-      r: "15"
+    "date": "2026-08-26T12:00:00Z",
+    "sets": [{
+      "w": "",
+      "r": "15"
     }, {
-      w: "25",
-      r: "15"
+      "w": "25",
+      "r": "15"
     }, {
-      w: "25",
-      r: "15"
+      "w": "25",
+      "r": "15"
     }]
   }, {
-    date: "2026-08-31T12:00:00Z",
-    sets: [{
-      w: "",
-      r: "10"
+    "date": "2026-08-31T12:00:00Z",
+    "sets": [{
+      "w": "",
+      "r": "10"
     }, {
-      w: "",
-      r: "10"
+      "w": "",
+      "r": "10"
     }, {
-      w: "",
-      r: "15"
+      "w": "",
+      "r": "15"
     }]
   }],
   "UB::Hammer curl": [{
-    date: "2026-08-26T12:00:00Z",
-    sets: [{
-      w: "35",
-      r: "12"
+    "date": "2026-08-26T12:00:00Z",
+    "sets": [{
+      "w": "35",
+      "r": "12"
     }, {
-      w: "45",
-      r: "7"
+      "w": "45",
+      "r": "7"
     }, {
-      w: "45",
-      r: "5"
+      "w": "45",
+      "r": "5"
     }]
   }, {
-    date: "2026-08-31T12:00:00Z",
-    sets: [{
-      w: "46",
-      r: "6"
+    "date": "2026-08-31T12:00:00Z",
+    "sets": [{
+      "w": "46",
+      "r": "6"
     }, {
-      w: "36",
-      r: "9"
+      "w": "36",
+      "r": "9"
     }, {
-      w: "36",
-      r: "8"
+      "w": "36",
+      "r": "8"
     }]
   }],
   "UB::Wrist curls (both ways)": [{
-    date: "2026-08-26T12:00:00Z",
-    sets: [{
-      w: "31",
-      r: "12"
+    "date": "2026-08-26T12:00:00Z",
+    "sets": [{
+      "w": "31",
+      "r": "12"
     }, {
-      w: "31",
-      r: "10"
+      "w": "31",
+      "r": "10"
     }, {
-      w: "31",
-      r: "10"
+      "w": "31",
+      "r": "10"
     }]
   }, {
-    date: "2026-08-31T12:00:00Z",
-    sets: [{
-      w: "17.5",
-      r: "16"
+    "date": "2026-08-31T12:00:00Z",
+    "sets": [{
+      "w": "17.5",
+      "r": "16"
     }, {
-      w: "17.5",
-      r: "12"
+      "w": "17.5",
+      "r": "12"
     }]
   }],
   "LB::Conventional deadlift": [{
-    date: "2026-09-01T12:00:00Z",
-    sets: [{
-      w: "125",
-      r: "5"
+    "date": "2026-09-01T12:00:00Z",
+    "sets": [{
+      "w": "125",
+      "r": "5"
     }, {
-      w: "215",
-      r: "5"
+      "w": "215",
+      "r": "5"
     }, {
-      w: "305",
-      r: "2"
+      "w": "305",
+      "r": "2"
     }, {
-      w: "305",
-      r: "2"
+      "w": "305",
+      "r": "2"
     }]
   }],
   "LB::Single-leg standing calf raise (soleus)": [{
-    date: "2026-09-01T12:00:00Z",
-    sets: [{
-      w: "30",
-      r: "18"
+    "date": "2026-09-01T12:00:00Z",
+    "sets": [{
+      "w": "30",
+      "r": "18"
     }, {
-      w: "30",
-      r: "17"
+      "w": "30",
+      "r": "17"
     }, {
-      w: "50",
-      r: "15"
+      "w": "50",
+      "r": "15"
     }]
   }],
   "LB::Barbell hip thrust": [{
-    date: "2026-08-28T12:00:00Z",
-    sets: [{
-      w: "125",
-      r: "14"
+    "date": "2026-08-28T12:00:00Z",
+    "sets": [{
+      "w": "125",
+      "r": "14"
     }, {
-      w: "125",
-      r: "15"
+      "w": "125",
+      "r": "15"
     }, {
-      w: "125",
-      r: "9"
+      "w": "125",
+      "r": "9"
     }, {
-      w: "125",
-      r: "13"
+      "w": "125",
+      "r": "13"
     }]
   }, {
-    date: "2026-09-01T12:00:00Z",
-    sets: [{
-      w: "125",
-      r: "15"
+    "date": "2026-09-01T12:00:00Z",
+    "sets": [{
+      "w": "125",
+      "r": "15"
     }, {
-      w: "175",
-      r: "12"
+      "w": "175",
+      "r": "12"
     }, {
-      w: "175",
-      r: "10"
+      "w": "175",
+      "r": "10"
     }, {
-      w: "175",
-      r: "2"
+      "w": "175",
+      "r": "2"
     }]
   }],
   "LB::Front / goblet squat": [{
-    date: "2026-08-28T12:00:00Z",
-    sets: [{
-      w: "50",
-      r: "12"
+    "date": "2026-08-28T12:00:00Z",
+    "sets": [{
+      "w": "50",
+      "r": "12"
     }, {
-      w: "125",
-      r: "8"
+      "w": "125",
+      "r": "8"
     }, {
-      w: "125",
-      r: "8"
+      "w": "125",
+      "r": "8"
     }]
   }, {
-    date: "2026-09-01T12:00:00Z",
-    sets: [{
-      w: "50",
-      r: "14"
+    "date": "2026-09-01T12:00:00Z",
+    "sets": [{
+      "w": "50",
+      "r": "14"
     }, {
-      w: "50",
-      r: "10"
+      "w": "50",
+      "r": "10"
     }]
   }],
   "LB::Hanging leg raise / dead bug": [{
-    date: "2026-09-01T12:00:00Z",
-    sets: [{
-      w: "",
-      r: "8"
+    "date": "2026-09-01T12:00:00Z",
+    "sets": [{
+      "w": "",
+      "r": "8"
     }, {
-      w: "",
-      r: "6"
+      "w": "",
+      "r": "6"
     }]
   }],
   "BON::DB / KB curls": [{
-    date: "2026-08-22T12:00:00Z",
-    sets: [{
-      w: "35",
-      r: "12"
+    "date": "2026-08-22T12:00:00Z",
+    "sets": [{
+      "w": "35",
+      "r": "12"
     }, {
-      w: "45",
-      r: "8"
+      "w": "45",
+      "r": "8"
     }, {
-      w: "45",
-      r: "8"
+      "w": "45",
+      "r": "8"
     }]
   }],
   "BON::Triceps pushdown / ext": [{
-    date: "2026-08-22T12:00:00Z",
-    sets: [{
-      w: "90",
-      r: "6"
+    "date": "2026-08-22T12:00:00Z",
+    "sets": [{
+      "w": "90",
+      "r": "6"
     }, {
-      w: "70",
-      r: "15"
+      "w": "70",
+      "r": "15"
     }, {
-      w: "80",
-      r: "12"
+      "w": "80",
+      "r": "12"
     }]
   }],
   "BON::Lateral raises": [{
-    date: "2026-08-22T12:00:00Z",
-    sets: [{
-      w: "31",
-      r: "20"
+    "date": "2026-08-22T12:00:00Z",
+    "sets": [{
+      "w": "31",
+      "r": "20"
     }, {
-      w: "31",
-      r: "14"
+      "w": "31",
+      "r": "14"
     }, {
-      w: "31",
-      r: "12"
+      "w": "31",
+      "r": "12"
     }]
   }],
   "BON::Standing + seated calf": [{
-    date: "2026-08-22T12:00:00Z",
-    sets: [{
-      w: "215",
-      r: "20"
+    "date": "2026-08-22T12:00:00Z",
+    "sets": [{
+      "w": "215",
+      "r": "20"
     }, {
-      w: "265",
-      r: "18"
+      "w": "265",
+      "r": "18"
     }, {
-      w: "",
-      r: "17"
+      "w": "",
+      "r": "17"
     }]
   }],
   "BON::Farmer's carries / hangs": [{
-    date: "2026-08-22T12:00:00Z",
-    sets: [{
-      w: "",
-      r: "40"
+    "date": "2026-08-22T12:00:00Z",
+    "sets": [{
+      "w": "",
+      "r": "40"
     }, {
-      w: "",
-      r: "50"
+      "w": "",
+      "r": "50"
     }, {
-      w: "",
-      r: "30"
+      "w": "",
+      "r": "30"
     }]
   }],
   "BON::Glute bridges + hip mobility": [{
-    date: "2026-08-22T12:00:00Z",
-    sets: [{
-      w: "125",
-      r: "10"
+    "date": "2026-08-22T12:00:00Z",
+    "sets": [{
+      "w": "125",
+      "r": "10"
     }, {
-      w: "125",
-      r: "8"
+      "w": "125",
+      "r": "8"
     }, {
-      w: "125",
-      r: "6"
+      "w": "125",
+      "r": "6"
     }]
   }]
 };
+const TECHNIQUE_CUES = {
+  "Barbell bench press": ["Eyes under the bar, feet planted flat and wide enough to drive", "Squeeze shoulder blades back and down, pin them to the bench and keep them there", "Slight natural arch, glutes stay in contact with the bench", "Grip just wider than shoulder width; wrists stacked over elbows, not bent back", "Big breath in, brace your midsection before you unrack", "Lower under control to the lower chest, elbows tucked around 45 to 75 degrees, not flared to 90", "Touch, don't bounce. The bar shouldn't rebound off you", "Drive up and slightly back toward your face, pushing your feet into the floor", "Keep the shoulder blades pinned the whole set. Losing them is where shoulders get hurt", "Competition wide grip setup differs: bigger arch, wider grip, paused reps"],
+  "Barbell back squat": ["Bar on the upper traps for high bar. Set it before you unrack, not after", "Hands as close as shoulder mobility allows; elbows under the bar, not flared back", "Pull the shoulder blades together to build a shelf for the bar", "Two or three steps back, no more. Don't wander out of the rack", "Stance about shoulder width, toes turned slightly out", "Big breath into the belly, brace hard, ribs down toward pelvis", "Screw the feet into the floor to create external rotation at the hips", "Break at the hips and knees together, knees tracking over the toes", "Descend as deep as you can hold a neutral spine. Depth without a rounded low back", "Drive the whole foot through the floor. Hips and chest rise together, don't let the hips shoot up first"],
+  "Conventional deadlift": ["Bar over midfoot before you bend. This is the setup that decides the rep", "Feet about hip width, hands just outside the legs", "Hinge to the bar: push hips back, soft knees, then drop the knees in to meet the bar", "Squeeze the chest up and set the lats, like tucking them into your back pockets", "Take the slack out of the bar before you pull. You should feel it click", "Big brace and hold it. Breathe at the top or between reps, never mid rep under load", "Push the floor away rather than yanking the bar up", "Keep the bar dragging close to your legs the whole way", "Lock out by squeezing glutes. Don't lean back or hyperextend at the top", "Lower with control, hips back first. Reset your brace and position every rep"],
+  "Barbell overhead press": ["Grip just outside shoulder width, bar resting on the front delts at the start", "Elbows slightly in front of the bar, forearms close to vertical", "Feet hip width, squeeze glutes and brace. The whole body is the platform", "Bar starts over midfoot, at collarbone height", "Move the head back slightly so the bar travels straight up past the face", "Press up, then bring the head through as the bar clears, finishing with the bar over the midfoot", "Lock out with biceps near the ears, not the bar out in front", "Don't lean back to press. Brace and keep the ribcage down", "Lower under control back to the front delts, re brace each rep", "If the low back arches to finish a rep, the weight is too heavy"],
+  "Pull-ups": ["Start from a full dead hang, arms straight", "Pull the shoulder blades down before the elbows bend", "Drive elbows down and back, chest toward the bar", "Chin clears the bar without craning the neck", "Control the descent, no dropping into the bottom", "Add weight once you own 10 clean reps"],
+  "Seated DB shoulder press": ["Back flat against the pad, feet planted", "Start with dumbbells at ear height, elbows slightly forward", "Press up and slightly in, without clashing the bells at the top", "Keep ribs down, don't arch to finish the rep", "Lower under control to the same ear height every rep"],
+  "One-arm DB row": ["Brace the free hand, hips square to the floor", "Let the arm hang fully at the bottom for a stretch", "Drive the elbow back toward the hip, not out wide", "Pull with the back, don't twist the torso to lift more", "Pause briefly at the top, lower slowly"],
+  "Barbell row": ["Hinge to roughly 45 degrees and keep that angle all set", "Brace hard, neutral spine, no rounding", "Pull toward the lower ribs, elbows tucked", "Squeeze the shoulder blades at the top", "Lower under control, don't let the weight yank you forward", "If the torso rises to move the bar, it's too heavy"],
+  "Incline DB press": ["Bench at 30 to 45 degrees, no higher or it becomes shoulders", "Shoulder blades pinned back and down", "Lower to the upper chest with elbows around 45 degrees", "Press up and slightly together without locking hard", "Full range, feel the stretch at the bottom"],
+  "Skull crushers": ["Elbows point at the ceiling and stay there", "Lower to the forehead or just behind it", "Only the forearms move, upper arms stay fixed", "Don't flare the elbows out to push through", "Ease off if the elbows complain, this one bites"],
+  "Close-grip bench / dips": ["Bench: hands shoulder width, elbows tucked tight to the ribs", "Dips: lean slightly forward, control the descent", "Go to a depth your shoulders tolerate, not maximum", "Drive through the triceps, lock out without slamming", "Add weight once bodyweight reps get easy"],
+  "DB curl": ["Elbows pinned at your sides, no swinging", "Curl with the biceps, don't rock the torso", "Full extension at the bottom every rep", "Squeeze at the top, lower slowly"],
+  "Hammer curl": ["Neutral grip, thumbs up throughout", "Elbows pinned at your sides, no swinging", "Full extension at the bottom every rep", "Squeeze at the top, lower slowly"],
+  "DB lateral raise": ["Light weight, this is not a strength lift", "Lead with the elbows, not the hands", "Raise to shoulder height, no higher", "Slight forward lean, pinkies marginally high", "Slow on the way down, that's where the work is"],
+  "DB rear-delt raise": ["Light weight, this is not a strength lift", "Hinge over, pull wide and back", "Lead with the elbows, not the hands", "Raise to shoulder height, no higher", "Slow on the way down, that's where the work is"],
+  "Wrist curls (both ways)": ["Forearms braced on a bench or your thighs", "Full range, let the bar roll to the fingers at the bottom", "Curl up, squeeze, lower slowly", "Reverse version: knuckles lead, lighter weight", "Small muscles, keep the load honest"],
+  "Romanian deadlift": ["Soft knees, then push the hips back", "Bar stays close, dragging the thighs", "Lower until you feel the hamstring stretch, not to the floor", "Flat back throughout, no rounding to reach lower", "Drive the hips forward to stand, squeeze the glutes"],
+  "Bulgarian split squat": ["Rear foot elevated, front foot far enough forward for a vertical shin", "Torso upright, brace the core", "Drop straight down, back knee toward the floor", "Drive through the front heel", "Take a moment to find balance before the first rep"],
+  "Front / goblet squat": ["Elbows up and forward, chest tall", "Weight held tight to the body", "Sit straight down between the hips", "Depth as far as you can keep an upright torso", "Drive up without letting the chest fall"],
+  "Barbell hip thrust": ["Bench at the shoulder blades, feet flat and roughly shin vertical at the top", "Chin tucked, ribs down, don't arch the low back", "Drive through the heels", "Full lockout with a hard glute squeeze, pause a second", "Lower under control, don't just drop"],
+  "Nordic curl": ["Anchor the feet firmly, this fails ungracefully", "Body straight from knees to shoulders", "Lower as slowly as you can control", "Catch with the hands when you lose the eccentric", "Regress to slider curls if you can't control it yet"],
+  "Standing calf raise": ["Forefoot on a block, heels free to drop below", "Full stretch at the bottom, full contraction at the top", "Slow and controlled, don't bounce the tendon", "Achilles work responds to time under tension, not speed"],
+  "Single-leg standing calf raise (soleus)": ["Forefoot on a block, heel free to drop below", "Slight knee bend biases the soleus", "Full stretch at the bottom, full contraction at the top", "Slow and controlled, don't bounce the tendon", "Heavy DB in one hand, hold something for balance"],
+  "Eccentric heel drops": ["Rise up on both feet, lower on one", "Take 3 to 4 seconds on the way down", "Full drop below the step, controlled the whole way", "Straight knee and bent knee versions hit different heads", "Progress load slowly, tendons adapt slower than muscle"],
+  "Farmer's carries": ["Stand tall, shoulders back and down", "Brace the core, don't lean away from the weight", "Short controlled steps, no waddling", "Grip is the limit, put it down before form goes"],
+  "Hanging leg raises": ["No swinging, control both directions", "Curl the pelvis up, don't just lift the legs", "Move slowly, quality over reps"],
+  "Hanging leg raise / dead bug": ["Hanging: no swinging, control both directions", "Curl the pelvis up, don't just lift the legs", "Dead bug: low back stays pressed to the floor", "Move slowly, stop when the back lifts", "Quality over reps on both"],
+  "Adductor isometric squeeze": ["Ball or towel between the knees, press and hold", "Build pressure gradually, don't jerk into it", "Should feel work, never sharp pain", "Breathe through the hold", "Progress by holding longer before adding intensity"]
+};
+const PLAN_INTRO = {
+  title: "About this plan",
+  lead: "This is a four day program built to make you stronger and more muscular at the same time, without forcing a choice between the two. Every session is anchored by one heavy compound lift, the movements that drive most of your progress: bench, squat, overhead press, and deadlift. Everything else in the day supports that anchor rather than competing with it.\n\nIt runs as a rolling rotation instead of a fixed weekly schedule. You do the next workout whenever you train, so a missed day doesn't break the plan and an inconsistent week still moves you forward.",
+  blocks: [{
+    t: "Balanced by design",
+    d: "Push is matched with pull, upper with lower, and the front of the body with the back. Most programs drift toward the muscles you can see in the mirror, which is how people end up with cranky shoulders and an aching low back. Here the rows match the presses, the hinges match the squats, and the posterior chain gets equal billing with the quads and chest."
+  }, {
+    t: "Built on the kinetic chain",
+    d: "Strength is a system, not a collection of parts. Your glutes, core, and hips are the link between your upper and lower body, and when they don't do their job something else compensates, usually your low back. That's why glute activation, anti extension core work, and hip mobility sit alongside the barbell lifts rather than being treated as optional extras. Activating the right muscles before you load them is what lets the big lifts get heavy safely."
+  }],
+  goals: [{
+    t: "Stronger",
+    d: "Progressive overload on the anchor lifts, adding weight gradually as each load becomes genuinely manageable."
+  }, {
+    t: "Looking better",
+    d: "Enough volume and isolation work to build visible muscle, with the balance that creates a proportioned physique rather than an overdeveloped front half."
+  }, {
+    t: "Moving better",
+    d: "Daily mobility, full range of motion under load, and unilateral work to find and fix side to side differences before they become injuries."
+  }, {
+    t: "Longevity",
+    d: "Nothing here requires grinding to failure on a loaded barbell alone, and tendon work, calf and Achilles loading, and core control are built in rather than bolted on after something hurts. The best program is the one you can still be running in ten years."
+  }]
+};
+const WOMEN_NOTE = {
+  t: "For women",
+  d: "Muscle responds to training the same way regardless of sex. Same lifts, same rep ranges, same progression. There is no separate women's program that works differently, and anything marketed that way is usually just lighter weights and less of what actually builds strength.\n\nWorth knowing what this plan already emphasizes: glutes and posterior chain carry the highest volume in the program, matched closely by back work, while chest sits at the lowest volume of any major muscle group. That balance exists because it builds a strong, well proportioned body and protects the low back, not because of who is running it."
+};
+const PRINCIPLES = [{
+  t: "Progressive overload",
+  d: "The one rule everything else serves. Muscle and strength are adaptations to a demand that keeps increasing. If the demand stays flat, so do you. Add a little weight once a load feels genuinely under control, or add a rep before you add weight. Small, steady increases you can repeat for months beat big jumps you can't hold. If your numbers aren't moving over a span of weeks, nothing else in the program matters yet."
+}, {
+  t: "Strength",
+  d: "Built with heavy compound lifts and full recovery between sets. Long rest is part of the work, not wasted time. Warm up enough to be ready, not so much that you're tired: ramp up efficiently and save your effort for the working sets, because those are the ones that change you. The top sets should be genuinely hard. That's where adaptation happens. But hard doesn't mean grinding to failure on a loaded barbell, especially training alone. Stop when the bar slows and form starts to go, not after. The weight goes up gradually, once you can handle the current load safely and with good form. Done that way, strength and muscle come together."
+}, {
+  t: "Hypertrophy",
+  d: "Higher volume, compounds plus isolation, shorter rest. The goal is muscular tension through a full range of motion with clean form, not the biggest number you can move. Control the lowering phase, use the full range the joint allows, and take isolation work close to failure where it's safe. Leave a rep or two on heavy compounds."
+}, {
+  t: "Fat loss",
+  d: "Fat loss comes from a calorie deficit, not from the workout itself. Keep protein high and keep lifting. Training is what protects your muscle while the deficit does the work."
+}, {
+  t: "Muscle gain",
+  d: "Requires a slight calorie surplus and enough protein. Some fat gain comes with it. A slower, smaller surplus gives a better muscle to fat ratio than bulking hard."
+}];
+const MOBILITY_PRINCIPLES = [{
+  t: "Move to keep range",
+  d: "Joints lose the range you stop using. A few minutes daily maintains far more than a long session once a week. Consistency matters more than duration here."
+}, {
+  t: "Release, then strengthen",
+  d: "Stretching a tight area gives temporary relief, but it comes back if nothing else changes. Lasting change comes from strengthening the muscle through its full range, so the body stops guarding that position."
+}, {
+  t: "Tightness is often weakness",
+  d: "A muscle that feels chronically tight is frequently under strong, or overworked from compensating elsewhere. Ask what isn't doing its job. Tight hip flexors and a cranky low back usually point at glutes and core that aren't contributing."
+}, {
+  t: "Activate before you load",
+  d: "Waking up the glutes and core before squats, hinges, and carries means the right muscles do the work. Cheap insurance for a few minutes of your session."
+}, {
+  t: "Daily beats heroic",
+  d: "Five focused minutes most days does more than a punishing thirty minute session you dread and skip. This is maintenance, not a workout."
+}, {
+  t: "The real fix is upstream",
+  d: "No mobility routine undoes eight hours of sitting. Stand up hourly, and let the loaded glute and core work in your lifts do the heavy lifting."
+}];
 const MOBILITY = [{
   n: "Half-kneeling hip flexor stretch",
   t: "45 s / side",
@@ -1272,6 +1565,357 @@ const CARD_THEMES = {
   }
 };
 
+/* share-card backgrounds (day palette from CARD_THEMES applies on top of whichever is picked) */
+const BACKGROUND_IDS = ["sun", "skyline", "mountains", "starfield"];
+const BG_LABELS = {
+  sun: "Retro Sun",
+  skyline: "City Skyline",
+  mountains: "Mountain Peaks",
+  starfield: "Starfield Void"
+};
+function pickRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/* one-time randomized layout data per background (stars/buildings/ridges), stable across a render/recording */
+function makeScene(bgId) {
+  if (bgId === "skyline") {
+    const stars = Array.from({
+      length: 50
+    }, () => ({
+      x: Math.random() * 1080,
+      y: Math.random() * 380,
+      r: Math.random() < 0.7 ? 1 : 2,
+      phase: Math.random() * Math.PI * 2
+    }));
+    const buildings = [];
+    let x = 0;
+    while (x < 1080) {
+      const w = 70 + Math.random() * 80,
+        h = 36 + Math.random() * 56;
+      buildings.push({
+        x,
+        w,
+        h
+      });
+      x += w + 4 + Math.random() * 10;
+    }
+    return {
+      stars,
+      buildings
+    };
+  }
+  if (bgId === "mountains") {
+    const ridge = (baseY, amp) => {
+      const pts = [];
+      let x = 0;
+      while (x <= 1080) {
+        x += 70 + Math.random() * 70;
+        pts.push([Math.min(x, 1080), baseY - Math.random() * amp]);
+      }
+      return pts;
+    };
+    return {
+      ridgeFar: ridge(724 - 70, 100),
+      ridgeNear: ridge(724 - 30, 150)
+    };
+  }
+  if (bgId === "starfield") {
+    const stars = Array.from({
+      length: 130
+    }, () => ({
+      x: Math.random() * 1080,
+      y: Math.random() * 615,
+      r: [1, 1, 1, 1, 2, 2, 3][Math.floor(Math.random() * 7)],
+      phase: Math.random() * Math.PI * 2,
+      cyan: Math.random() < 0.3
+    }));
+    return {
+      stars
+    };
+  }
+  return {};
+}
+function drawSkyGround(ctx, size, HZ, TH) {
+  const sky = ctx.createLinearGradient(0, 0, 0, HZ);
+  sky.addColorStop(0, "#1A0B33");
+  sky.addColorStop(0.72, "#3A1560");
+  sky.addColorStop(1, TH.horizon);
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, size, HZ);
+  const gnd = ctx.createLinearGradient(0, HZ, 0, size);
+  gnd.addColorStop(0, TH.horizon);
+  gnd.addColorStop(0.25, "#2A0E3F");
+  gnd.addColorStop(1, "#150826");
+  ctx.fillStyle = gnd;
+  ctx.fillRect(0, HZ, size, size - HZ);
+  return sky;
+}
+function drawGrid(ctx, size, HZ, TH, scroll) {
+  const vx = 540,
+    vy = HZ;
+  ctx.strokeStyle = "rgba(" + TH.grid + ",0.26)";
+  ctx.lineWidth = 2;
+  for (let i = 1; i <= 11; i++) {
+    const yy = vy + (size - vy) * Math.pow(i / 11, 1.9);
+    ctx.beginPath();
+    ctx.moveTo(0, yy);
+    ctx.lineTo(size, yy);
+    ctx.stroke();
+  }
+  for (let x = -1200 + (scroll || 0); x < 2400; x += 110) {
+    ctx.beginPath();
+    ctx.moveTo(vx, vy);
+    ctx.lineTo(x, size);
+    ctx.stroke();
+  }
+  ctx.strokeStyle = "rgba(" + TH.hline + ",0.85)";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(0, vy);
+  ctx.lineTo(size, vy);
+  ctx.stroke();
+}
+function drawScene(ctx, size, HZ, TH, bgId, scene, tSec, running, sky) {
+  if (bgId === "sun") {
+    const pulse = running ? Math.abs(Math.sin(tSec * Math.PI * 2)) * 0.5 : 0;
+    const scx = 812,
+      scy = 250,
+      baseR = 178,
+      sr = baseR + pulse * 14;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(scx, scy, sr, 0, Math.PI * 2);
+    ctx.clip();
+    const sung = ctx.createLinearGradient(0, scy - sr, 0, scy + sr);
+    sung.addColorStop(0, TH.sun[0]);
+    sung.addColorStop(0.5, TH.sun[1]);
+    sung.addColorStop(1, TH.sun[2]);
+    ctx.fillStyle = sung;
+    ctx.fillRect(scx - sr, scy - sr, 2 * sr, 2 * sr);
+    ctx.fillStyle = sky;
+    let sy = scy + 12;
+    while (sy < scy + sr) {
+      const h = Math.max(3, (sy - scy) / 22);
+      ctx.fillRect(scx - sr, sy, 2 * sr, h);
+      sy += 10 + (sy - scy) / 16;
+    }
+    ctx.restore();
+    drawGrid(ctx, size, HZ, TH, running ? tSec * 90 % 110 : 0);
+    return pulse;
+  }
+  if (bgId === "mountains") {
+    ctx.fillStyle = "#3A2260";
+    ctx.beginPath();
+    ctx.moveTo(0, HZ + 40);
+    scene.ridgeFar.forEach(p => ctx.lineTo(p[0], p[1]));
+    ctx.lineTo(size, HZ + 40);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#241048";
+    ctx.beginPath();
+    ctx.moveTo(0, HZ + 40);
+    scene.ridgeNear.forEach(p => ctx.lineTo(p[0], p[1]));
+    ctx.lineTo(size, HZ + 40);
+    ctx.closePath();
+    ctx.fill();
+    drawGrid(ctx, size, HZ, TH, running ? tSec * 90 % 110 : 0);
+    return running ? Math.abs(Math.sin(tSec * Math.PI * 2)) * 0.5 : 0;
+  }
+  if (bgId === "skyline") {
+    scene.stars.forEach(s => {
+      ctx.globalAlpha = running ? 0.55 + 0.45 * Math.sin(tSec * 2 + s.phase) : 0.75;
+      ctx.fillStyle = "#E8DBFF";
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    const mx = 880,
+      my = 140,
+      mr = 50;
+    const mpulse = running ? 0.5 + 0.5 * Math.sin(tSec * Math.PI * 2) : 0;
+    ctx.save();
+    ctx.shadowColor = TH.sun[1];
+    ctx.shadowBlur = 14 + mpulse * 18;
+    const mg = ctx.createLinearGradient(0, my - mr, 0, my + mr);
+    mg.addColorStop(0, TH.sun[0]);
+    mg.addColorStop(0.5, TH.sun[1]);
+    mg.addColorStop(1, TH.sun[2]);
+    ctx.fillStyle = mg;
+    ctx.beginPath();
+    ctx.arc(mx, my, mr, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    ctx.fillStyle = "#1A0B33";
+    scene.buildings.forEach(b => ctx.fillRect(b.x, HZ - b.h, b.w, b.h + 40));
+    for (let i = 0; i < 6; i++) {
+      const yy = HZ + 40 + i * 46;
+      ctx.strokeStyle = "rgba(" + TH.hline + ",0.12)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, yy);
+      ctx.lineTo(size, yy);
+      ctx.stroke();
+    }
+    ctx.strokeStyle = "rgba(" + TH.hline + ",0.6)";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(0, HZ);
+    ctx.lineTo(size, HZ);
+    ctx.stroke();
+    return mpulse;
+  }
+  if (bgId === "starfield") {
+    scene.stars.forEach(s => {
+      ctx.globalAlpha = running ? 0.5 + 0.5 * Math.sin(tSec * 1.6 + s.phase) : 0.8;
+      ctx.fillStyle = s.cyan ? TH.lifts : "#FFFFFF";
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    const px = 860,
+      py = 190,
+      pr = 72;
+    const ppulse = running ? 0.5 + 0.5 * Math.sin(tSec * Math.PI * 2) : 0;
+    ctx.save();
+    ctx.strokeStyle = TH.val;
+    ctx.globalAlpha = 0.75;
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.ellipse(px, py, pr * 1.7, pr * 0.35, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+    const pg = ctx.createLinearGradient(0, py - pr, 0, py + pr);
+    pg.addColorStop(0, TH.sun[0]);
+    pg.addColorStop(1, TH.sun[2]);
+    ctx.save();
+    ctx.shadowColor = TH.glow;
+    ctx.shadowBlur = 10 + ppulse * 20;
+    ctx.fillStyle = pg;
+    ctx.beginPath();
+    ctx.arc(px, py, pr, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    for (let i = 0; i < 5; i++) {
+      const yy = HZ + 30 + i * 70;
+      ctx.strokeStyle = "rgba(" + TH.grid + ",0.1)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, yy);
+      ctx.lineTo(size, yy);
+      ctx.stroke();
+    }
+    ctx.strokeStyle = "rgba(" + TH.hline + ",0.55)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, HZ);
+    ctx.lineTo(size, HZ);
+    ctx.stroke();
+    return ppulse;
+  }
+  return 0;
+}
+function drawCardFrame(ctx, size, HZ, TH, bgId, scene, tSec, running, latest, sess, W) {
+  const sky = drawSkyGround(ctx, size, HZ, TH);
+  const pulse = drawScene(ctx, size, HZ, TH, bgId, scene, tSec, running, sky);
+  const scrim = ctx.createLinearGradient(0, 470, 0, 900);
+  scrim.addColorStop(0, "rgba(20,8,40,0)");
+  scrim.addColorStop(0.5, "rgba(20,8,40,0.35)");
+  scrim.addColorStop(1, "rgba(20,8,40,0)");
+  ctx.fillStyle = scrim;
+  ctx.fillRect(0, 470, size, 430);
+  ctx.textAlign = "left";
+  ctx.save();
+  ctx.shadowColor = TH.lifts;
+  ctx.shadowBlur = 16;
+  ctx.fillStyle = TH.lifts;
+  ctx.font = "bold 40px -apple-system, Arial";
+  ctx.fillText("L I F T S", 74, 140);
+  ctx.restore();
+  const tg = ctx.createLinearGradient(0, 250, 0, 360);
+  tg.addColorStop(0, TH.tTop);
+  tg.addColorStop(1, TH.tBot);
+  ctx.save();
+  ctx.shadowColor = TH.glow;
+  ctx.shadowBlur = 26 + pulse * 22;
+  ctx.fillStyle = tg;
+  ctx.font = "bold 116px -apple-system, Arial";
+  ctx.fillText(W.label, 72, 360);
+  ctx.restore();
+  ctx.fillStyle = TH.date;
+  ctx.font = "bold 38px -apple-system, Arial";
+  ctx.fillText(new Date(latest.date).toLocaleDateString(undefined, {
+    weekday: "long",
+    month: "short",
+    day: "numeric"
+  }).toUpperCase(), 74, 428);
+  let y = 520,
+    totalVol = 0,
+    totalSets = 0;
+  ctx.font = "37px -apple-system, Arial";
+  sess.slice(0, 6).forEach(e => {
+    const hold = exHold(latest.wid, e.exName);
+    e.sets.forEach(x => {
+      const w = parseFloat(x.w),
+        r = parseFloat(x.r);
+      if (!hold && !isNaN(w) && !isNaN(r)) totalVol += w * r;
+    });
+    totalSets += e.sets.length;
+    const b = bestSet(e.sets);
+    let nm = e.exName;
+    if (nm.length > 22) nm = nm.slice(0, 21) + "…";
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#EAD9FF";
+    ctx.font = "34px -apple-system, Arial";
+    ctx.fillText(nm, 78, y);
+    ctx.textAlign = "right";
+    ctx.save();
+    ctx.shadowColor = TH.glow;
+    ctx.shadowBlur = 12;
+    ctx.fillStyle = TH.val;
+    ctx.font = "34px -apple-system, Arial";
+    const topStr = b ? fmtSet(b, hold) : "—";
+    ctx.fillText(topStr, size - 78, y);
+    ctx.restore();
+    ctx.fillStyle = "#8FB8C4";
+    ctx.font = "28px -apple-system, Arial";
+    ctx.fillText(e.sets.length + "×", size - 78 - Math.max(160, ctx.measureText(topStr).width + 60), y);
+    ctx.strokeStyle = "rgba(" + TH.grid + ",0.16)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(78, y + 16);
+    ctx.lineTo(size - 78, y + 16);
+    ctx.stroke();
+    y += 62;
+  });
+  ctx.textAlign = "left";
+  ctx.save();
+  ctx.shadowColor = TH.lifts;
+  ctx.shadowBlur = 10;
+  ctx.fillStyle = TH.lifts;
+  ctx.font = "bold 30px -apple-system, Arial";
+  ctx.fillText(totalSets + " SETS", 78, y + 20);
+  ctx.restore();
+  ctx.fillStyle = "#8FB8C4";
+  ctx.font = "26px -apple-system, Arial";
+  ctx.fillText("·  " + sess.slice(0, 6).length + " exercises", 78 + ctx.measureText(totalSets + " SETS  ").width + 30, y + 20);
+  ctx.fillStyle = TH.lifts;
+  ctx.font = "bold 27px -apple-system, Arial";
+  ctx.fillText("TOTAL VOLUME", 78, size - 96);
+  const vg = ctx.createLinearGradient(0, size - 90, 0, size - 30);
+  vg.addColorStop(0, TH.tTop);
+  vg.addColorStop(1, TH.tBot);
+  ctx.save();
+  ctx.shadowColor = TH.glow;
+  ctx.shadowBlur = 16;
+  ctx.fillStyle = vg;
+  ctx.font = "bold 58px -apple-system, Arial";
+  ctx.fillText(Math.round(totalVol).toLocaleString() + " lb", 78, size - 40);
+  ctx.restore();
+}
+
 /* strength standards: bodyweight-multiple thresholds, men (community reference, e.g. Strength Level style) */
 const STANDARDS_RATIOS = {
   "Barbell bench press": [0.5, 0.75, 1.0, 1.5, 2.0],
@@ -1279,8 +1923,24 @@ const STANDARDS_RATIOS = {
   "Conventional deadlift": [1.0, 1.5, 2.0, 2.5, 3.0],
   "Barbell overhead press": [0.35, 0.55, 0.8, 1.1, 1.3]
 };
+/* Female bodyweight-multiple standards. Women are typically closest to men on
+   lower-body pulling and furthest on upper-body pressing, which these reflect. */
+const STANDARDS_RATIOS_F = {
+  "Barbell bench press": [0.25, 0.4, 0.6, 0.9, 1.2],
+  "Barbell back squat": [0.5, 0.75, 1.1, 1.5, 1.9],
+  "Conventional deadlift": [0.6, 0.95, 1.35, 1.8, 2.3],
+  "Barbell overhead press": [0.2, 0.32, 0.47, 0.65, 0.8]
+};
 const STANDARDS_LABELS = ["Beginner", "Novice", "Intermediate", "Advanced", "Elite"];
 const STANDARDS_COLORS = ["#A98FD6", "#6FF0E6", "#39F2E4", "#FF7ACF", "#FFC98A"];
+/* Rough age allowance: no change under 40, then about 1% per year, capped.
+   Deliberately approximate. Published standards are aggregated across adult
+   ages and don't provide reliable age bands, so this is a rule of thumb. */
+function ageFactor(age) {
+  const a = parseFloat(age);
+  if (!a || a <= 40) return 1;
+  return Math.max(0.65, 1 - (a - 40) * 0.01);
+}
 
 /* internal lift-balance targets, anchored to squat */
 const RATIO_TARGETS = {
@@ -1330,6 +1990,22 @@ const exHold = (wid, name) => {
   const e = w && w.ex.find(y => y.n === name);
   return !!(e && e.hold);
 };
+const metricFor = (set, hold) => hold ? parseFloat(set.r) || 0 : (parseFloat(set.w) || 0) * (1 + (parseFloat(set.r) || 0) / 30);
+const allTimeBest = (logs, wid, name, hold) => {
+  const hist = logs[exKey(wid, name)] || [];
+  let best = null,
+    bestMetric = -1;
+  hist.forEach(s => {
+    const b = bestSet(s.sets);
+    if (!b) return;
+    const m = metricFor(b, hold);
+    if (m > bestMetric) {
+      bestMetric = m;
+      best = b;
+    }
+  });
+  return best;
+};
 function collectEntries(logs) {
   const entries = [];
   Object.keys(logs).forEach(k => {
@@ -1361,6 +2037,62 @@ function bestEst1RM(logs, wid, name) {
   return Math.round(best);
 }
 
+/* Build a share card PNG for a given session. Returns { url, bgLabel } or null. */
+function buildSessionCard(logs, wid, day) {
+  const entries = collectEntries(logs);
+  if (!entries.length) return null;
+  let latest, sess;
+  if (wid && day) {
+    sess = entries.filter(e => e.wid === wid && e.day === day);
+    if (!sess.length) return null;
+    latest = sess[0];
+  } else {
+    entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+    latest = entries[0];
+    sess = entries.filter(e => e.wid === latest.wid && e.day === latest.day);
+  }
+  const W = WORKOUTS.find(x => x.id === latest.wid) || {
+    label: latest.wid
+  };
+  const TH = CARD_THEMES[latest.wid] || CARD_THEMES.UA;
+  const bgId = pickRandom(BACKGROUND_IDS);
+  const scene = makeScene(bgId);
+  const size = 1080,
+    HZ = 724;
+  const cv = document.createElement("canvas");
+  cv.width = size;
+  cv.height = size;
+  const ctx = cv.getContext("2d");
+  if (!ctx) return null;
+  drawCardFrame(ctx, size, HZ, TH, bgId, scene, 1.6, false, latest, sess, W);
+  return {
+    url: cv.toDataURL("image/png"),
+    bgLabel: BG_LABELS[bgId]
+  };
+}
+async function shareImageUrl(url) {
+  if (!url) return;
+  try {
+    const blob = await (await fetch(url)).blob();
+    const file = new File([blob], "lifts.png", {
+      type: "image/png"
+    });
+    if (navigator.canShare && navigator.canShare({
+      files: [file]
+    })) {
+      await navigator.share({
+        files: [file],
+        title: "Workout"
+      });
+      return;
+    }
+  } catch (e) {}
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "lifts.png";
+  a.click();
+}
+
 /* ---------------- app ---------------- */
 function App() {
   const [loaded, setLoaded] = useState(false);
@@ -1376,6 +2108,20 @@ function App() {
   const [importText, setImportText] = useState("");
   const [showImport, setShowImport] = useState(false);
   const [showFullLog, setShowFullLog] = useState(false);
+  const [openCues, setOpenCues] = useState(null);
+  const [pathId, setPathId] = useState(() => {
+    try {
+      return localStorage.getItem("hf_path") || "hybrid";
+    } catch (e) {
+      return "hybrid";
+    }
+  });
+  const [sessionCard, setSessionCard] = useState(null);
+  useEffect(() => {
+    try {
+      localStorage.setItem("hf_path", pathId);
+    } catch (e) {}
+  }, [pathId]);
 
   /* load once */
   useEffect(() => {
@@ -1412,8 +2158,9 @@ function App() {
 
   /* init draft on workout switch */
   useEffect(() => {
-    const w = WORKOUTS.find(x => x.id === selId);
-    if (!w) return;
+    const base = WORKOUTS.find(x => x.id === selId);
+    if (!base) return;
+    const w = applyPath(base, pathId);
     const d = {};
     w.ex.forEach(e => {
       d[exKey(w.id, e.n)] = Array.from({
@@ -1424,7 +2171,7 @@ function App() {
       }));
     });
     setDraft(d);
-  }, [selId]);
+  }, [selId, pathId]);
   const setDraftCell = (k, i, field, val) => {
     setDraft(prev => {
       const rows = (prev[k] || []).map((row, idx) => idx === i ? {
@@ -1442,15 +2189,19 @@ function App() {
     setTimeout(() => setToast(""), 2600);
   };
   const saveSession = () => {
-    const w = WORKOUTS.find(x => x.id === selId);
+    const w = applyPath(WORKOUTS.find(x => x.id === selId), pathId);
     const nextLogs = {
       ...logs
     };
     let logged = 0;
+    const prNames = [];
     w.ex.forEach(e => {
       const k = exKey(w.id, e.n);
       const rows = (draft[k] || []).filter(x => x.w !== "" || x.r !== "");
       if (rows.length) {
+        const todayBest = bestSet(rows);
+        const priorBest = allTimeBest(logs, w.id, e.n, e.hold);
+        if (todayBest && priorBest && metricFor(todayBest, e.hold) > metricFor(priorBest, e.hold)) prNames.push(e.n);
         nextLogs[k] = [...(nextLogs[k] || []), {
           date: new Date().toISOString(),
           sets: rows
@@ -1470,12 +2221,25 @@ function App() {
     }
     setLogs(nextLogs);
     setRotIdx(nextRot);
+
+    // build the share card for the session just saved
+    const savedWid = w.id;
+    const savedDay = new Date().toISOString().slice(0, 10);
+    try {
+      const card = buildSessionCard(nextLogs, savedWid, savedDay);
+      if (card) setSessionCard({
+        ...card,
+        label: w.label,
+        prs: prNames
+      });
+    } catch (e) {}
+    const prMsg = prNames.length ? " 🏆 PR" + (prNames.length > 1 ? "s" : "") + " on " + prNames.join(", ") + "!" : "";
     if (advanced) {
       const nextW = WORKOUTS.find(x => x.id === ROTATION[nextRot]);
-      flash("Saved. Up next → " + nextW.label);
+      flash("Saved." + prMsg + " Up next → " + nextW.label);
       setSelId(ROTATION[nextRot]);
     } else {
-      flash("Session saved.");
+      flash("Session saved." + prMsg);
       const d = {};
       w.ex.forEach(e => {
         d[exKey(w.id, e.n)] = Array.from({
@@ -1611,7 +2375,7 @@ function App() {
     className: "text-sm"
   }, "Loading…");
   const nextW = WORKOUTS.find(x => x.id === ROTATION[rotIdx]);
-  const sel = WORKOUTS.find(x => x.id === selId);
+  const sel = applyPath(WORKOUTS.find(x => x.id === selId), pathId);
   const anyHistory = Object.keys(logs).length > 0;
   return /*#__PURE__*/React.createElement("div", {
     style: {
@@ -1672,7 +2436,7 @@ function App() {
       display: "flex",
       gap: 8
     }
-  }, [["train", "Train"], ["mobility", "Mobility"], ["log", "Progress"]].map(([id, lbl]) => /*#__PURE__*/React.createElement("button", {
+  }, [["train", "Train"], ["guide", "Guide"], ["mobility", "Mobility"], ["log", "Progress"]].map(([id, lbl]) => /*#__PURE__*/React.createElement("button", {
     key: id,
     onClick: () => setTab(id),
     style: {
@@ -1686,7 +2450,7 @@ function App() {
     }
   }, lbl))), tab === "train" && /*#__PURE__*/React.createElement("div", {
     style: {
-      padding: "0 20px 160px"
+      padding: "0 20px 60px"
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -1763,12 +2527,15 @@ function App() {
     const todayBest = bestSet(draft[k]);
     let beat = null;
     if (lastBest && todayBest) beat = todayBest.w > lastBest.w || todayBest.w === lastBest.w && todayBest.r > lastBest.r;
+    const atBest = allTimeBest(logs, sel.id, e.n, e.hold);
+    const isPR = !!(todayBest && atBest && metricFor(todayBest, e.hold) > metricFor(atBest, e.hold));
     return /*#__PURE__*/React.createElement("div", {
       key: k,
       style: {
         borderRadius: 16,
         padding: 16,
-        background: T.surface
+        background: T.surface,
+        border: isPR ? "1px solid #FFC98A" : "1px solid transparent"
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
@@ -1824,7 +2591,36 @@ function App() {
         marginTop: 3,
         fontWeight: 700
       }
-    }, "full rest between sets")), beat !== null && /*#__PURE__*/React.createElement("div", {
+    }, "full rest between sets"), TECHNIQUE_CUES[e.n] && /*#__PURE__*/React.createElement("button", {
+      onClick: () => setOpenCues(openCues === e.n ? null : e.n),
+      style: {
+        marginTop: 6,
+        padding: "3px 9px",
+        borderRadius: 6,
+        fontSize: 11,
+        fontWeight: 700,
+        background: "transparent",
+        border: "1px solid " + T.line,
+        color: T.muted
+      }
+    }, openCues === e.n ? "▲ Hide form cues" : "▼ Form cues")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-end",
+        gap: 4
+      }
+    }, isPR && /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        fontWeight: 800,
+        padding: "4px 8px",
+        borderRadius: 8,
+        whiteSpace: "nowrap",
+        color: "#412402",
+        background: "#FFC98A"
+      }
+    }, "🏆 PR"), beat !== null && /*#__PURE__*/React.createElement("div", {
       style: {
         fontSize: 12,
         fontWeight: 700,
@@ -1834,7 +2630,31 @@ function App() {
         color: beat ? "#0A2540" : "#2A0A46",
         background: beat ? T.emerald : T.amber
       }
-    }, beat ? "▲ beat last" : "hold")), last && /*#__PURE__*/React.createElement("div", {
+    }, beat ? "▲ beat last" : "hold"))), openCues === e.n && TECHNIQUE_CUES[e.n] && /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: 10,
+        padding: 12,
+        borderRadius: 10,
+        background: T.bg,
+        border: "1px solid " + T.line
+      }
+    }, TECHNIQUE_CUES[e.n].map((c, i) => /*#__PURE__*/React.createElement("div", {
+      key: i,
+      style: {
+        display: "flex",
+        gap: 8,
+        fontSize: 12,
+        lineHeight: 1.5,
+        marginBottom: 6,
+        color: i === TECHNIQUE_CUES[e.n].length - 1 ? T.muted : T.text
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "mono",
+      style: {
+        color: T.emerald,
+        flexShrink: 0
+      }
+    }, i + 1, "."), /*#__PURE__*/React.createElement("span", null, c)))), last && /*#__PURE__*/React.createElement("div", {
       className: "mono",
       style: {
         marginTop: 8,
@@ -1843,7 +2663,14 @@ function App() {
       }
     }, "last:\xA0", last.sets.map((x, i) => /*#__PURE__*/React.createElement("span", {
       key: i
-    }, fmtSet(x, e.hold) + (i < last.sets.length - 1 ? "   " : "")))), /*#__PURE__*/React.createElement("div", {
+    }, fmtSet(x, e.hold) + (i < last.sets.length - 1 ? "   " : "")))), atBest && /*#__PURE__*/React.createElement("div", {
+      className: "mono",
+      style: {
+        marginTop: 2,
+        fontSize: 12,
+        color: "#FFC98A"
+      }
+    }, "best ever:\xA0", fmtSet(atBest, e.hold)), /*#__PURE__*/React.createElement("div", {
       style: {
         marginTop: 12,
         display: "flex",
@@ -1949,15 +2776,233 @@ function App() {
     }
   }, /*#__PURE__*/React.createElement(MobilityList, null), /*#__PURE__*/React.createElement("div", {
     style: {
-      borderRadius: 16,
-      padding: 16,
-      marginTop: 16,
+      marginTop: 24
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: T.muted,
+      letterSpacing: 1.5,
+      textTransform: "uppercase",
+      fontWeight: 700,
+      marginBottom: 10
+    }
+  }, "Mobility principles"), MOBILITY_PRINCIPLES.map(p => /*#__PURE__*/React.createElement("div", {
+    key: p.t,
+    style: {
+      borderRadius: 14,
+      padding: 14,
+      background: T.surface,
+      marginBottom: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 700,
+      fontSize: 13,
+      color: T.text,
+      marginBottom: 4
+    }
+  }, p.t), /*#__PURE__*/React.createElement("div", {
+    style: {
       fontSize: 12,
       lineHeight: 1.6,
-      background: T.surface,
       color: T.muted
     }
-  }, "5 min won't undo 8 hrs of sitting. This maintains range + grooves glute firing. The real fix is the loaded glute/core work in your lifts and standing up hourly at your desk.")), tab === "log" && /*#__PURE__*/React.createElement("div", {
+  }, p.d))))), tab === "guide" && /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "0 20px 40px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderRadius: 16,
+      padding: 16,
+      background: T.surface,
+      marginBottom: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 700,
+      fontSize: 13,
+      marginBottom: 2
+    }
+  }, "Training path"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: T.muted,
+      marginBottom: 10
+    }
+  }, "Same lifts and rotation. This changes sets, reps, rest, and how much accessory work is in the main block."), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 6
+    }
+  }, PATH_IDS.map(id => {
+    const P = PATHS[id],
+      on = pathId === id;
+    return /*#__PURE__*/React.createElement("button", {
+      key: id,
+      onClick: () => setPathId(id),
+      style: {
+        textAlign: "left",
+        borderRadius: 12,
+        padding: 12,
+        background: on ? T.surfaceHi : "transparent",
+        border: "1px solid " + (on ? T.amber : T.line)
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 13,
+        fontWeight: 700,
+        color: on ? T.text : T.muted
+      }
+    }, P.label, on ? "  ✓" : ""), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted,
+        marginTop: 3,
+        lineHeight: 1.5
+      }
+    }, P.blurb), on && /*#__PURE__*/React.createElement("div", {
+      className: "mono",
+      style: {
+        fontSize: 10,
+        color: T.emerald,
+        marginTop: 6,
+        lineHeight: 1.6
+      }
+    }, "anchor ", P.anchor.sets, "×", P.anchor.reps, ", rest ", P.anchor.rest, /*#__PURE__*/React.createElement("br", null), "accessories ", P.accessory.sets, "×", P.accessory.reps, ", rest ", P.accessory.rest, /*#__PURE__*/React.createElement("br", null), P.progression));
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderRadius: 16,
+      padding: 16,
+      background: T.surface,
+      marginBottom: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 700,
+      fontSize: 15,
+      marginBottom: 8
+    }
+  }, PLAN_INTRO.title), PLAN_INTRO.lead.split("\n\n").map((para, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      fontSize: 12,
+      lineHeight: 1.7,
+      color: T.muted,
+      marginBottom: 8
+    }
+  }, para))), PLAN_INTRO.blocks.map(b => /*#__PURE__*/React.createElement("div", {
+    key: b.t,
+    style: {
+      borderRadius: 14,
+      padding: 14,
+      background: T.surface,
+      marginBottom: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 700,
+      fontSize: 13,
+      marginBottom: 4
+    }
+  }, b.t), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      lineHeight: 1.6,
+      color: T.muted
+    }
+  }, b.d))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: T.muted,
+      letterSpacing: 1.5,
+      textTransform: "uppercase",
+      fontWeight: 700,
+      marginBottom: 10
+    }
+  }, "What this plan targets"), PLAN_INTRO.goals.map(g => /*#__PURE__*/React.createElement("div", {
+    key: g.t,
+    style: {
+      borderRadius: 14,
+      padding: 14,
+      background: T.surface,
+      marginBottom: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 700,
+      fontSize: 13,
+      color: T.emerald,
+      marginBottom: 4
+    }
+  }, g.t), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      lineHeight: 1.6,
+      color: T.muted
+    }
+  }, g.d)))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: T.muted,
+      letterSpacing: 1.5,
+      textTransform: "uppercase",
+      fontWeight: 700,
+      marginBottom: 10
+    }
+  }, "Training principles"), PRINCIPLES.map(p => /*#__PURE__*/React.createElement("div", {
+    key: p.t,
+    style: {
+      borderRadius: 14,
+      padding: 14,
+      background: T.surface,
+      marginBottom: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 700,
+      fontSize: 13,
+      color: p.t === "Progressive overload" ? T.emerald : T.text,
+      marginBottom: 4
+    }
+  }, p.t), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      lineHeight: 1.6,
+      color: T.muted
+    }
+  }, p.d)))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderRadius: 14,
+      padding: 14,
+      background: T.surface,
+      marginTop: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 700,
+      fontSize: 13,
+      marginBottom: 4
+    }
+  }, WOMEN_NOTE.t), WOMEN_NOTE.d.split("\n\n").map((para, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      fontSize: 12,
+      lineHeight: 1.6,
+      color: T.muted,
+      marginBottom: 6
+    }
+  }, para)))), tab === "log" && /*#__PURE__*/React.createElement("div", {
     style: {
       padding: "0 20px 40px"
     }
@@ -2149,7 +3194,84 @@ function App() {
       color: resetArm ? "#fff" : T.muted,
       border: "1px solid " + (resetArm ? T.red : T.line)
     }
-  }, resetArm ? "Tap again to confirm — clears ALL logs" : "Clear all logs")), tab === "train" && /*#__PURE__*/React.createElement(RestTimer, null), toast && /*#__PURE__*/React.createElement("div", {
+  }, resetArm ? "Tap again to confirm — clears ALL logs" : "Clear all logs")), sessionCard && /*#__PURE__*/React.createElement("div", {
+    onClick: () => setSessionCard(null),
+    style: {
+      position: "fixed",
+      inset: 0,
+      background: "rgba(10,5,25,0.88)",
+      zIndex: 50,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 20
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    onClick: e => e.stopPropagation(),
+    style: {
+      maxWidth: 420,
+      width: "100%",
+      background: T.surface,
+      borderRadius: 18,
+      padding: 16,
+      maxHeight: "92vh",
+      overflowY: "auto"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 800,
+      fontSize: 17,
+      marginBottom: 2
+    }
+  }, "Session complete"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: T.muted,
+      marginBottom: 4
+    }
+  }, sessionCard.label, sessionCard.bgLabel ? " · " + sessionCard.bgLabel : ""), sessionCard.prs && sessionCard.prs.length > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      fontWeight: 700,
+      color: "#FFC98A",
+      marginBottom: 8
+    }
+  }, "🏆 PR on ", sessionCard.prs.join(", ")), /*#__PURE__*/React.createElement("img", {
+    src: sessionCard.url,
+    alt: "session card",
+    style: {
+      width: "100%",
+      borderRadius: 12,
+      display: "block",
+      marginTop: 6
+    }
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: () => shareImageUrl(sessionCard.url),
+    style: {
+      width: "100%",
+      borderRadius: 12,
+      padding: 13,
+      marginTop: 10,
+      fontSize: 15,
+      fontWeight: 800,
+      border: "none",
+      background: T.amber,
+      color: "#2A0A46"
+    }
+  }, "Share image"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setSessionCard(null),
+    style: {
+      width: "100%",
+      borderRadius: 12,
+      padding: 11,
+      marginTop: 8,
+      fontSize: 14,
+      fontWeight: 700,
+      background: "transparent",
+      border: "1px solid " + T.line,
+      color: T.muted
+    }
+  }, "Done"))), toast && /*#__PURE__*/React.createElement("div", {
     style: {
       position: "fixed",
       left: 0,
@@ -2157,7 +3279,7 @@ function App() {
       display: "flex",
       justifyContent: "center",
       padding: "0 20px",
-      bottom: tab === "train" ? 96 : 24
+      bottom: 24
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -2688,32 +3810,45 @@ function Trends({
       textTransform: "uppercase",
       letterSpacing: 0.5
     }
-  }, "Recent sessions"), exEntries.slice().reverse().slice(0, 6).map((e, i, arr) => /*#__PURE__*/React.createElement("div", {
-    key: i,
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      gap: 8,
-      fontSize: 12,
-      padding: "5px 0",
-      borderBottom: i < arr.length - 1 ? "1px solid rgba(75,46,125,0.4)" : "none"
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: T.muted,
-      minWidth: 62,
-      flexShrink: 0
-    }
-  }, new Date(e.date).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric"
-  })), /*#__PURE__*/React.createElement("span", {
-    className: "mono",
-    style: {
-      color: T.text,
-      textAlign: "right"
-    }
-  }, e.sets.map(x => fmtSet(x, exHoldCur)).join(", ")))), exEntries.length > 6 && /*#__PURE__*/React.createElement("div", {
+  }, "Recent sessions"), exEntries.slice().reverse().slice(0, 6).map((e, i, arr) => {
+    const b = bestSet(e.sets);
+    const priorEntries = exEntries.filter(x => new Date(x.date) < new Date(e.date));
+    const priorBest = priorEntries.length ? priorEntries.reduce((m, x) => {
+      const bb = bestSet(x.sets);
+      return bb && metricFor(bb, exHoldCur) > (m ? metricFor(m, exHoldCur) : -1) ? bb : m;
+    }, null) : null;
+    const wasPR = b && priorBest && metricFor(b, exHoldCur) > metricFor(priorBest, exHoldCur);
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      style: {
+        display: "flex",
+        justifyContent: "space-between",
+        gap: 8,
+        fontSize: 12,
+        padding: "5px 0",
+        borderBottom: i < arr.length - 1 ? "1px solid rgba(75,46,125,0.4)" : "none"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: T.muted,
+        minWidth: 62,
+        flexShrink: 0
+      }
+    }, new Date(e.date).toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric"
+    }), wasPR && /*#__PURE__*/React.createElement("span", {
+      style: {
+        marginLeft: 4
+      }
+    }, "🏆")), /*#__PURE__*/React.createElement("span", {
+      className: "mono",
+      style: {
+        color: T.text,
+        textAlign: "right"
+      }
+    }, e.sets.map(x => fmtSet(x, exHoldCur)).join(", ")));
+  }), exEntries.length > 6 && /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 10,
       color: T.muted,
@@ -2734,12 +3869,38 @@ function StrengthStandards({
       return "210";
     }
   });
+  const [sex, setSex] = useState(() => {
+    try {
+      return localStorage.getItem("hf_sex") || "m";
+    } catch (e) {
+      return "m";
+    }
+  });
+  const [age, setAge] = useState(() => {
+    try {
+      return localStorage.getItem("hf_age") || "39";
+    } catch (e) {
+      return "39";
+    }
+  });
   useEffect(() => {
     try {
       localStorage.setItem("hf_bw", bw);
     } catch (e) {}
   }, [bw]);
+  useEffect(() => {
+    try {
+      localStorage.setItem("hf_sex", sex);
+    } catch (e) {}
+  }, [sex]);
+  useEffect(() => {
+    try {
+      localStorage.setItem("hf_age", age);
+    } catch (e) {}
+  }, [age]);
   const bwNum = parseFloat(bw) || 0;
+  const aFac = ageFactor(age);
+  const baseTable = sex === "f" ? STANDARDS_RATIOS_F : STANDARDS_RATIOS;
   const LIFTS = [{
     wid: "UA",
     name: "Barbell bench press",
@@ -2775,13 +3936,14 @@ function StrengthStandards({
       color: T.muted,
       fontWeight: 400
     }
-  }, "· vs. other men who lift")), /*#__PURE__*/React.createElement("div", {
+  }, "· vs. other lifters")), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       alignItems: "center",
       gap: 8,
-      marginTop: 8,
-      marginBottom: 14
+      marginTop: 10,
+      marginBottom: 8,
+      flexWrap: "wrap"
     }
   }, /*#__PURE__*/React.createElement("span", {
     style: {
@@ -2795,7 +3957,7 @@ function StrengthStandards({
     onChange: e => setBw(e.target.value),
     className: "mono",
     style: {
-      width: 70,
+      width: 62,
       borderRadius: 8,
       padding: "6px 8px",
       fontSize: 13,
@@ -2809,9 +3971,50 @@ function StrengthStandards({
       fontSize: 12,
       color: T.muted
     }
-  }, "lb")), LIFTS.map(L => {
+  }, "lb"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 12,
+      color: T.muted,
+      marginLeft: 6
+    }
+  }, "Age"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    inputMode: "numeric",
+    value: age,
+    onChange: e => setAge(e.target.value),
+    className: "mono",
+    style: {
+      width: 48,
+      borderRadius: 8,
+      padding: "6px 8px",
+      fontSize: 13,
+      outline: "none",
+      background: T.bg,
+      color: T.text,
+      border: "1px solid " + T.line
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6,
+      marginBottom: 14
+    }
+  }, [["m", "Male"], ["f", "Female"]].map(([v, lbl]) => /*#__PURE__*/React.createElement("button", {
+    key: v,
+    onClick: () => setSex(v),
+    style: {
+      flex: 1,
+      borderRadius: 8,
+      padding: "6px 0",
+      fontSize: 12,
+      fontWeight: 700,
+      background: sex === v ? T.surfaceHi : "transparent",
+      border: "1px solid " + (sex === v ? T.amber : T.line),
+      color: sex === v ? T.text : T.muted
+    }
+  }, lbl))), LIFTS.map(L => {
     const e1 = bestEst1RM(logs, L.wid, L.name);
-    const ratios = STANDARDS_RATIOS[L.name];
+    const ratios = baseTable[L.name].map(r => r * aFac);
     const ratio = bwNum > 0 ? e1 / bwNum : 0;
     let tierIdx = -1;
     for (let i = ratios.length - 1; i >= 0; i--) {
@@ -2902,7 +4105,7 @@ function StrengthStandards({
       marginTop: 4,
       lineHeight: 1.5
     }
-  }, "Widely-used community bodyweight-multiple standards (men), not a scientific consensus — orientation, not a verdict. Est. 1RM = weight × (1 + reps/30) from your best logged set."));
+  }, "Widely used community bodyweight multiple standards, not a scientific consensus. Orientation, not a verdict. Est. 1RM = weight × (1 + reps/30) from your best logged set.", aFac < 1 ? " Age allowance applied above 40 at roughly 1% per year: a rule of thumb, since published standards are aggregated across adult ages and don't provide reliable age bands." : ""));
 }
 
 /* ---------------- lift balance (internal ratios, anchored to squat) ---------------- */
@@ -3079,7 +4282,8 @@ function ShareCard({
   logs
 }) {
   const [url, setUrl] = useState("");
-  const build = () => {
+  const [imgLabel, setImgLabel] = useState("");
+  const buildImage = () => {
     const entries = collectEntries(logs);
     if (!entries.length) return;
     entries.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -3088,164 +4292,18 @@ function ShareCard({
     const W = WORKOUTS.find(x => x.id === latest.wid) || {
       label: latest.wid
     };
+    const TH = CARD_THEMES[latest.wid] || CARD_THEMES.UA;
+    const bgId = pickRandom(BACKGROUND_IDS);
+    const scene = makeScene(bgId);
     const size = 1080,
       HZ = 724;
     const cv = document.createElement("canvas");
     cv.width = size;
     cv.height = size;
     const ctx = cv.getContext("2d");
-    const TH = CARD_THEMES[latest.wid] || CARD_THEMES.UA;
-    const sky = ctx.createLinearGradient(0, 0, 0, HZ);
-    sky.addColorStop(0, "#1A0B33");
-    sky.addColorStop(0.72, "#3A1560");
-    sky.addColorStop(1, TH.horizon);
-    ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, size, HZ);
-    const gnd = ctx.createLinearGradient(0, HZ, 0, size);
-    gnd.addColorStop(0, TH.horizon);
-    gnd.addColorStop(0.25, "#2A0E3F");
-    gnd.addColorStop(1, "#150826");
-    ctx.fillStyle = gnd;
-    ctx.fillRect(0, HZ, size, size - HZ);
-    const scx = 812,
-      scy = 250,
-      sr = 178;
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(scx, scy, sr, 0, Math.PI * 2);
-    ctx.clip();
-    const sung = ctx.createLinearGradient(0, scy - sr, 0, scy + sr);
-    sung.addColorStop(0, TH.sun[0]);
-    sung.addColorStop(0.5, TH.sun[1]);
-    sung.addColorStop(1, TH.sun[2]);
-    ctx.fillStyle = sung;
-    ctx.fillRect(scx - sr, scy - sr, 2 * sr, 2 * sr);
-    ctx.fillStyle = sky;
-    let sy = scy + 12;
-    while (sy < scy + sr) {
-      const h = Math.max(3, (sy - scy) / 22);
-      ctx.fillRect(scx - sr, sy, 2 * sr, h);
-      sy += 10 + (sy - scy) / 16;
-    }
-    ctx.restore();
-    const vx = 540,
-      vy = HZ;
-    ctx.strokeStyle = "rgba(" + TH.grid + ",0.26)";
-    ctx.lineWidth = 2;
-    for (let i = 1; i <= 11; i++) {
-      const yy = vy + (size - vy) * Math.pow(i / 11, 1.9);
-      ctx.beginPath();
-      ctx.moveTo(0, yy);
-      ctx.lineTo(size, yy);
-      ctx.stroke();
-    }
-    for (let x = -1200; x < 2400; x += 110) {
-      ctx.beginPath();
-      ctx.moveTo(vx, vy);
-      ctx.lineTo(x, size);
-      ctx.stroke();
-    }
-    ctx.strokeStyle = "rgba(" + TH.hline + ",0.85)";
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.moveTo(0, vy);
-    ctx.lineTo(size, vy);
-    ctx.stroke();
-    const scrim = ctx.createLinearGradient(0, 470, 0, 900);
-    scrim.addColorStop(0, "rgba(20,8,40,0)");
-    scrim.addColorStop(0.5, "rgba(20,8,40,0.35)");
-    scrim.addColorStop(1, "rgba(20,8,40,0)");
-    ctx.fillStyle = scrim;
-    ctx.fillRect(0, 470, size, 430);
-    ctx.textAlign = "left";
-    ctx.save();
-    ctx.shadowColor = TH.lifts;
-    ctx.shadowBlur = 16;
-    ctx.fillStyle = TH.lifts;
-    ctx.font = "bold 40px -apple-system, Arial";
-    ctx.fillText("L I F T S", 74, 140);
-    ctx.restore();
-    const tg = ctx.createLinearGradient(0, 250, 0, 360);
-    tg.addColorStop(0, TH.tTop);
-    tg.addColorStop(1, TH.tBot);
-    ctx.save();
-    ctx.shadowColor = TH.glow;
-    ctx.shadowBlur = 30;
-    ctx.fillStyle = tg;
-    ctx.font = "bold 116px -apple-system, Arial";
-    ctx.fillText(W.label, 72, 360);
-    ctx.restore();
-    ctx.fillStyle = TH.date;
-    ctx.font = "bold 38px -apple-system, Arial";
-    ctx.fillText(new Date(latest.date).toLocaleDateString(undefined, {
-      weekday: "long",
-      month: "short",
-      day: "numeric"
-    }).toUpperCase(), 74, 428);
-    let y = 520,
-      totalVol = 0,
-      totalSets = 0;
-    ctx.font = "37px -apple-system, Arial";
-    sess.slice(0, 6).forEach(e => {
-      const hold = exHold(latest.wid, e.exName);
-      e.sets.forEach(x => {
-        const w = parseFloat(x.w),
-          r = parseFloat(x.r);
-        if (!hold && !isNaN(w) && !isNaN(r)) totalVol += w * r;
-      });
-      totalSets += e.sets.length;
-      const b = bestSet(e.sets);
-      let nm = e.exName;
-      if (nm.length > 22) nm = nm.slice(0, 21) + "…";
-      ctx.textAlign = "left";
-      ctx.fillStyle = "#EAD9FF";
-      ctx.font = "34px -apple-system, Arial";
-      ctx.fillText(nm, 78, y);
-      ctx.textAlign = "right";
-      ctx.save();
-      ctx.shadowColor = TH.glow;
-      ctx.shadowBlur = 12;
-      ctx.fillStyle = TH.val;
-      ctx.font = "34px -apple-system, Arial";
-      const topStr = b ? fmtSet(b, hold) : "—";
-      ctx.fillText(topStr, size - 78, y);
-      ctx.restore();
-      ctx.fillStyle = "#8FB8C4";
-      ctx.font = "28px -apple-system, Arial";
-      ctx.fillText(e.sets.length + "×", size - 78 - Math.max(160, ctx.measureText(topStr).width + 60), y);
-      ctx.strokeStyle = "rgba(" + TH.grid + ",0.16)";
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(78, y + 16);
-      ctx.lineTo(size - 78, y + 16);
-      ctx.stroke();
-      y += 62;
-    });
-    ctx.textAlign = "left";
-    ctx.save();
-    ctx.shadowColor = TH.lifts;
-    ctx.shadowBlur = 10;
-    ctx.fillStyle = TH.lifts;
-    ctx.font = "bold 30px -apple-system, Arial";
-    ctx.fillText(totalSets + " SETS", 78, y + 20);
-    ctx.restore();
-    ctx.fillStyle = "#8FB8C4";
-    ctx.font = "26px -apple-system, Arial";
-    ctx.fillText("·  " + sess.slice(0, 6).length + " exercises", 78 + ctx.measureText(totalSets + " SETS  ").width + 30, y + 20);
-    ctx.fillStyle = TH.lifts;
-    ctx.font = "bold 27px -apple-system, Arial";
-    ctx.fillText("TOTAL VOLUME", 78, size - 96);
-    const vg = ctx.createLinearGradient(0, size - 90, 0, size - 30);
-    vg.addColorStop(0, TH.tTop);
-    vg.addColorStop(1, TH.tBot);
-    ctx.save();
-    ctx.shadowColor = TH.glow;
-    ctx.shadowBlur = 16;
-    ctx.fillStyle = vg;
-    ctx.font = "bold 58px -apple-system, Arial";
-    ctx.fillText(Math.round(totalVol).toLocaleString() + " lb", 78, size - 40);
-    ctx.restore();
+    drawCardFrame(ctx, size, HZ, TH, bgId, scene, 1.6, false, latest, sess, W);
     setUrl(cv.toDataURL("image/png"));
+    setImgLabel(BG_LABELS[bgId]);
   };
   const share = async () => {
     if (!url) return;
@@ -3283,18 +4341,18 @@ function ShareCard({
       fontSize: 13,
       marginBottom: 8
     }
-  }, "Shareable image ", /*#__PURE__*/React.createElement("span", {
+  }, "Share ", /*#__PURE__*/React.createElement("span", {
     style: {
       color: T.muted,
       fontWeight: 400
     }
-  }, "· latest session")), !hasData ? /*#__PURE__*/React.createElement("div", {
+  }, "· latest session · random background")), !hasData ? /*#__PURE__*/React.createElement("div", {
     style: {
       color: T.muted,
       fontSize: 12
     }
   }, "Log a session first.") : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("button", {
-    onClick: build,
+    onClick: buildImage,
     style: {
       width: "100%",
       borderRadius: 10,
@@ -3305,11 +4363,17 @@ function ShareCard({
       background: T.surfaceHi,
       color: T.text
     }
-  }, url ? "Regenerate" : "Create image"), url && /*#__PURE__*/React.createElement("div", {
+  }, url ? "New image" : "Create Image"), url && /*#__PURE__*/React.createElement("div", {
     style: {
       marginTop: 10
     }
-  }, /*#__PURE__*/React.createElement("img", {
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: T.muted,
+      marginBottom: 4
+    }
+  }, imgLabel), /*#__PURE__*/React.createElement("img", {
     src: url,
     alt: "share card",
     style: {
@@ -3334,86 +4398,7 @@ function ShareCard({
 }
 
 /* ---------------- rest timer ---------------- */
-function RestTimer() {
-  const [sec, setSec] = useState(0);
-  const [running, setRunning] = useState(false);
-  const ref = useRef(null);
-  useEffect(() => {
-    if (running && sec > 0) ref.current = setTimeout(() => setSec(s => s - 1), 1000);else if (sec === 0) setRunning(false);
-    return () => clearTimeout(ref.current);
-  }, [running, sec]);
-  const mm = String(Math.floor(sec / 60));
-  const ss = String(sec % 60).padStart(2, "0");
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      position: "fixed",
-      left: 0,
-      right: 0,
-      bottom: 0
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      maxWidth: 480,
-      margin: "0 auto"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      margin: 12,
-      borderRadius: 16,
-      padding: "12px 16px",
-      display: "flex",
-      alignItems: "center",
-      gap: 12,
-      background: T.surfaceHi,
-      border: "1px solid " + T.line,
-      boxShadow: "0 8px 24px rgba(0,0,0,.4)"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "mono",
-    style: {
-      fontSize: 20,
-      fontWeight: 700,
-      color: sec > 0 && sec <= 5 ? T.amber : T.text,
-      minWidth: 54
-    }
-  }, mm, ":", ss), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 8,
-      flex: 1
-    }
-  }, [60, 90, 120, 180].map(s => /*#__PURE__*/React.createElement("button", {
-    key: s,
-    onClick: () => {
-      setSec(s);
-      setRunning(true);
-    },
-    style: {
-      flex: 1,
-      borderRadius: 8,
-      padding: "6px 0",
-      fontSize: 12,
-      fontWeight: 700,
-      border: "none",
-      background: T.surface,
-      color: T.muted
-    }
-  }, s < 120 ? s + "s" : s / 60 + "m"))), /*#__PURE__*/React.createElement("button", {
-    onClick: () => {
-      setRunning(false);
-      setSec(0);
-    },
-    style: {
-      borderRadius: 8,
-      padding: "6px 12px",
-      fontSize: 12,
-      fontWeight: 700,
-      border: "none",
-      background: T.surface,
-      color: T.muted
-    }
-  }, "stop"))));
-}
+
 var _root = document.getElementById("root");
 if (ReactDOM.createRoot) {
   ReactDOM.createRoot(_root).render(/*#__PURE__*/React.createElement(App, null));
