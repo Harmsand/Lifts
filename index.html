@@ -1594,6 +1594,18 @@ const QUOTES = [{
   t: "It's pretty simple. I wanted to win. That's pretty much it.",
   a: "Bev Francis"
 }, {
+  t: "Training intensity is underrated. And by intensity, I don't just mean how heavy the weight is. I mean effort.",
+  a: "Layne Norton"
+}, {
+  t: "Most people stop a set when it starts getting uncomfortable, not when they're actually close to being unable to complete another rep.",
+  a: "Layne Norton"
+}, {
+  t: "Going close to true failure requires you to find another gear many people don't even know they have.",
+  a: "Layne Norton"
+}, {
+  t: "If your sets always end when it just gets uncomfortable, you may be leaving a lot of potential muscle growth on the table.",
+  a: "Layne Norton"
+}, {
   t: "We are what we repeatedly do. Excellence, then, is not an act but a habit.",
   a: "Will Durant"
 }, {
@@ -1638,10 +1650,13 @@ const PRINCIPLES = [{
   d: "Built with heavy compound lifts and full recovery between sets. Long rest is part of the work, not wasted time. Warm up enough to be ready, not so much that you're tired: ramp up efficiently and save your effort for the working sets, because those are the ones that change you. The top sets should be genuinely hard. That's where adaptation happens. But hard doesn't mean grinding to failure on a loaded barbell, especially training alone. Stop when the bar slows and form starts to go, not after. The weight goes up gradually, once you can handle the current load safely and with good form. Done that way, strength and muscle come together."
 }, {
   t: "Hypertrophy",
-  d: "Higher volume, compounds plus isolation, shorter rest. The goal is muscular tension through a full range of motion with clean form, not the biggest number you can move. Control the lowering phase, use the full range the joint allows, and take isolation work close to failure where it's safe. Leave a rep or two on heavy compounds."
+  d: "Higher volume, compounds plus isolation, shorter rest. The goal is muscular tension through a full range of motion with clean form, not the biggest number you can move. Control the lowering phase, use the full range the joint allows, and take isolation work close to failure where it's safe. Leave a rep or two on heavy compounds. See How hard is hard enough for what close to failure actually means."
 }, {
   t: "Warming up",
   d: "Warm up to get ready, not to get tired. Skip arbitrary percentages and work from unloaded to loaded.\n\nStart with 3 to 5 minutes of unloaded movement: bodyweight squats, hip openers, arm circles. Then a light loaded set or two, 10 to 20 reps of goblet squats or band pull aparts, to raise temperature and get blood into the hips, knees, and shoulders.\n\nThen ramp the bar itself, tapering reps as the weight climbs so you prime the nervous system without spending the effort you need for the work sets. A ramp to a heavy set looks roughly like: empty bar for 10, then about 45 percent for 5, 60 percent for 3, 70 percent for 2, 85 percent for 1, then your working sets.\n\nKeep rest short early, 1 to 2 minutes between the light ramp sets, and let it stretch out to full rest as you approach your working weight. Anchor lifts get the full ramp. Everything after is already warm, so a single feeler set is usually enough."
+}, {
+  t: "How hard is hard enough",
+  d: "Intensity does not just mean heavy. It means effort. Most people end a set when it starts getting uncomfortable, not when they are actually close to being unable to complete another rep, and those are very different places.\n\nThe research points both ways in a useful manner. A 2024 meta-regression found muscle growth increased as sets were taken closer to failure (PMID 38970765). A separate meta-analysis found no clear hypertrophy advantage to hitting momentary muscular failure versus stopping short of it (PMID 36334240). Together: you do not need to fail every set, but your working sets should be close enough that the last reps are legitimately difficult.\n\nThat means rep speed slows, technique gets challenged, and finishing the set takes real effort. Not \"I felt the muscle.\" Not \"that burned a little.\" Not \"I could have done five more, but the sheet said ten.\" If every set ends comfortably, you are probably leaving growth on the table."
 }, {
   t: "Rest between sets",
   d: "Rest is part of the work, not wasted time. The stronger you get, the more recovery each set needs: heavier weight means more force, more fatigue, and longer to recover enough to repeat the effort. This applies whether you are chasing strength or size.\n\nHeavy compounds (squat, deadlift, press, row): beginner 2 to 3 minutes, novice 3 to 4, intermediate 4 to 6, advanced 6 to 8 or longer. Accessory and isolation work: 1 to 3 minutes is usually enough. Stone shows the range for each anchor lift based on where you currently sit against the strength standards, so it scales as you get stronger.\n\nThe rule that matters more than the clock: if your reps drop off hard from set to set, you are not resting long enough. If you genuinely do not have time for long rests, that is a real constraint, but be honest that it caps how heavy your top sets can go. Better to do fewer exercises with proper rest than more exercises while under recovered."
@@ -2035,6 +2050,20 @@ function drawCardFrame(ctx, size, HZ, TH, bgId, scene, tSec, running, latest, se
     ctx.fillText(String(extras.level), 74, 172);
     ctx.restore();
   }
+  if (extras && typeof extras.sessionXP === "number" && extras.sessionXP > 0) {
+    ctx.textAlign = "right";
+    ctx.fillStyle = TH.date;
+    ctx.font = "bold 24px -apple-system, Arial";
+    ctx.fillText("XP GAINED", size - 78, 104);
+    ctx.save();
+    ctx.shadowColor = TH.glow;
+    ctx.shadowBlur = 20;
+    ctx.fillStyle = TH.val;
+    ctx.font = "bold 52px -apple-system, Arial";
+    ctx.fillText("+" + extras.sessionXP, size - 78, 158);
+    ctx.restore();
+    ctx.textAlign = "left";
+  }
   const tg = ctx.createLinearGradient(0, 232, 0, 330);
   tg.addColorStop(0, TH.tTop);
   tg.addColorStop(1, TH.tBot);
@@ -2080,9 +2109,6 @@ function drawCardFrame(ctx, size, HZ, TH, bgId, scene, tSec, running, latest, se
     const topStr = b ? fmtSet(b, hold) : "—";
     ctx.fillText(topStr, size - 78, y);
     ctx.restore();
-    ctx.fillStyle = "#8FB8C4";
-    ctx.font = "28px -apple-system, Arial";
-    ctx.fillText(e.sets.length + "×", size - 78 - Math.max(160, ctx.measureText(topStr).width + 60), y);
     ctx.strokeStyle = "rgba(" + TH.grid + ",0.16)";
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -2387,6 +2413,142 @@ function sessionVolumeOf(sets, hold) {
   });
   return v;
 }
+
+/* XP earned by one specific session, itemised. Computed by diffing the total
+   before and after that session exists, so it can never drift from the
+   headline number on the Level card. */
+/* Rule-based post-session commentary. No AI, no network call: every line
+   here is derived directly from the numbers already in the log, plus
+   whatever note the user typed. Deterministic and free to run offline. */
+function repsBelowTarget(rows, targetStr) {
+  if (!targetStr) return false;
+  const m = String(targetStr).match(/(\d+)\D+(\d+)/);
+  if (!m) return false;
+  const lo = parseFloat(m[1]);
+  const shortfalls = rows.filter(x => {
+    const r = parseFloat(x.r);
+    return !isNaN(r) && r < lo;
+  });
+  return shortfalls.length >= Math.ceil(rows.length / 2);
+}
+function exerciseCommentary(exDef, rows, priorBest, allBest, note, hold, rating) {
+  const lines = [];
+  const today = bestSet(rows);
+  const effort = rating && rating.effort; // "hard" | "normal" | "strong"
+  const pain = rating && rating.pain; // "discomfort" | null
+
+  if (pain === "discomfort") {
+    lines.push({
+      t: "You flagged discomfort on this one. Consider dropping the weight or swapping the exercise next time, and don't push through anything sharp.",
+      tone: "warn"
+    });
+  }
+  if (today && priorBest) {
+    const beat = metricFor(today, hold) > metricFor(priorBest, hold);
+    const same = Math.abs(metricFor(today, hold) - metricFor(priorBest, hold)) < 0.01;
+    if (allBest && metricFor(today, hold) >= metricFor(allBest, hold) && metricFor(today, hold) > metricFor(priorBest, hold)) {
+      lines.push({
+        t: "New high on this lift.",
+        tone: "good"
+      });
+    } else if (beat) {
+      lines.push({
+        t: "Improved on last time.",
+        tone: "good"
+      });
+    } else if (same) {
+      lines.push({
+        t: "Matched last session, no change.",
+        tone: "neutral"
+      });
+    } else {
+      const tracks = effort === "hard" || pain === "discomfort";
+      lines.push({
+        t: "Below your last session" + (tracks ? ", which tracks with how you rated it" : "") + ".",
+        tone: "warn"
+      });
+    }
+  } else if (today && !priorBest) {
+    lines.push({
+      t: "First time logging numbers on this one.",
+      tone: "neutral"
+    });
+  }
+  if (exDef && exDef.r && repsBelowTarget(rows, exDef.r) && !hold) {
+    lines.push({
+      t: "Reps came in under the " + exDef.r + " target on most sets. Worth trying a touch lighter next time so you land in range.",
+      tone: "warn"
+    });
+  }
+  if (effort === "strong" && pain !== "discomfort") {
+    lines.push({
+      t: "You rated this one strong. If the weight moved fast, next session may be a good one to add a little load.",
+      tone: "good"
+    });
+  }
+  return lines;
+}
+function buildSessionCommentary(w, draftByKey, notesByKey, logsBefore, ratingsByKey) {
+  const out = [];
+  w.ex.forEach(e => {
+    const k = exKey(w.id, e.n);
+    const rows = (draftByKey[k] || []).filter(x => x.w !== "" || x.r !== "");
+    if (!rows.length) return;
+    const note = (notesByKey[k] || "").trim();
+    const rating = ratingsByKey && ratingsByKey[k] || null;
+    const priorBest = allTimeBest(logsBefore, w.id, e.n, e.hold);
+    const allBest = priorBest; // logsBefore already excludes today, so this doubles as all-time-before-today
+    const lines = exerciseCommentary(e, rows, priorBest, allBest, note, e.hold, rating);
+    if (lines.length || note) out.push({
+      name: e.n,
+      note,
+      lines
+    });
+  });
+  return out;
+}
+function sessionXPBreakdown(logsAfter, wid, day) {
+  // rebuild a copy of the log with this day's entries for this workout removed
+  const logsBefore = {};
+  Object.keys(logsAfter).forEach(k => {
+    if (k.split("::")[0] !== wid) {
+      logsBefore[k] = logsAfter[k];
+      return;
+    }
+    logsBefore[k] = (logsAfter[k] || []).filter(s => localDay(s.date) !== day);
+  });
+  const after = computeXP(logsAfter),
+    before = computeXP(logsBefore);
+  const d = key => after.breakdown[key] - before.breakdown[key];
+  const items = [];
+  const sessionXP = d("sessionXP");
+  const volumeXP = d("volumeXP");
+  const prXP = d("prXP");
+  const prCount = d("prCount");
+  const consistencyXP = d("consistencyXP");
+  if (sessionXP) items.push({
+    label: "Session logged",
+    xp: sessionXP
+  });
+  if (volumeXP) items.push({
+    label: "Volume vs your 30 day average",
+    xp: volumeXP
+  });
+  if (prXP) items.push({
+    label: prCount + " personal record" + (prCount === 1 ? "" : "s"),
+    xp: prXP,
+    hot: true
+  });
+  if (consistencyXP) items.push({
+    label: "3 sessions this week",
+    xp: consistencyXP
+  });
+  return {
+    items,
+    total: after.total - before.total,
+    newTotal: after.total
+  };
+}
 function computeXP(logs) {
   // group every logged set into (day, workoutId) sessions
   const byDayWid = {};
@@ -2513,6 +2675,31 @@ function localDay(dateish) {
   const p = n => String(n).padStart(2, "0");
   return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
 }
+
+/* "What's next" is derived from the log itself, not tracked as separate state.
+   A separately-tracked counter only advances when you save the exact workout
+   it expects next — train out of order once, or have a bad import, and it
+   gets stuck forever. Deriving it from the most recent real, non-bonus
+   session makes that class of bug structurally impossible. */
+function deriveRotIdx(logs) {
+  let latestTime = -Infinity,
+    latestWid = null;
+  Object.keys(logs).forEach(k => {
+    const wid = k.split("::")[0];
+    if (wid === "BON") return; // bonus days don't advance the rotation
+    (logs[k] || []).forEach(s => {
+      const t = new Date(s.date).getTime();
+      if (!isNaN(t) && t > latestTime) {
+        latestTime = t;
+        latestWid = wid;
+      }
+    });
+  });
+  if (!latestWid) return 0;
+  const idx = ROTATION.indexOf(latestWid);
+  if (idx === -1) return 0;
+  return (idx + 1) % ROTATION.length;
+}
 function collectEntries(logs) {
   const entries = [];
   Object.keys(logs).forEach(k => {
@@ -2545,7 +2732,7 @@ function bestEst1RM(logs, wid, name) {
 }
 
 /* Build a share card PNG for a given session. Returns { url, bgLabel } or null. */
-function buildSessionCard(logs, wid, day) {
+function buildSessionCard(logs, wid, day, sessionXP) {
   const entries = collectEntries(logs);
   if (!entries.length) return null;
   let latest, sess;
@@ -2573,7 +2760,8 @@ function buildSessionCard(logs, wid, day) {
   if (!ctx) return null;
   drawCardFrame(ctx, size, HZ, TH, bgId, scene, 1.6, false, latest, sess, W, {
     level: levelFromXP(computeXP(logs).total).level,
-    quote: quoteOfTheDay()
+    quote: quoteOfTheDay(),
+    sessionXP: sessionXP || 0
   });
   return {
     url: cv.toDataURL("image/png"),
@@ -2606,10 +2794,14 @@ async function shareImageUrl(url) {
 /* ---------------- app ---------------- */
 function App() {
   const [loaded, setLoaded] = useState(false);
-  const [rotIdx, setRotIdx] = useState(0);
   const [logs, setLogs] = useState({});
   const [selId, setSelId] = useState("UA");
   const [draft, setDraft] = useState({});
+  const [draftNotes, setDraftNotes] = useState({});
+  const [draftRatings, setDraftRatings] = useState({});
+  const [openNote, setOpenNote] = useState(null);
+  const [completedEx, setCompletedEx] = useState({});
+  const rotIdx = deriveRotIdx(logs);
   const [tab, setTab] = useState("train");
   const [toast, setToast] = useState("");
   const [copied, setCopied] = useState(false);
@@ -2636,22 +2828,21 @@ function App() {
 
   /* load once */
   useEffect(() => {
+    let loadedLogs = null;
     try {
       const raw = localStorage.getItem("hf_state");
       if (raw) {
         const st = JSON.parse(raw);
-        if (typeof st.rotIdx === "number") {
-          setRotIdx(st.rotIdx);
-          setSelId(ROTATION[st.rotIdx] || "UA");
-        }
-        if (st.logs) setLogs(st.logs);
+        if (st.logs) loadedLogs = st.logs;
       } else {
-        setLogs(SEED_LOGS);
+        loadedLogs = SEED_LOGS;
       }
     } catch (e) {
-      try {
-        setLogs(SEED_LOGS);
-      } catch (e2) {}
+      loadedLogs = SEED_LOGS;
+    }
+    if (loadedLogs) {
+      setLogs(loadedLogs);
+      setSelId(ROTATION[deriveRotIdx(loadedLogs)] || "UA");
     }
     setLoaded(true);
   }, []);
@@ -2673,11 +2864,10 @@ function App() {
     if (!loaded) return;
     try {
       localStorage.setItem("hf_state", JSON.stringify({
-        logs,
-        rotIdx
+        logs
       }));
     } catch (e) {}
-  }, [logs, rotIdx, loaded]);
+  }, [logs, loaded]);
 
   /* init draft on workout switch */
   useEffect(() => {
@@ -2694,6 +2884,7 @@ function App() {
       }));
     });
     setDraft(d);
+    setCompletedEx({});
   }, [selId, pathId]);
   const setDraftCell = (k, i, field, val) => {
     setDraft(prev => {
@@ -2721,13 +2912,18 @@ function App() {
     w.ex.forEach(e => {
       const k = exKey(w.id, e.n);
       const rows = (draft[k] || []).filter(x => x.w !== "" || x.r !== "");
+      const note = (draftNotes[k] || "").trim();
+      const rating = draftRatings[k] || null;
       if (rows.length) {
         const todayBest = bestSet(rows);
         const priorBest = allTimeBest(logs, w.id, e.n, e.hold);
         if (todayBest && priorBest && metricFor(todayBest, e.hold) > metricFor(priorBest, e.hold)) prNames.push(e.n);
         nextLogs[k] = [...(nextLogs[k] || []), {
           date: new Date().toISOString(),
-          sets: rows
+          sets: rows,
+          note: note || undefined,
+          effort: rating ? rating.effort : undefined,
+          pain: rating ? rating.pain : undefined
         }].slice(-200);
         logged++;
       }
@@ -2736,24 +2932,34 @@ function App() {
       flash("Nothing logged — enter a set first.");
       return;
     }
-    let nextRot = rotIdx,
-      advanced = false;
-    if (!w.bonus && w.id === ROTATION[rotIdx]) {
-      nextRot = (rotIdx + 1) % ROTATION.length;
-      advanced = true;
-    }
+    const advanced = !w.bonus;
     setLogs(nextLogs);
-    setRotIdx(nextRot);
+    const nextRot = deriveRotIdx(nextLogs);
 
     // build the share card for the session just saved
     const savedWid = w.id;
     const savedDay = localDay(new Date());
+    let xpInfo = null;
     try {
-      const card = buildSessionCard(nextLogs, savedWid, savedDay);
+      xpInfo = sessionXPBreakdown(nextLogs, savedWid, savedDay);
+    } catch (e) {}
+    let commentary = [];
+    try {
+      commentary = buildSessionCommentary(w, draft, draftNotes, logs, draftRatings);
+    } catch (e) {}
+    try {
+      const card = buildSessionCard(nextLogs, savedWid, savedDay, xpInfo ? xpInfo.total : 0);
       if (card) setSessionCard({
         ...card,
         label: w.label,
-        prs: prNames
+        prs: prNames,
+        xp: xpInfo,
+        commentary
+      });else setSessionCard({
+        label: w.label,
+        prs: prNames,
+        xp: xpInfo,
+        commentary
       });
     } catch (e) {}
     const prMsg = prNames.length ? " 🏆 PR" + (prNames.length > 1 ? "s" : "") + " on " + prNames.join(", ") + "!" : "";
@@ -2761,6 +2967,9 @@ function App() {
       const nextW = WORKOUTS.find(x => x.id === ROTATION[nextRot]);
       flash("Saved." + prMsg + " Up next → " + nextW.label);
       setSelId(ROTATION[nextRot]);
+      setDraftNotes({});
+      setDraftRatings({});
+      setCompletedEx({});
     } else {
       flash("Session saved." + prMsg);
       const d = {};
@@ -2773,6 +2982,9 @@ function App() {
         }));
       });
       setDraft(d);
+      setDraftNotes({});
+      setDraftRatings({});
+      setCompletedEx({});
     }
   };
   const dismissSessionCard = () => {
@@ -2871,7 +3083,6 @@ function App() {
       });
     });
     setLogs(merged);
-    if (typeof payload.rotIdx === "number") setRotIdx(payload.rotIdx);
     setImportText("");
     setShowImport(false);
     flash("Imported " + count + " session(s).");
@@ -2883,7 +3094,6 @@ function App() {
       return;
     }
     setLogs({});
-    setRotIdx(0);
     setResetArm(false);
     try {
       localStorage.removeItem("hf_state");
@@ -3057,13 +3267,14 @@ function App() {
     if (lastBest && todayBest) beat = todayBest.w > lastBest.w || todayBest.w === lastBest.w && todayBest.r > lastBest.r;
     const atBest = allTimeBest(logs, sel.id, e.n, e.hold);
     const isPR = !!(todayBest && atBest && metricFor(todayBest, e.hold) > metricFor(atBest, e.hold));
+    const isDone = !!completedEx[k];
     return /*#__PURE__*/React.createElement("div", {
       key: k,
       style: {
         borderRadius: 16,
         padding: 16,
-        background: T.surface,
-        border: isPR ? "1px solid #FFC98A" : "1px solid transparent"
+        background: isDone ? "rgba(57,242,228,0.06)" : T.surface,
+        border: isPR ? "1px solid #FFC98A" : isDone ? "1px solid " + T.emerald : "1px solid transparent"
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
@@ -3077,7 +3288,12 @@ function App() {
         fontWeight: 600,
         lineHeight: 1.2
       }
-    }, e.n, e.anchor && /*#__PURE__*/React.createElement("span", {
+    }, isDone && /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: T.emerald,
+        marginRight: 6
+      }
+    }, "✓"), e.n, e.anchor && /*#__PURE__*/React.createElement("span", {
       style: {
         fontSize: 10,
         fontWeight: 800,
@@ -3213,7 +3429,41 @@ function App() {
         fontSize: 12,
         color: "#FFC98A"
       }
-    }, "best ever:\xA0", fmtSet(atBest, e.hold)), /*#__PURE__*/React.createElement("div", {
+    }, "best ever:\xA0", fmtSet(atBest, e.hold)), last && last.note && /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: 6,
+        padding: "6px 10px",
+        borderRadius: 8,
+        background: last.pain === "discomfort" ? "rgba(255,92,138,0.14)" : T.bg,
+        border: "1px solid " + (last.pain === "discomfort" ? "#FF5C8A" : T.line)
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 10,
+        color: T.muted,
+        textTransform: "uppercase",
+        letterSpacing: 0.5,
+        marginBottom: 2
+      }
+    }, "Last note", last.effort ? " · " + (last.effort === "strong" ? "felt strong" : last.effort === "hard" ? "felt hard" : "felt normal") : "", last.pain === "discomfort" ? " · discomfort" : ""), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.text
+      }
+    }, last.note)), last && !last.note && (last.effort || last.pain === "discomfort") && /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: 6,
+        padding: "6px 10px",
+        borderRadius: 8,
+        background: last.pain === "discomfort" ? "rgba(255,92,138,0.14)" : T.bg,
+        border: "1px solid " + (last.pain === "discomfort" ? "#FF5C8A" : T.line)
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.text
+      }
+    }, "Last time: ", last.effort === "strong" ? "felt strong" : last.effort === "hard" ? "felt hard" : "felt normal", last.pain === "discomfort" ? " · discomfort noted" : "")), /*#__PURE__*/React.createElement("div", {
       style: {
         marginTop: 12,
         display: "flex",
@@ -3299,6 +3549,112 @@ function App() {
           border: "1px solid " + T.line
         }
       })));
+    })), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setCompletedEx(p => ({
+        ...p,
+        [k]: !p[k]
+      })),
+      style: {
+        width: "100%",
+        marginTop: 10,
+        padding: "8px",
+        borderRadius: 10,
+        fontSize: 12,
+        fontWeight: 700,
+        background: isDone ? "rgba(57,242,228,0.14)" : "transparent",
+        border: "1px solid " + (isDone ? T.emerald : T.line),
+        color: isDone ? T.emerald : T.muted
+      }
+    }, isDone ? "✓ Completed — tap to undo" : "Mark exercise complete"), isDone && /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: 10
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 10,
+        color: T.muted,
+        textTransform: "uppercase",
+        letterSpacing: 0.5,
+        marginBottom: 6
+      }
+    }, "How did it feel?"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        gap: 4
+      }
+    }, [["hard", "😓"], ["normal", "😐"], ["strong", "💪"]].map(([v, ic]) => {
+      const on = draftRatings[k] && draftRatings[k].effort === v;
+      return /*#__PURE__*/React.createElement("button", {
+        key: v,
+        onClick: () => setDraftRatings(p => ({
+          ...p,
+          [k]: {
+            ...(p[k] || {}),
+            effort: on ? null : v
+          }
+        })),
+        style: {
+          flex: 1,
+          padding: "5px 2px",
+          borderRadius: 8,
+          fontSize: 16,
+          background: on ? T.surfaceHi : "transparent",
+          border: "1px solid " + (on ? T.amber : T.line)
+        }
+      }, ic);
+    }), (() => {
+      const on = draftRatings[k] && draftRatings[k].pain === "discomfort";
+      return /*#__PURE__*/React.createElement("button", {
+        onClick: () => setDraftRatings(p => ({
+          ...p,
+          [k]: {
+            ...(p[k] || {}),
+            pain: on ? null : "discomfort"
+          }
+        })),
+        style: {
+          flex: 1,
+          padding: "5px 2px",
+          borderRadius: 8,
+          fontSize: 16,
+          background: on ? "rgba(255,92,138,0.22)" : "transparent",
+          border: "1px solid " + (on ? "#FF5C8A" : T.line)
+        }
+      }, "⚠️");
+    })()), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setOpenNote(openNote === k ? null : k),
+      style: {
+        width: "100%",
+        marginTop: 6,
+        padding: "5px 9px",
+        borderRadius: 6,
+        fontSize: 11,
+        fontWeight: 700,
+        background: "transparent",
+        border: "1px solid " + T.line,
+        color: (draftNotes[k] || "").trim() ? T.emerald : T.muted
+      }
+    }, (draftNotes[k] || "").trim() ? "✓ Note added — tap to edit" : "+ Add a note"), openNote === k && /*#__PURE__*/React.createElement("textarea", {
+      value: draftNotes[k] || "",
+      onChange: ev => setDraftNotes(p => ({
+        ...p,
+        [k]: ev.target.value
+      })),
+      placeholder: "Optional context — anything worth remembering next time…",
+      className: "mono",
+      style: {
+        width: "100%",
+        marginTop: 6,
+        borderRadius: 8,
+        padding: 10,
+        fontSize: 13,
+        outline: "none",
+        background: T.bg,
+        color: T.text,
+        border: "1px solid " + T.line,
+        minHeight: 56,
+        resize: "vertical"
+      }
     })));
   })), /*#__PURE__*/React.createElement("button", {
     onClick: saveSession,
@@ -3700,13 +4056,23 @@ function App() {
         }
       }, e.n), hist.map((s, i) => /*#__PURE__*/React.createElement("div", {
         key: i,
+        style: {
+          marginTop: 3
+        }
+      }, /*#__PURE__*/React.createElement("div", {
         className: "mono",
         style: {
           fontSize: 12,
-          color: T.muted,
-          marginTop: 3
+          color: T.muted
         }
-      }, new Date(s.date).toLocaleDateString(), ": ", s.sets.map(x => fmtSet(x, e.hold)).join(", "))));
+      }, new Date(s.date).toLocaleDateString(), ": ", s.sets.map(x => fmtSet(x, e.hold)).join(", ")), s.note && /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 11,
+          fontStyle: "italic",
+          color: T.muted,
+          marginLeft: 4
+        }
+      }, "\"", s.note, "\""))));
     }));
   }) : /*#__PURE__*/React.createElement("div", {
     style: {
@@ -3995,16 +4361,146 @@ function App() {
       color: "#FFC98A",
       marginBottom: 8
     }
-  }, "🏆 PR on ", sessionCard.prs.join(", ")), /*#__PURE__*/React.createElement("img", {
+  }, "🏆 PR on ", sessionCard.prs.join(", ")), sessionCard.commentary && sessionCard.commentary.length > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderRadius: 14,
+      padding: 14,
+      background: T.cardA,
+      border: "1px solid " + T.cardALine,
+      marginTop: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: T.cardAAccent,
+      letterSpacing: 1.5,
+      textTransform: "uppercase",
+      fontWeight: 700,
+      marginBottom: 10
+    }
+  }, "How it went"), sessionCard.commentary.map((c, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      marginBottom: i < sessionCard.commentary.length - 1 ? 12 : 0
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13,
+      fontWeight: 700,
+      color: T.text
+    }
+  }, c.name), c.lines.map((l, j) => /*#__PURE__*/React.createElement("div", {
+    key: j,
+    style: {
+      display: "flex",
+      gap: 6,
+      fontSize: 12,
+      lineHeight: 1.5,
+      marginTop: 4,
+      color: l.tone === "warn" ? "#FFB27A" : l.tone === "good" ? T.emerald : T.muted
+    }
+  }, /*#__PURE__*/React.createElement("span", null, l.tone === "warn" ? "⚠" : l.tone === "good" ? "▲" : "·"), /*#__PURE__*/React.createElement("span", null, l.t))), c.note && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      fontStyle: "italic",
+      color: T.muted,
+      marginTop: 4
+    }
+  }, "\"", c.note, "\"")))), sessionCard.xp && typeof sessionCard.xp.total === "number" && sessionCard.xp.total > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderRadius: 14,
+      padding: 14,
+      background: T.cardC,
+      border: "1px solid " + T.cardCLine,
+      marginTop: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "baseline",
+      justifyContent: "space-between",
+      marginBottom: 10
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      color: T.cardCAccent,
+      letterSpacing: 1.5,
+      textTransform: "uppercase",
+      fontWeight: 700
+    }
+  }, "XP earned"), /*#__PURE__*/React.createElement("span", {
+    className: "mono",
+    style: {
+      fontSize: 26,
+      fontWeight: 800,
+      color: T.cardCAccent
+    }
+  }, "+", sessionCard.xp.total)), sessionCard.xp.items.map((it, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      fontSize: 12,
+      padding: "5px 0",
+      borderBottom: i < sessionCard.xp.items.length - 1 ? "1px solid " + T.cardCLine : "none"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: it.hot ? "#FFC98A" : T.muted
+    }
+  }, it.label), /*#__PURE__*/React.createElement("span", {
+    className: "mono",
+    style: {
+      color: it.hot ? "#FFC98A" : T.text,
+      fontWeight: 700
+    }
+  }, "+", it.xp))), (() => {
+    const lv = levelFromXP(sessionCard.xp.newTotal);
+    return /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: 12
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        justifyContent: "space-between",
+        fontSize: 11,
+        color: T.muted,
+        marginBottom: 5
+      }
+    }, /*#__PURE__*/React.createElement("span", null, "Level ", lv.level), /*#__PURE__*/React.createElement("span", {
+      className: "mono"
+    }, sessionCard.xp.newTotal.toLocaleString(), " XP total")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        height: 7,
+        borderRadius: 4,
+        background: T.bg,
+        overflow: "hidden"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: lv.pct + "%",
+        height: "100%",
+        background: T.cardCAccent
+      }
+    })), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted,
+        marginTop: 5
+      }
+    }, (lv.needForNext - lv.intoLevel).toLocaleString(), " XP to level ", lv.level + 1));
+  })()), sessionCard.url && /*#__PURE__*/React.createElement("img", {
     src: sessionCard.url,
     alt: "session card",
     style: {
       width: "100%",
       borderRadius: 12,
       display: "block",
-      marginTop: 6
+      marginTop: 10
     }
-  }), /*#__PURE__*/React.createElement("button", {
+  }), sessionCard.url && /*#__PURE__*/React.createElement("button", {
     onClick: () => shareImageUrl(sessionCard.url),
     style: {
       width: "100%",
