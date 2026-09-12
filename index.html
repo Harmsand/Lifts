@@ -6332,13 +6332,16 @@ function App() {
         background: T.bg,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        padding: 18,
-        maxHeight: "90vh",
-        overflowY: "auto",
+        maxHeight: "85vh",
+        display: "flex",
+        flexDirection: "column",
         border: "1px solid " + T.line
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
+        padding: "18px 18px 12px",
+        flexShrink: 0,
+        borderBottom: "1px solid " + T.line,
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "space-between",
@@ -6364,11 +6367,18 @@ function App() {
         background: "transparent",
         border: "none",
         color: T.muted,
-        fontSize: 22,
+        fontSize: 24,
         lineHeight: 1,
+        padding: "2px 2px 2px 16px",
         flexShrink: 0
       }
-    }, "✕")), !isMob && /*#__PURE__*/React.createElement("div", {
+    }, "✕")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        padding: "0 18px 22px",
+        overflowY: "auto",
+        flex: 1
+      }
+    }, !isMob && /*#__PURE__*/React.createElement("div", {
       style: {
         display: "flex",
         gap: 18,
@@ -6512,7 +6522,7 @@ function App() {
         marginTop: 8,
         lineHeight: 1.5
       }
-    }, "On iPhone, press and hold the image to save it straight to Photos."))));
+    }, "On iPhone, press and hold the image to save it straight to Photos.")))));
   })(), menuOpen && /*#__PURE__*/React.createElement("div", {
     onClick: () => {
       setMenuOpen(false);
@@ -6537,7 +6547,7 @@ function App() {
       borderBottomLeftRadius: 20,
       borderBottomRightRadius: 20,
       padding: 18,
-      maxHeight: "92vh",
+      maxHeight: "88vh",
       overflowY: "auto",
       border: "1px solid " + T.line
     }
@@ -6958,12 +6968,22 @@ function App() {
         background: T.bg,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        padding: 18,
-        maxHeight: "88vh",
-        overflowY: "auto",
+        maxHeight: "85vh",
+        display: "flex",
+        flexDirection: "column",
         border: "1px solid " + T.line
       }
     }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        padding: "18px 18px 12px",
+        flexShrink: 0,
+        borderBottom: "1px solid " + T.line,
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        gap: 8
+      }
+    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
       style: {
         fontSize: 10,
         color: T.muted,
@@ -6981,10 +7001,26 @@ function App() {
       style: {
         fontSize: 12,
         color: T.muted,
-        marginTop: 2,
-        marginBottom: 14
+        marginTop: 2
       }
-    }, "Pick the version that fits your equipment and ability."), alts.map(a => {
+    }, "Pick the version that fits your equipment and ability.")), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setSwapFor(null),
+      style: {
+        background: "transparent",
+        border: "none",
+        color: T.muted,
+        fontSize: 24,
+        lineHeight: 1,
+        padding: "2px 2px 2px 16px",
+        flexShrink: 0
+      }
+    }, "✕")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        padding: "14px 18px 22px",
+        overflowY: "auto",
+        flex: 1
+      }
+    }, alts.map(a => {
       const on = a.n === swapFor.current;
       return /*#__PURE__*/React.createElement("button", {
         key: a.n,
@@ -7067,7 +7103,7 @@ function App() {
         border: "1px solid " + T.line,
         color: T.muted
       }
-    }, "Cancel")));
+    }, "Cancel"))));
   })(), showBrief && !sessionCard && (() => {
     const q = quoteOfTheDay();
     const brief = buildBriefing(logs, ROTATION[rotIdx]);
@@ -7092,7 +7128,7 @@ function App() {
         background: T.bg,
         borderRadius: 18,
         padding: 18,
-        maxHeight: "92vh",
+        maxHeight: "82vh",
         overflowY: "auto",
         border: "1px solid " + T.line
       }
@@ -7214,7 +7250,7 @@ function App() {
       background: T.surface,
       borderRadius: 18,
       padding: 16,
-      maxHeight: "92vh",
+      maxHeight: "82vh",
       overflowY: "auto"
     }
   }, /*#__PURE__*/React.createElement("div", {
@@ -8655,10 +8691,16 @@ function LevelCard({
       background: T.bg,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
-      padding: 18,
-      maxHeight: "90vh",
-      overflowY: "auto",
+      maxHeight: "85vh",
+      display: "flex",
+      flexDirection: "column",
       border: "1px solid " + T.line
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "18px 18px 12px",
+      flexShrink: 0,
+      borderBottom: "1px solid " + T.line
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -8687,8 +8729,9 @@ function LevelCard({
       background: "transparent",
       border: "none",
       color: T.muted,
-      fontSize: 22,
-      lineHeight: 1
+      fontSize: 24,
+      lineHeight: 1,
+      padding: "4px 4px 4px 16px"
     }
   }, "✕")), /*#__PURE__*/React.createElement("div", {
     style: {
@@ -8708,10 +8751,15 @@ function LevelCard({
     style: {
       fontSize: 11,
       color: T.muted,
-      marginTop: 6,
-      marginBottom: 16
+      marginTop: 6
     }
-  }, lv.intoLevel.toLocaleString(), " / ", lv.needForNext.toLocaleString(), " toward level ", lv.level + 1), /*#__PURE__*/React.createElement("div", {
+  }, lv.intoLevel.toLocaleString(), " / ", lv.needForNext.toLocaleString(), " toward level ", lv.level + 1)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "14px 18px 22px",
+      overflowY: "auto",
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 11,
       color: T.muted,
@@ -8798,7 +8846,7 @@ function LevelCard({
       marginTop: 10,
       lineHeight: 1.6
     }
-  }, "100 per session, 50 to 100 for volume against your own average, 75 per personal record, 50 for a mobility day. See the Guide for how and why it works this way."))));
+  }, "100 per session, 50 to 100 for volume against your own average, 75 per personal record, 50 for a mobility day. See the Guide for how and why it works this way.")))));
 }
 function StrengthStandards({
   logs,
