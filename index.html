@@ -2535,6 +2535,9 @@ const PRINCIPLES = [{
   t: "How hard is hard enough",
   d: "Intensity does not just mean heavy. It means effort. Most people end a set when it starts getting uncomfortable, not when they are actually close to being unable to complete another rep, and those are very different places.\n\nThe research points both ways in a useful manner. A 2024 meta-regression found muscle growth increased as sets were taken closer to failure (PMID 38970765). A separate meta-analysis found no clear hypertrophy advantage to hitting momentary muscular failure versus stopping short of it (PMID 36334240). Together: you do not need to fail every set, but your working sets should be close enough that the last reps are legitimately difficult.\n\nThat means rep speed slows, technique gets challenged, and finishing the set takes real effort. Not \"I felt the muscle.\" Not \"that burned a little.\" Not \"I could have done five more, but the sheet said ten.\" If every set ends comfortably, you are probably leaving growth on the table."
 }, {
+  t: "How XP and levels work",
+  d: "XP rewards showing up and progressing against yourself. Nothing in it is based on how much you lift, your bodyweight, or your strength tier, so a beginner and a lifetime lifter earn at exactly the same rate.\n\nYou get 100 for logging a session. Another 50 to 100 depending on how that session's volume compares to your own 30 day average for that workout. 75 for each personal record, capped at three a session so a first ever session doesn't dwarf months of real work. 50 for a day with mobility in it, once per day however many sessions you do. 50 more when you hit three sessions in a week.\n\nThere is no streak bonus, on purpose. A streak that breaks on a sick day or a planned deload punishes exactly the behaviour good training needs. The weekly bonus rewards consistency without turning a missed day into a failure.\n\nYour level is worked out from your whole logged history every time you open the app, never stored as a running total. That means correcting or importing history fixes your level automatically."
+}, {
   t: "Rest between sets",
   d: "Rest is part of the work, not wasted time. The stronger you get, the more recovery each set needs: heavier weight means more force, more fatigue, and longer to recover enough to repeat the effort. This applies whether you are chasing strength or size.\n\nHeavy compounds (squat, deadlift, press, row): beginner 2 to 3 minutes, novice 3 to 4, intermediate 4 to 6, advanced 6 to 8 or longer. Accessory and isolation work: 1 to 3 minutes is usually enough. Stone shows the range for each anchor lift based on where you currently sit against the strength standards, so it scales as you get stronger.\n\nThe rule that matters more than the clock: if your reps drop off hard from set to set, you are not resting long enough. If you genuinely do not have time for long rests, that is a real constraint, but be honest that it caps how heavy your top sets can go. Better to do fewer exercises with proper rest than more exercises while under recovered."
 }, {
@@ -3920,6 +3923,8 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuSection, setMenuSection] = useState(null);
   const [progressTab, setProgressTab] = useState("workouts");
+  const [detailSession, setDetailSession] = useState(null);
+  const [detailCard, setDetailCard] = useState(null);
   const [mobSession, setMobSession] = useState(null);
   const [mobDone, setMobDone] = useState({});
   const [customMob, setCustomMob] = useState(() => {
@@ -4407,13 +4412,18 @@ function App() {
       quotes: "Quotes",
       data: "History & backup"
     };
+    const MAIN = {
+      train: "Train",
+      mobility: "Mobility",
+      log: "Progress"
+    };
     const title = SUB[tab];
     if (!title) return /*#__PURE__*/React.createElement("div", {
       style: {
         fontSize: 26,
         fontWeight: 700
       }
-    }, "Stone");
+    }, MAIN[tab] || "Stone");
     return /*#__PURE__*/React.createElement("div", {
       style: {
         display: "flex",
@@ -4485,16 +4495,16 @@ function App() {
     onClick: () => setSelId("BON"),
     style: {
       width: "100%",
-      borderRadius: 12,
-      padding: "8px",
-      marginBottom: 16,
-      fontSize: 14,
+      borderRadius: 10,
+      padding: "6px",
+      marginBottom: 12,
+      fontSize: 12,
       fontWeight: 600,
       background: selId === "BON" ? T.surfaceHi : "transparent",
       border: "1.5px solid " + (selId === "BON" ? T.amber : T.line),
       color: selId === "BON" ? T.text : T.muted
     }
-  }, "+ Bonus day (optional · won't advance)"), /*#__PURE__*/React.createElement("div", {
+  }, "+ Bonus day"), /*#__PURE__*/React.createElement("div", {
     style: {
       marginBottom: 12
     }
@@ -5728,15 +5738,16 @@ function App() {
       borderBottom: "2px solid " + (progressTab === id ? T.amber : "transparent"),
       marginBottom: -1
     }
-  }, lbl))), progressTab === "workouts" ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(AllTimeStats, {
-    logs: logs
+  }, lbl))), progressTab === "workouts" ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Calendar, {
+    logs: logs,
+    onSelect: dayKey => {
+      const match = buildSessions(logs).filter(x => x.day === dayKey);
+      if (match.length) setDetailSession(match[0]);
+    }
   }), /*#__PURE__*/React.createElement(SessionFeed, {
-    logs: logs
+    logs: logs,
+    onSelect: setDetailSession
   })) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(LevelCard, {
-    logs: logs
-  }), /*#__PURE__*/React.createElement(Calendar, {
-    logs: logs
-  }), /*#__PURE__*/React.createElement(Trends, {
     logs: logs
   }), /*#__PURE__*/React.createElement(StrengthStandards, {
     logs: logs,
@@ -5748,7 +5759,9 @@ function App() {
     setAge: setProfileAge
   }), /*#__PURE__*/React.createElement(LiftBalance, {
     logs: logs
-  }), /*#__PURE__*/React.createElement(ShareCard, {
+  }), /*#__PURE__*/React.createElement(AllTimeStats, {
+    logs: logs
+  }), /*#__PURE__*/React.createElement(Trends, {
     logs: logs
   }))), tab === "data" && /*#__PURE__*/React.createElement("div", {
     style: {
@@ -6277,6 +6290,229 @@ function App() {
         }, e.s, " × ", e.r));
       })));
     }));
+  })(), detailSession && (() => {
+    const sess = detailSession;
+    const isMob = sess.wid === "MOB";
+    const W = findWorkout(sess.wid);
+    const prs = isMob ? [] : prNamesFor(logs, sess);
+    const [yy, mm, dd] = sess.day.split("-").map(Number);
+    const dateTxt = new Date(yy, mm - 1, dd).toLocaleDateString(undefined, {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric"
+    });
+    const makeCard = () => {
+      try {
+        const card = buildSessionCard(logs, sess.wid, sess.day);
+        if (card && card.url) setDetailCard(card.url);else flash("Couldn't build a card for this session.");
+      } catch (e) {
+        flash("Couldn't build a card for this session.");
+      }
+    };
+    return /*#__PURE__*/React.createElement("div", {
+      onClick: () => {
+        setDetailSession(null);
+        setDetailCard(null);
+      },
+      style: {
+        position: "fixed",
+        inset: 0,
+        background: "rgba(10,5,25,0.9)",
+        zIndex: 85,
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: "center"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      onClick: ev => ev.stopPropagation(),
+      style: {
+        maxWidth: 480,
+        width: "100%",
+        background: T.bg,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        padding: 18,
+        maxHeight: "90vh",
+        overflowY: "auto",
+        border: "1px solid " + T.line
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        gap: 8
+      }
+    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 21,
+        fontWeight: 800
+      }
+    }, isMob ? "Mobility" : W ? W.label : sess.wid), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        marginTop: 2
+      }
+    }, dateTxt)), /*#__PURE__*/React.createElement("button", {
+      onClick: () => {
+        setDetailSession(null);
+        setDetailCard(null);
+      },
+      style: {
+        background: "transparent",
+        border: "none",
+        color: T.muted,
+        fontSize: 22,
+        lineHeight: 1,
+        flexShrink: 0
+      }
+    }, "✕")), !isMob && /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        gap: 18,
+        marginTop: 14,
+        paddingBottom: 14,
+        borderBottom: "1px solid " + T.line
+      }
+    }, [["Volume", Math.round(sess.vol).toLocaleString() + " lb"], ["Sets", String(sess.sets)], ["Exercises", String(sess.ex.length)]].map(([l, v]) => /*#__PURE__*/React.createElement("div", {
+      key: l
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 10,
+        color: T.muted,
+        textTransform: "uppercase",
+        letterSpacing: 0.5
+      }
+    }, l), /*#__PURE__*/React.createElement("div", {
+      className: "mono",
+      style: {
+        fontSize: 16,
+        fontWeight: 700,
+        color: T.text
+      }
+    }, v)))), isMob ? /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: 14
+      }
+    }, sess.mobItems.map((m, i) => /*#__PURE__*/React.createElement("div", {
+      key: i,
+      style: {
+        fontSize: 14,
+        color: T.text,
+        padding: "8px 0",
+        borderBottom: i < sess.mobItems.length - 1 ? "1px solid " + T.line : "none"
+      }
+    }, "✓ ", m))) : /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: 14
+      }
+    }, sess.ex.map((e, i) => /*#__PURE__*/React.createElement("div", {
+      key: i,
+      style: {
+        marginBottom: 14
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "baseline",
+        justifyContent: "space-between",
+        gap: 8
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 14,
+        fontWeight: 700,
+        color: prs.indexOf(e.name) !== -1 ? "#FFC98A" : T.text
+      }
+    }, prs.indexOf(e.name) !== -1 ? "🏆 " : "", e.name), e.effort && /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 15,
+        flexShrink: 0
+      }
+    }, e.effort === "strong" ? "💪" : e.effort === "hard" ? "😓" : "😐")), /*#__PURE__*/React.createElement("div", {
+      className: "mono",
+      style: {
+        fontSize: 13,
+        color: T.muted,
+        marginTop: 4,
+        lineHeight: 1.7
+      }
+    }, e.allSets.filter(x => !(x.w === "" && x.r === "")).map((x, j) => /*#__PURE__*/React.createElement("span", {
+      key: j
+    }, j > 0 ? "  ·  " : "", fmtSet(x, e.hold)))), e.pain === "discomfort" && /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: "#FF9EB8",
+        marginTop: 4
+      }
+    }, "⚠ Discomfort noted"), e.note && /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        fontStyle: "italic",
+        marginTop: 4
+      }
+    }, "\"", e.note, "\"")))), !isMob && !detailCard && /*#__PURE__*/React.createElement("button", {
+      onClick: makeCard,
+      style: {
+        width: "100%",
+        borderRadius: 12,
+        padding: 14,
+        marginTop: 6,
+        fontSize: 15,
+        fontWeight: 800,
+        border: "none",
+        background: T.amber,
+        color: "#2A0A46"
+      }
+    }, "Create share image"), !isMob && detailCard && /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: 10
+      }
+    }, /*#__PURE__*/React.createElement("img", {
+      src: detailCard,
+      alt: "share card",
+      style: {
+        width: "100%",
+        borderRadius: 12,
+        display: "block"
+      }
+    }), /*#__PURE__*/React.createElement("button", {
+      onClick: () => shareImageUrl(detailCard),
+      style: {
+        width: "100%",
+        borderRadius: 12,
+        padding: 14,
+        marginTop: 10,
+        fontSize: 15,
+        fontWeight: 800,
+        border: "none",
+        background: T.amber,
+        color: "#2A0A46"
+      }
+    }, "Share or save"), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setDetailCard(null),
+      style: {
+        width: "100%",
+        borderRadius: 12,
+        padding: 10,
+        marginTop: 6,
+        fontSize: 13,
+        fontWeight: 700,
+        background: "transparent",
+        border: "1px solid " + T.line,
+        color: T.muted
+      }
+    }, "Make another"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted,
+        marginTop: 8,
+        lineHeight: 1.5
+      }
+    }, "On iPhone, press and hold the image to save it straight to Photos."))));
   })(), menuOpen && /*#__PURE__*/React.createElement("div", {
     onClick: () => {
       setMenuOpen(false);
@@ -7187,7 +7423,14 @@ function App() {
       background: T.amber,
       color: "#2A0A46"
     }
-  }, "Share image"), /*#__PURE__*/React.createElement("button", {
+  }, "Share or save"), sessionCard.url && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: T.muted,
+      marginTop: 8,
+      lineHeight: 1.5
+    }
+  }, "On iPhone, press and hold the image to save it straight to Photos."), /*#__PURE__*/React.createElement("button", {
     onClick: dismissSessionCard,
     style: {
       width: "100%",
@@ -7392,7 +7635,8 @@ function Stat({
   }, label));
 }
 function Calendar({
-  logs
+  logs,
+  onSelect
 }) {
   const today = new Date();
   const [cur, setCur] = useState({
@@ -7414,13 +7658,7 @@ function Calendar({
     L2: "#FFB86B",
     MOB: "#6FE6C4"
   };
-  const WNAME = {
-    UA: "Upper A",
-    LA: "Lower A",
-    UB: "Upper B",
-    LB: "Lower B",
-    BON: "Bonus"
-  };
+  const WNAME = id => id === "MOB" ? "Mobility" : (findWorkout(id) || {}).label || id;
   const pad = n => String(n).padStart(2, "0");
   const dayMap = {};
   Object.keys(logs).forEach(k => {
@@ -7575,8 +7813,10 @@ function Calendar({
     const ds = cur.y + "-" + pad(cur.m + 1) + "-" + pad(d);
     const wids = dayMap[ds] ? Array.from(dayMap[ds]) : [];
     const isToday = ds === todayStr;
-    return /*#__PURE__*/React.createElement("div", {
+    const tappable = wids.length > 0 && typeof onSelect === "function";
+    return /*#__PURE__*/React.createElement("button", {
       key: i,
+      onClick: tappable ? () => onSelect(ds) : undefined,
       style: {
         aspectRatio: "1 / 1",
         borderRadius: 8,
@@ -7584,8 +7824,10 @@ function Calendar({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+        padding: 0,
         background: wids.length ? "#2E1A5C" : T.bg,
-        border: isToday ? "1px solid " + T.amber : "1px solid transparent"
+        border: isToday ? "1px solid " + T.amber : "1px solid transparent",
+        cursor: tappable ? "pointer" : "default"
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
@@ -7634,7 +7876,7 @@ function Calendar({
       fontSize: 11,
       color: T.muted
     }
-  }, WNAME[w] || w)))));
+  }, WNAME(w))))));
 }
 
 /* ---------------- trends (overall + per-exercise w/ recent sessions) ---------------- */
@@ -8026,9 +8268,9 @@ function Trends({
 /* ---------------- strength standards (vs. other men) ---------------- */
 /* Month-grouped feed of every session, newest first. Answers "what did I do
    on the 5th", which the per-exercise log doesn't. */
-function SessionFeed({
-  logs
-}) {
+/* Shared session builder. The feed, the calendar, and the detail sheet all
+   need the same shape, so it lives in one place. */
+function buildSessions(logs) {
   const byDayWid = {};
   Object.keys(logs).forEach(k => {
     const wid = k.split("::")[0];
@@ -8039,6 +8281,7 @@ function SessionFeed({
       if (!day) return;
       const id = day + "|" + wid;
       if (!byDayWid[id]) byDayWid[id] = {
+        key: id,
         day,
         wid,
         date: s.date,
@@ -8054,17 +8297,48 @@ function SessionFeed({
       }
       B.vol += sessionVolumeOf(s.sets, hold);
       B.sets += (s.sets || []).length;
-      const best = bestSet(s.sets);
       B.ex.push({
         name,
-        best,
         hold,
+        allSets: s.sets || [],
+        best: bestSet(s.sets),
         note: s.note,
+        effort: s.effort,
         pain: s.pain
       });
     });
   });
-  const sessions = Object.values(byDayWid).sort((a, b) => new Date(b.date) - new Date(a.date));
+  return Object.values(byDayWid).sort((a, b) => new Date(b.date) - new Date(a.date));
+}
+
+/* Which exercises in this session beat everything logged before it. */
+function prNamesFor(logs, sess) {
+  const names = [];
+  (sess.ex || []).forEach(e => {
+    const key = exKey(sess.wid, e.name);
+    const before = (logs[key] || []).filter(h => new Date(h.date) < new Date(sess.date));
+    if (!before.length || !e.best) return;
+    let priorBest = null;
+    before.forEach(h => {
+      const b = bestSet(h.sets);
+      if (b && (!priorBest || metricFor(b, e.hold) > metricFor(priorBest, e.hold))) priorBest = b;
+    });
+    if (priorBest && metricFor(e.best, e.hold) > metricFor(priorBest, e.hold)) names.push(e.name);
+  });
+  return names;
+}
+function monthLabelFor(dayKey) {
+  const [y, m] = dayKey.split("-").map(Number);
+  return new Date(y, m - 1, 1).toLocaleDateString(undefined, {
+    month: "long",
+    year: "numeric"
+  });
+}
+function SessionFeed({
+  logs,
+  onSelect
+}) {
+  const sessions = buildSessions(logs);
   if (!sessions.length) return /*#__PURE__*/React.createElement("div", {
     style: {
       color: T.muted,
@@ -8073,30 +8347,9 @@ function SessionFeed({
       lineHeight: 1.6
     }
   }, "No sessions logged yet. Finish a workout and it'll show up here.");
-
-  // PR detection per session, against everything logged before it
-  const prFor = sess => {
-    const names = [];
-    sess.ex.forEach(e => {
-      const key = exKey(sess.wid, e.name);
-      const before = (logs[key] || []).filter(h => new Date(h.date) < new Date(sess.date));
-      if (!before.length || !e.best) return;
-      let priorBest = null;
-      before.forEach(h => {
-        const b = bestSet(h.sets);
-        if (b && (!priorBest || metricFor(b, e.hold) > metricFor(priorBest, e.hold))) priorBest = b;
-      });
-      if (priorBest && metricFor(e.best, e.hold) > metricFor(priorBest, e.hold)) names.push(e.name);
-    });
-    return names;
-  };
   const months = [];
-  sessions.forEach(s => {
-    const [y, m] = s.day.split("-").map(Number);
-    const label = new Date(y, m - 1, 1).toLocaleDateString(undefined, {
-      month: "long",
-      year: "numeric"
-    });
+  sessions.forEach(sess => {
+    const label = monthLabelFor(sess.day);
     let group = months[months.length - 1];
     if (!group || group.label !== label) {
       group = {
@@ -8105,7 +8358,7 @@ function SessionFeed({
       };
       months.push(group);
     }
-    group.items.push(s);
+    group.items.push(sess);
   });
   return /*#__PURE__*/React.createElement("div", null, months.map(mo => /*#__PURE__*/React.createElement("div", {
     key: mo.label,
@@ -8119,27 +8372,32 @@ function SessionFeed({
       color: T.text,
       marginBottom: 10
     }
-  }, mo.label), mo.items.map((s, i) => {
-    const isMob = s.wid === "MOB";
-    const W = findWorkout(s.wid);
-    const TH = CARD_THEMES[s.wid] || {
+  }, mo.label), mo.items.map(sess => {
+    const isMob = sess.wid === "MOB";
+    const W = findWorkout(sess.wid);
+    const TH = CARD_THEMES[sess.wid] || {
       horizon: T.emerald
     };
-    const prs = isMob ? [] : prFor(s);
-    const [yy, mm, dd] = s.day.split("-").map(Number);
+    const prs = isMob ? [] : prNamesFor(logs, sess);
+    const [yy, mm, dd] = sess.day.split("-").map(Number);
     const dateTxt = new Date(yy, mm - 1, dd).toLocaleDateString(undefined, {
       weekday: "short",
       month: "short",
       day: "numeric"
     });
-    return /*#__PURE__*/React.createElement("div", {
-      key: i,
+    return /*#__PURE__*/React.createElement("button", {
+      key: sess.key,
+      onClick: () => onSelect(sess),
       style: {
         display: "flex",
+        width: "100%",
+        textAlign: "left",
         borderRadius: 14,
         overflow: "hidden",
         marginBottom: 8,
-        background: T.surface
+        background: T.surface,
+        border: "none",
+        padding: 0
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
@@ -8165,17 +8423,28 @@ function SessionFeed({
         fontWeight: 700,
         color: T.text
       }
-    }, isMob ? "Mobility" : W ? W.label : s.wid), prs.length > 0 && /*#__PURE__*/React.createElement("span", {
+    }, isMob ? "Mobility" : W ? W.label : sess.wid), /*#__PURE__*/React.createElement("span", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 6,
+        flexShrink: 0
+      }
+    }, prs.length > 0 && /*#__PURE__*/React.createElement("span", {
       style: {
         fontSize: 10,
         fontWeight: 800,
         padding: "2px 7px",
         borderRadius: 6,
         background: "#FFC98A",
-        color: "#2A1A05",
-        flexShrink: 0
+        color: "#2A1A05"
       }
-    }, "🏆 PR")), /*#__PURE__*/React.createElement("div", {
+    }, "🏆 PR"), /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: T.muted,
+        fontSize: 14
+      }
+    }, "›"))), /*#__PURE__*/React.createElement("div", {
       style: {
         fontSize: 12,
         color: T.muted,
@@ -8188,98 +8457,29 @@ function SessionFeed({
         marginTop: 8,
         lineHeight: 1.5
       }
-    }, s.mobItems.length, " movement", s.mobItems.length === 1 ? "" : "s", s.mobItems.length ? " · " + s.mobItems.slice(0, 3).join(", ") + (s.mobItems.length > 3 ? "…" : "") : "") : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    }, sess.mobItems.length, " movement", sess.mobItems.length === 1 ? "" : "s") : /*#__PURE__*/React.createElement("div", {
       style: {
         display: "flex",
         gap: 18,
         marginTop: 9
       }
-    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    }, [["Volume", Math.round(sess.vol).toLocaleString() + " lb"], ["Sets", String(sess.sets)], ["Exercises", String(sess.ex.length)]].map(([l, v]) => /*#__PURE__*/React.createElement("div", {
+      key: l
+    }, /*#__PURE__*/React.createElement("div", {
       style: {
         fontSize: 10,
         color: T.muted,
         textTransform: "uppercase",
         letterSpacing: 0.5
       }
-    }, "Volume"), /*#__PURE__*/React.createElement("div", {
+    }, l), /*#__PURE__*/React.createElement("div", {
       className: "mono",
       style: {
         fontSize: 14,
         fontWeight: 700,
         color: T.text
       }
-    }, Math.round(s.vol).toLocaleString(), " lb")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: T.muted,
-        textTransform: "uppercase",
-        letterSpacing: 0.5
-      }
-    }, "Sets"), /*#__PURE__*/React.createElement("div", {
-      className: "mono",
-      style: {
-        fontSize: 14,
-        fontWeight: 700,
-        color: T.text
-      }
-    }, s.sets)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: T.muted,
-        textTransform: "uppercase",
-        letterSpacing: 0.5
-      }
-    }, "Exercises"), /*#__PURE__*/React.createElement("div", {
-      className: "mono",
-      style: {
-        fontSize: 14,
-        fontWeight: 700,
-        color: T.text
-      }
-    }, s.ex.length))), /*#__PURE__*/React.createElement("div", {
-      style: {
-        marginTop: 9,
-        paddingTop: 9,
-        borderTop: "1px solid " + T.line
-      }
-    }, s.ex.slice(0, 4).map((e, j) => /*#__PURE__*/React.createElement("div", {
-      key: j,
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        gap: 8,
-        fontSize: 12,
-        padding: "2px 0"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: prs.indexOf(e.name) !== -1 ? "#FFC98A" : T.muted
-      }
-    }, prs.indexOf(e.name) !== -1 ? "🏆 " : "", e.name), /*#__PURE__*/React.createElement("span", {
-      className: "mono",
-      style: {
-        color: T.text,
-        flexShrink: 0
-      }
-    }, e.best ? fmtSet(e.best, e.hold) : "—"))), s.ex.length > 4 && /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 11,
-        color: T.muted,
-        marginTop: 3
-      }
-    }, "+", s.ex.length - 4, " more")), s.ex.some(e => e.note || e.pain === "discomfort") && /*#__PURE__*/React.createElement("div", {
-      style: {
-        marginTop: 8
-      }
-    }, s.ex.filter(e => e.note || e.pain === "discomfort").map((e, j) => /*#__PURE__*/React.createElement("div", {
-      key: j,
-      style: {
-        fontSize: 11,
-        color: e.pain === "discomfort" ? "#FF9EB8" : T.muted,
-        fontStyle: e.note ? "italic" : "normal",
-        marginTop: 2
-      }
-    }, e.pain === "discomfort" ? "⚠ " : "", e.name, e.note ? ": \u201c" + e.note + "\u201d" : " · discomfort noted"))))));
+    }, v))))));
   }))));
 }
 
@@ -8352,26 +8552,21 @@ function LevelCard({
   const [open, setOpen] = useState(false);
   const xp = computeXP(logs);
   const lv = levelFromXP(xp.total);
-  const b = xp.breakdown;
-  const row = (label, val, colour) => /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      fontSize: 12,
-      padding: "6px 0",
-      borderBottom: "1px solid " + T.line
+
+  /* Per-session XP history, newest first. Answers "why did I get 175?" which
+     is the question you actually have when looking at the number. */
+  const history = buildSessions(logs).map(sess => {
+    try {
+      const b = sessionXPBreakdown(logs, sess.wid, sess.day);
+      return {
+        sess,
+        items: b.items,
+        total: b.total
+      };
+    } catch (e) {
+      return null;
     }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: T.muted
-    }
-  }, label), /*#__PURE__*/React.createElement("span", {
-    className: "mono",
-    style: {
-      color: colour || T.text,
-      fontWeight: 700
-    }
-  }, val));
+  }).filter(x => x && x.total > 0);
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
     onClick: () => setOpen(true),
     style: {
@@ -8441,7 +8636,7 @@ function LevelCard({
       color: T.muted,
       marginTop: 8
     }
-  }, xp.sessionCount, " sessions logged · tap for details")), open && /*#__PURE__*/React.createElement("div", {
+  }, xp.sessionCount, " sessions logged · tap for XP history")), open && /*#__PURE__*/React.createElement("div", {
     onClick: () => setOpen(false),
     style: {
       position: "fixed",
@@ -8449,23 +8644,29 @@ function LevelCard({
       background: "rgba(10,5,25,0.9)",
       zIndex: 70,
       display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: 20
+      alignItems: "flex-end",
+      justifyContent: "center"
     }
   }, /*#__PURE__*/React.createElement("div", {
     onClick: e => e.stopPropagation(),
     style: {
-      maxWidth: 420,
+      maxWidth: 480,
       width: "100%",
       background: T.bg,
-      borderRadius: 18,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
       padding: 18,
-      maxHeight: "92vh",
+      maxHeight: "90vh",
       overflowY: "auto",
       border: "1px solid " + T.line
     }
   }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "flex-start",
+      justifyContent: "space-between"
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 10,
       color: T.cardCAccent,
@@ -8476,11 +8677,20 @@ function LevelCard({
   }, "Level ", lv.level), /*#__PURE__*/React.createElement("div", {
     className: "mono",
     style: {
-      fontSize: 30,
+      fontSize: 28,
       fontWeight: 800,
       marginTop: 2
     }
-  }, xp.total.toLocaleString(), " XP"), /*#__PURE__*/React.createElement("div", {
+  }, xp.total.toLocaleString(), " XP")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setOpen(false),
+    style: {
+      background: "transparent",
+      border: "none",
+      color: T.muted,
+      fontSize: 22,
+      lineHeight: 1
+    }
+  }, "✕")), /*#__PURE__*/React.createElement("div", {
     style: {
       height: 8,
       borderRadius: 4,
@@ -8498,76 +8708,97 @@ function LevelCard({
     style: {
       fontSize: 11,
       color: T.muted,
-      marginTop: 6
+      marginTop: 6,
+      marginBottom: 16
     }
   }, lv.intoLevel.toLocaleString(), " / ", lv.needForNext.toLocaleString(), " toward level ", lv.level + 1), /*#__PURE__*/React.createElement("div", {
     style: {
-      borderRadius: 14,
-      padding: 14,
-      background: T.cardC,
-      border: "1px solid " + T.cardCLine,
-      marginTop: 14
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
       fontSize: 11,
-      color: T.cardCAccent,
-      letterSpacing: 1,
+      color: T.muted,
+      letterSpacing: 1.5,
       textTransform: "uppercase",
       fontWeight: 700,
-      marginBottom: 6
+      marginBottom: 10
     }
-  }, "Where it came from"), row("Sessions logged (" + b.sessions + " × 100)", b.sessionXP.toLocaleString()), row("Volume progression", b.volumeXP.toLocaleString()), row("Personal records (" + b.prCount + " × 75)", b.prXP.toLocaleString(), T.emerald), row("Weekly consistency (" + b.weeks + " × 50)", b.consistencyXP.toLocaleString()), row("Mobility days (" + b.mobilityDays + " × 50)", b.mobilityXP.toLocaleString())), /*#__PURE__*/React.createElement("div", {
+  }, "Where it came from"), history.length === 0 && /*#__PURE__*/React.createElement("div", {
     style: {
-      borderRadius: 14,
-      padding: 14,
-      background: T.cardA,
-      border: "1px solid " + T.cardALine,
-      marginTop: 10
+      fontSize: 13,
+      color: T.muted,
+      lineHeight: 1.6
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, "No XP earned yet. Log a session and it'll show up here."), history.map((h, i) => {
+    const W = findWorkout(h.sess.wid);
+    const [yy, mm, dd] = h.sess.day.split("-").map(Number);
+    const dateTxt = new Date(yy, mm - 1, dd).toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric"
+    });
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      style: {
+        borderRadius: 12,
+        padding: 12,
+        background: T.surface,
+        marginBottom: 8
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "baseline",
+        justifyContent: "space-between",
+        gap: 8
+      }
+    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 14,
+        fontWeight: 700,
+        color: T.text
+      }
+    }, h.sess.wid === "MOB" ? "Mobility" : W ? W.label : h.sess.wid), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted,
+        marginTop: 1
+      }
+    }, dateTxt)), /*#__PURE__*/React.createElement("span", {
+      className: "mono",
+      style: {
+        fontSize: 18,
+        fontWeight: 800,
+        color: T.cardCAccent,
+        flexShrink: 0
+      }
+    }, "+", h.total)), /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: 8
+      }
+    }, h.items.map((it, j) => /*#__PURE__*/React.createElement("div", {
+      key: j,
+      style: {
+        display: "flex",
+        justifyContent: "space-between",
+        fontSize: 12,
+        padding: "2px 0"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: it.hot ? "#FFC98A" : T.muted
+      }
+    }, it.label), /*#__PURE__*/React.createElement("span", {
+      className: "mono",
+      style: {
+        color: it.hot ? "#FFC98A" : T.text,
+        flexShrink: 0
+      }
+    }, "+", it.xp)))));
+  }), /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 11,
-      color: T.cardAAccent,
-      letterSpacing: 1,
-      textTransform: "uppercase",
-      fontWeight: 700,
-      marginBottom: 8
-    }
-  }, "How XP works"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      lineHeight: 1.6,
-      color: T.muted
-    }
-  }, "100 XP for logging a session. 50 to 100 more depending on how the session's volume compares to your own 30 day average for that workout. 75 per personal record, capped at three a session. 50 when you hit three sessions in a week."), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      lineHeight: 1.6,
       color: T.muted,
-      marginTop: 8
+      marginTop: 10,
+      lineHeight: 1.6
     }
-  }, "Nothing here is based on how much you lift, your bodyweight, or your strength tier. XP rewards showing up and progressing against yourself, so a beginner and a lifetime lifter earn it at the same rate."), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      lineHeight: 1.6,
-      color: T.muted,
-      marginTop: 8
-    }
-  }, "There is no streak bonus on purpose. A streak that breaks on a sick day or a planned deload punishes the exact behaviour good training needs.")), /*#__PURE__*/React.createElement("button", {
-    onClick: () => setOpen(false),
-    style: {
-      width: "100%",
-      borderRadius: 12,
-      padding: 13,
-      marginTop: 14,
-      fontSize: 15,
-      fontWeight: 800,
-      border: "none",
-      background: T.amber,
-      color: "#2A0A46"
-    }
-  }, "Close"))));
+  }, "100 per session, 50 to 100 for volume against your own average, 75 per personal record, 50 for a mobility day. See the Guide for how and why it works this way."))));
 }
 function StrengthStandards({
   logs,
