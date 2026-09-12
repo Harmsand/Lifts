@@ -370,7 +370,7 @@ const T = {
 };
 
 /* ---------------- plan data ---------------- */
-const WORKOUTS = [{
+const PROGRAM_4DAY = [{
   id: "UA",
   label: "Upper A",
   tag: "Push + vertical pull",
@@ -379,39 +379,37 @@ const WORKOUTS = [{
     s: 4,
     r: "5–8",
     anchor: true,
-    note: "Heavy anchor. Full rest 3–4 min. 1–2 in reserve."
+    note: "Leave 1–2 reps in reserve."
   }, {
     n: "DB lateral raise",
     s: 3,
     r: "12–15",
     paired: true,
-    note: "Light — do during bench rest. Strict, no swinging."
+    note: "Light and strict. No swinging."
   }, {
     n: "Pull-ups",
     s: 4,
     r: "6–10",
     anchor: true,
-    note: "Add weight once 10+ is easy. Full rest — build the lat width."
+    note: "Add weight once 10+ is easy."
   }, {
     n: "Seated DB shoulder press",
     s: 3,
     r: "8–12",
-    note: "Straight sets ~2 min. Spares the spine vs barbell."
+    note: "Spares the spine vs barbell pressing."
   }, {
     n: "One-arm DB row",
     s: 4,
-    r: "8–12",
-    note: "Straight sets."
+    r: "8–12"
   }, {
     n: "Skull crushers",
     s: 3,
     r: "10–15",
-    note: "Straight sets. Near failure."
+    note: "Take these close to failure."
   }, {
     n: "DB curl",
     s: 3,
-    r: "10–15",
-    note: "Straight sets."
+    r: "10–15"
   }, {
     n: "Farmer's carries",
     s: 2,
@@ -428,18 +426,18 @@ const WORKOUTS = [{
     s: 4,
     r: "5–8",
     anchor: true,
-    note: "Heavy anchor. Full rest. Stiff-back day → goblet/front squat."
+    note: "Stiff-back day → swap to goblet or front squat."
   }, {
     n: "Standing calf raise",
     s: 3,
     r: "10–15",
     paired: true,
-    note: "Do during squat rest. Full stretch, slow."
+    note: "Full stretch, slow tempo."
   }, {
     n: "Romanian deadlift",
     s: 3,
     r: "8–10",
-    note: "Moderate, no grinding, ~2 min."
+    note: "Moderate load, no grinding."
   }, {
     n: "Bulgarian split squat",
     s: 3,
@@ -479,13 +477,13 @@ const WORKOUTS = [{
     s: 3,
     r: "5–8",
     anchor: true,
-    note: "Heavy anchor. Full rest. Brace, don't lean back."
+    note: "Brace hard. Don't lean back to press."
   }, {
     n: "DB rear-delt raise",
     s: 3,
     r: "12–15",
     paired: true,
-    note: "Light — do during press rest."
+    note: "Light and strict."
   }, {
     n: "Barbell row",
     s: 4,
@@ -504,8 +502,7 @@ const WORKOUTS = [{
   }, {
     n: "Hammer curl",
     s: 3,
-    r: "10–15",
-    note: "Straight sets."
+    r: "10–15"
   }, {
     n: "Wrist curls (both ways)",
     s: 3,
@@ -522,13 +519,13 @@ const WORKOUTS = [{
     s: 4,
     r: "4–6",
     anchor: true,
-    note: "Heavy anchor, FIRST while fresh. Full rest. 1–2 in reserve, NEVER to failure. Stop if position breaks."
+    note: "Do this first while fresh. 1–2 in reserve, never to failure. Stop if position breaks."
   }, {
     n: "Single-leg standing calf raise (soleus)",
     s: 3,
     r: "12–20",
     paired: true,
-    note: "Do during deadlift rest — calves don't touch the pull."
+    note: "Slight knee bend targets the soleus."
   }, {
     n: "Barbell hip thrust",
     s: 4,
@@ -596,7 +593,458 @@ const WORKOUTS = [{
     note: "Activation."
   }]
 }];
-const ROTATION = ["UA", "LA", "UB", "LB"];
+const ROTATION_4DAY = ["UA", "LA", "UB", "LB"];
+
+/* 3-day full body. Each session carries more than one anchor because there
+   are fewer sessions to spread them across. Squat, press, and pull every time,
+   rotating which variation leads. */
+const PROGRAM_3DAY = [{
+  id: "FA",
+  label: "Full A",
+  tag: "Squat + press focus",
+  ex: [{
+    n: "Barbell back squat",
+    s: 4,
+    r: "5–8",
+    anchor: true,
+    note: "Leave 1–2 reps in reserve."
+  }, {
+    n: "Standing calf raise",
+    s: 3,
+    r: "10–15",
+    paired: true,
+    note: "Full stretch, slow tempo."
+  }, {
+    n: "Barbell bench press",
+    s: 4,
+    r: "5–8",
+    anchor: true,
+    note: "Leave 1–2 reps in reserve."
+  }, {
+    n: "One-arm DB row",
+    s: 4,
+    r: "8–12"
+  }, {
+    n: "Romanian deadlift",
+    s: 3,
+    r: "8–10",
+    note: "Moderate load, no grinding."
+  }, {
+    n: "DB lateral raise",
+    s: 3,
+    r: "12–15",
+    note: "Light and strict. No swinging."
+  }, {
+    n: "Hanging leg raises",
+    s: 2,
+    r: "max",
+    bonus: true,
+    note: "Slow, no swing. If time."
+  }]
+}, {
+  id: "FB",
+  label: "Full B",
+  tag: "Hinge + vertical pull focus",
+  ex: [{
+    n: "Conventional deadlift",
+    s: 4,
+    r: "4–6",
+    anchor: true,
+    note: "Do this first while fresh. 1–2 in reserve, never to failure."
+  }, {
+    n: "Single-leg standing calf raise (soleus)",
+    s: 3,
+    r: "12–20",
+    paired: true,
+    note: "Slight knee bend targets the soleus."
+  }, {
+    n: "Pull-ups",
+    s: 4,
+    r: "6–10",
+    anchor: true,
+    note: "Add weight once 10+ is easy."
+  }, {
+    n: "Seated DB shoulder press",
+    s: 3,
+    r: "8–12",
+    note: "Spares the spine vs barbell pressing."
+  }, {
+    n: "Bulgarian split squat",
+    s: 3,
+    r: "8–12",
+    note: "Log per leg."
+  }, {
+    n: "Hammer curl",
+    s: 3,
+    r: "10–15"
+  }, {
+    n: "Dead bugs",
+    s: 2,
+    r: "10–15",
+    bonus: true,
+    note: "Anti-tilt core. If time."
+  }]
+}, {
+  id: "FC",
+  label: "Full C",
+  tag: "Overhead + glute focus",
+  ex: [{
+    n: "Barbell overhead press",
+    s: 3,
+    r: "5–8",
+    anchor: true,
+    note: "Brace hard. Don't lean back to press."
+  }, {
+    n: "DB rear-delt raise",
+    s: 3,
+    r: "12–15",
+    paired: true,
+    note: "Light and strict."
+  }, {
+    n: "Barbell hip thrust",
+    s: 4,
+    r: "8–12",
+    anchor: true,
+    note: "Pause and squeeze at the top."
+  }, {
+    n: "Barbell row",
+    s: 4,
+    r: "6–10",
+    note: "Chest-supported on cranky days."
+  }, {
+    n: "Front / goblet squat",
+    s: 3,
+    r: "8–12"
+  }, {
+    n: "Close-grip bench / dips",
+    s: 3,
+    r: "8–12",
+    note: "Add weight if bodyweight dips are easy."
+  }, {
+    n: "Farmer's carries",
+    s: 2,
+    r: "~40 m",
+    bonus: true,
+    note: "Grip. If time."
+  }]
+}, {
+  id: "BON",
+  label: "Bonus",
+  tag: "Optional extra · won't advance",
+  bonus: true,
+  ex: [{
+    n: "DB / KB curls",
+    s: 3,
+    r: "10–15",
+    note: "Low fatigue only."
+  }, {
+    n: "Triceps pushdown / ext",
+    s: 3,
+    r: "10–15",
+    note: "Pump, not heavy."
+  }, {
+    n: "Lateral raises",
+    s: 3,
+    r: "15–20",
+    note: "Volume."
+  }, {
+    n: "Standing + seated calf",
+    s: 3,
+    r: "12–20",
+    note: "Extra Achilles volume."
+  }, {
+    n: "Farmer's carries / hangs",
+    s: 3,
+    r: "40 m / 60 s",
+    note: "Grip."
+  }, {
+    n: "Glute bridges + hip mobility",
+    s: 3,
+    r: "15",
+    note: "Activation."
+  }]
+}];
+const ROTATION_3DAY = ["FA", "FB", "FC"];
+
+/* 5-day split. Same anchors as the 4-day, with the accessory work given its
+   own day so each session is shorter and more focused. */
+const PROGRAM_5DAY = [{
+  id: "P1",
+  label: "Push",
+  tag: "Chest + shoulders + triceps",
+  ex: [{
+    n: "Barbell bench press",
+    s: 4,
+    r: "5–8",
+    anchor: true,
+    note: "Leave 1–2 reps in reserve."
+  }, {
+    n: "DB lateral raise",
+    s: 3,
+    r: "12–15",
+    paired: true,
+    note: "Light and strict. No swinging."
+  }, {
+    n: "Barbell overhead press",
+    s: 3,
+    r: "5–8",
+    anchor: true,
+    note: "Brace hard. Don't lean back to press."
+  }, {
+    n: "Incline DB press",
+    s: 3,
+    r: "8–12",
+    note: "Upper chest."
+  }, {
+    n: "Skull crushers",
+    s: 3,
+    r: "10–15",
+    note: "Take these close to failure."
+  }, {
+    n: "Close-grip bench / dips",
+    s: 3,
+    r: "8–12",
+    bonus: true
+  }]
+}, {
+  id: "L1",
+  label: "Legs A",
+  tag: "Squat / quad focus",
+  ex: [{
+    n: "Barbell back squat",
+    s: 4,
+    r: "5–8",
+    anchor: true,
+    note: "Stiff-back day → swap to goblet or front squat."
+  }, {
+    n: "Standing calf raise",
+    s: 3,
+    r: "10–15",
+    paired: true,
+    note: "Full stretch, slow tempo."
+  }, {
+    n: "Bulgarian split squat",
+    s: 3,
+    r: "8–12",
+    note: "Log per leg."
+  }, {
+    n: "Front / goblet squat",
+    s: 3,
+    r: "8–12"
+  }, {
+    n: "Hanging leg raises",
+    s: 2,
+    r: "max",
+    bonus: true,
+    note: "Slow, no swing."
+  }]
+}, {
+  id: "U1",
+  label: "Pull",
+  tag: "Back + biceps",
+  ex: [{
+    n: "Pull-ups",
+    s: 4,
+    r: "6–10",
+    anchor: true,
+    note: "Add weight once 10+ is easy."
+  }, {
+    n: "DB rear-delt raise",
+    s: 3,
+    r: "12–15",
+    paired: true,
+    note: "Light and strict."
+  }, {
+    n: "Barbell row",
+    s: 4,
+    r: "6–10",
+    note: "Chest-supported on cranky days."
+  }, {
+    n: "One-arm DB row",
+    s: 4,
+    r: "8–12"
+  }, {
+    n: "DB curl",
+    s: 3,
+    r: "10–15"
+  }, {
+    n: "Hammer curl",
+    s: 3,
+    r: "10–15",
+    bonus: true
+  }]
+}, {
+  id: "L2",
+  label: "Legs B",
+  tag: "Hinge / glute focus",
+  ex: [{
+    n: "Conventional deadlift",
+    s: 4,
+    r: "4–6",
+    anchor: true,
+    note: "Do this first while fresh. 1–2 in reserve, never to failure."
+  }, {
+    n: "Single-leg standing calf raise (soleus)",
+    s: 3,
+    r: "12–20",
+    paired: true,
+    note: "Slight knee bend targets the soleus."
+  }, {
+    n: "Barbell hip thrust",
+    s: 4,
+    r: "8–12",
+    note: "Pause and squeeze at the top."
+  }, {
+    n: "Romanian deadlift",
+    s: 3,
+    r: "8–10",
+    note: "Moderate load, no grinding."
+  }, {
+    n: "Nordic curl",
+    s: 3,
+    r: "6–10",
+    note: "Slider-curl regression until strong."
+  }]
+}, {
+  id: "BON",
+  label: "Bonus",
+  tag: "Optional extra · won't advance",
+  bonus: true,
+  ex: [{
+    n: "DB / KB curls",
+    s: 3,
+    r: "10–15",
+    note: "Low fatigue only."
+  }, {
+    n: "Triceps pushdown / ext",
+    s: 3,
+    r: "10–15",
+    note: "Pump, not heavy."
+  }, {
+    n: "Lateral raises",
+    s: 3,
+    r: "15–20",
+    note: "Volume."
+  }, {
+    n: "Standing + seated calf",
+    s: 3,
+    r: "12–20",
+    note: "Extra Achilles volume."
+  }, {
+    n: "Farmer's carries / hangs",
+    s: 3,
+    r: "40 m / 60 s",
+    note: "Grip."
+  }, {
+    n: "Glute bridges + hip mobility",
+    s: 3,
+    r: "15",
+    note: "Activation."
+  }]
+}];
+const ROTATION_5DAY = ["P1", "L1", "U1", "L2"];
+const PROGRAMS = {
+  "3": {
+    workouts: PROGRAM_3DAY,
+    rotation: ROTATION_3DAY,
+    label: "3 days",
+    blurb: "Full body each session, so every lift gets hit even on fewer days."
+  },
+  "4": {
+    workouts: PROGRAM_4DAY,
+    rotation: ROTATION_4DAY,
+    label: "4 days",
+    blurb: "Upper and lower days alternate. The most balanced option."
+  },
+  "5": {
+    workouts: PROGRAM_5DAY,
+    rotation: ROTATION_5DAY,
+    label: "5 days",
+    blurb: "Push, pull, and legs split out, so each day covers less ground."
+  }
+};
+
+/* Emphasis swaps one accessory slot toward the chosen area. The skeleton,
+   anchors, and rotation never change: only which accessory occupies a slot. */
+const EMPHASES = {
+  balanced: {
+    label: "Balanced",
+    blurb: "Even push, pull, and legs. The default."
+  },
+  upper: {
+    label: "Upper body",
+    blurb: "More pressing and pulling volume."
+  },
+  lower: {
+    label: "Lower body & glutes",
+    blurb: "More hinge, thrust, and single-leg work."
+  }
+};
+const EMPHASIS_SWAPS = {
+  upper: {
+    "Bulgarian split squat": "Incline DB press",
+    "Front / goblet squat": "One-arm DB row",
+    "Nordic curl": "Close-grip bench / dips"
+  },
+  lower: {
+    "Skull crushers": "Barbell hip thrust",
+    "DB curl": "Bulgarian split squat",
+    "Hammer curl": "Romanian deadlift",
+    "Incline DB press": "Front / goblet squat"
+  }
+};
+/* Module-level helpers need to resolve a workout by id without knowing which
+   program is active (history can contain ids from any program). These search
+   across all programs. */
+const ALL_WORKOUTS = Object.keys(PROGRAMS).reduce((acc, k) => acc.concat(PROGRAMS[k].workouts), []);
+function findWorkout(id) {
+  return ALL_WORKOUTS.find(w => w.id === id);
+}
+function findWorkoutByLabel(lbl) {
+  return ALL_WORKOUTS.find(w => w.label === lbl);
+}
+function rotationForId(id) {
+  const k = Object.keys(PROGRAMS).find(key => PROGRAMS[key].rotation.indexOf(id) !== -1);
+  return k ? PROGRAMS[k].rotation : PROGRAMS["4"].rotation;
+}
+function applyEmphasis(w, emphasis) {
+  const map = EMPHASIS_SWAPS[emphasis];
+  if (!map || !w) return w;
+  return {
+    ...w,
+    ex: w.ex.map(e => {
+      if (e.anchor || e.paired) return e; // never touch anchors or their paired accessory
+      const to = map[e.n];
+      return to ? {
+        ...e,
+        n: to,
+        emphasisFrom: e.n
+      } : e;
+    })
+  };
+}
+
+/* Session length. 30 minutes cannot be the 60-minute session compressed:
+   anchor rest is what it is, so the honest trade is fewer exercises. */
+const SESSION_LENGTHS = {
+  "60": {
+    label: "60 min",
+    blurb: "Full session including accessory work."
+  },
+  "30": {
+    label: "30 min",
+    blurb: "Anchors and essentials only. Bonus work drops off."
+  }
+};
+function applyLength(w, mins) {
+  if (String(mins) !== "30" || !w) return w;
+  const keep = w.ex.filter(e => e.anchor || e.paired);
+  const rest = w.ex.filter(e => !e.anchor && !e.paired && !e.bonus).slice(0, 1);
+  return {
+    ...w,
+    ex: [...keep, ...rest].sort((a, b) => w.ex.indexOf(a) - w.ex.indexOf(b))
+  };
+}
 
 /* Training paths. These are parameter overlays on the SAME exercises and rotation,
    not separate programs, so logged history stays valid when the path changes. */
@@ -665,6 +1113,28 @@ const PATHS = {
 const PATH_IDS = ["hybrid", "strength", "hypertrophy"];
 
 /* Apply a path overlay to a workout's exercise list. */
+/* Swap chosen alternates into a workout. The slot keeps its prescription
+   (sets, reps, anchor/paired role); only the movement changes. The exercise
+   name is what history is keyed on, so each variation keeps its own PRs. */
+function applySwaps(w, swaps) {
+  if (!w || !swaps) return w;
+  return {
+    ...w,
+    ex: w.ex.map(e => {
+      const slotKey = w.id + "::" + e.n;
+      const chosen = swaps[slotKey];
+      if (!chosen || chosen === e.n) return e;
+      const alts = EXERCISE_ALTS[e.n] || [];
+      const alt = alts.find(a => a.n === chosen);
+      if (!alt) return e;
+      return {
+        ...e,
+        n: alt.n,
+        swappedFrom: e.n
+      };
+    })
+  };
+}
 function applyPath(w, pathId) {
   const P = PATHS[pathId] || PATHS.hybrid;
   const nonBonus = w.ex.filter(e => !e.bonus);
@@ -1441,6 +1911,413 @@ const SEED_LOGS = {
   }]
 };
 ;
+
+/* Exercise alternates. Keyed by the program's exercise name; each entry lists
+   swappable variations with the equipment they need and whether they're
+   easier or harder than the default. `equip` is also what a future equipment
+   profile would filter on, so adding one later needs no data migration.
+   Each variation keeps its own logged history, so PRs never get mixed. */
+const EXERCISE_ALTS = {
+  "Pull-ups": [{
+    n: "Pull-ups",
+    equip: "Bodyweight · pull-up bar"
+  }, {
+    n: "Assisted pull-up",
+    equip: "Band or machine assist",
+    diff: "easier"
+  }, {
+    n: "Lat pulldown",
+    equip: "Cable machine"
+  }, {
+    n: "Inverted row",
+    equip: "Barbell in a rack",
+    diff: "easier"
+  }, {
+    n: "Weighted pull-up",
+    equip: "Belt or dumbbell",
+    diff: "harder"
+  }],
+  "Barbell bench press": [{
+    n: "Barbell bench press",
+    equip: "Barbell · bench"
+  }, {
+    n: "Dumbbell bench press",
+    equip: "Dumbbells · bench"
+  }, {
+    n: "Push-up",
+    equip: "Bodyweight",
+    diff: "easier"
+  }, {
+    n: "Machine chest press",
+    equip: "Machine"
+  }],
+  "Barbell back squat": [{
+    n: "Barbell back squat",
+    equip: "Barbell · rack"
+  }, {
+    n: "Goblet squat",
+    equip: "One dumbbell or kettlebell",
+    diff: "easier"
+  }, {
+    n: "Front squat",
+    equip: "Barbell · rack"
+  }, {
+    n: "Hack squat",
+    equip: "Machine"
+  }, {
+    n: "Leg press",
+    equip: "Machine",
+    diff: "easier"
+  }],
+  "Barbell overhead press": [{
+    n: "Barbell overhead press",
+    equip: "Barbell"
+  }, {
+    n: "Seated DB shoulder press",
+    equip: "Dumbbells · bench",
+    diff: "easier"
+  }, {
+    n: "Machine shoulder press",
+    equip: "Machine"
+  }, {
+    n: "Landmine press",
+    equip: "Barbell · landmine"
+  }],
+  "Conventional deadlift": [{
+    n: "Conventional deadlift",
+    equip: "Barbell"
+  }, {
+    n: "Trap bar deadlift",
+    equip: "Trap bar",
+    diff: "easier"
+  }, {
+    n: "Romanian deadlift",
+    equip: "Barbell",
+    diff: "easier"
+  }, {
+    n: "Rack pull",
+    equip: "Barbell · rack",
+    diff: "easier"
+  }],
+  "Barbell row": [{
+    n: "Barbell row",
+    equip: "Barbell"
+  }, {
+    n: "Chest-supported row",
+    equip: "Bench · dumbbells",
+    diff: "easier"
+  }, {
+    n: "Seated cable row",
+    equip: "Cable machine"
+  }, {
+    n: "One-arm DB row",
+    equip: "Dumbbell · bench"
+  }],
+  "Barbell hip thrust": [{
+    n: "Barbell hip thrust",
+    equip: "Barbell · bench"
+  }, {
+    n: "Glute bridge",
+    equip: "Bodyweight or barbell",
+    diff: "easier"
+  }, {
+    n: "Hip thrust machine",
+    equip: "Machine"
+  }, {
+    n: "Single-leg hip thrust",
+    equip: "Bodyweight · bench"
+  }],
+  "Bulgarian split squat": [{
+    n: "Bulgarian split squat",
+    equip: "Dumbbells · bench"
+  }, {
+    n: "Reverse lunge",
+    equip: "Dumbbells",
+    diff: "easier"
+  }, {
+    n: "Walking lunge",
+    equip: "Dumbbells"
+  }, {
+    n: "Step-up",
+    equip: "Dumbbells · box",
+    diff: "easier"
+  }],
+  "Nordic curl": [{
+    n: "Nordic curl",
+    equip: "Anchored feet",
+    diff: "harder"
+  }, {
+    n: "Slider leg curl",
+    equip: "Sliders or towel",
+    diff: "easier"
+  }, {
+    n: "Seated leg curl",
+    equip: "Machine",
+    diff: "easier"
+  }, {
+    n: "Romanian deadlift",
+    equip: "Barbell"
+  }],
+  "Skull crushers": [{
+    n: "Skull crushers",
+    equip: "Barbell or dumbbells"
+  }, {
+    n: "Cable pushdown",
+    equip: "Cable machine",
+    diff: "easier"
+  }, {
+    n: "Overhead triceps extension",
+    equip: "Dumbbell or cable"
+  }, {
+    n: "Close-grip bench press",
+    equip: "Barbell · bench"
+  }],
+  "DB lateral raise": [{
+    n: "DB lateral raise",
+    equip: "Dumbbells"
+  }, {
+    n: "Cable lateral raise",
+    equip: "Cable machine"
+  }, {
+    n: "Machine lateral raise",
+    equip: "Machine"
+  }],
+  "DB rear-delt raise": [{
+    n: "DB rear-delt raise",
+    equip: "Dumbbells"
+  }, {
+    n: "Face pull",
+    equip: "Cable machine · rope"
+  }, {
+    n: "Reverse pec deck",
+    equip: "Machine"
+  }],
+  "DB curl": [{
+    n: "DB curl",
+    equip: "Dumbbells"
+  }, {
+    n: "Cable curl",
+    equip: "Cable machine"
+  }, {
+    n: "Barbell curl",
+    equip: "Barbell or EZ bar"
+  }, {
+    n: "Incline DB curl",
+    equip: "Dumbbells · bench"
+  }],
+  "Hammer curl": [{
+    n: "Hammer curl",
+    equip: "Dumbbells"
+  }, {
+    n: "Cable rope hammer curl",
+    equip: "Cable machine · rope"
+  }, {
+    n: "Reverse curl",
+    equip: "Barbell or dumbbells"
+  }, {
+    n: "Chin-up",
+    equip: "Pull-up bar",
+    diff: "harder"
+  }],
+  "Incline DB press": [{
+    n: "Incline DB press",
+    equip: "Dumbbells · adjustable bench"
+  }, {
+    n: "Incline barbell press",
+    equip: "Barbell · incline bench"
+  }, {
+    n: "Low-to-high cable fly",
+    equip: "Cable machine"
+  }, {
+    n: "Decline push-up",
+    equip: "Bodyweight · box",
+    diff: "easier"
+  }],
+  "Seated DB shoulder press": [{
+    n: "Seated DB shoulder press",
+    equip: "Dumbbells · bench"
+  }, {
+    n: "Machine shoulder press",
+    equip: "Machine",
+    diff: "easier"
+  }, {
+    n: "Arnold press",
+    equip: "Dumbbells · bench"
+  }, {
+    n: "Landmine press",
+    equip: "Barbell · landmine"
+  }],
+  "One-arm DB row": [{
+    n: "One-arm DB row",
+    equip: "Dumbbell · bench"
+  }, {
+    n: "Seated cable row",
+    equip: "Cable machine"
+  }, {
+    n: "Chest-supported row",
+    equip: "Bench · dumbbells",
+    diff: "easier"
+  }, {
+    n: "Inverted row",
+    equip: "Barbell in a rack",
+    diff: "easier"
+  }],
+  "Romanian deadlift": [{
+    n: "Romanian deadlift",
+    equip: "Barbell"
+  }, {
+    n: "DB Romanian deadlift",
+    equip: "Dumbbells",
+    diff: "easier"
+  }, {
+    n: "Single-leg RDL",
+    equip: "Dumbbell"
+  }, {
+    n: "Good morning",
+    equip: "Barbell · rack"
+  }, {
+    n: "Seated leg curl",
+    equip: "Machine",
+    diff: "easier"
+  }],
+  "Front / goblet squat": [{
+    n: "Front / goblet squat",
+    equip: "Barbell or dumbbell"
+  }, {
+    n: "Front squat",
+    equip: "Barbell · rack"
+  }, {
+    n: "Goblet squat",
+    equip: "One dumbbell or kettlebell",
+    diff: "easier"
+  }, {
+    n: "Hack squat",
+    equip: "Machine"
+  }, {
+    n: "Leg press",
+    equip: "Machine",
+    diff: "easier"
+  }],
+  "Close-grip bench / dips": [{
+    n: "Close-grip bench / dips",
+    equip: "Barbell or dip bars"
+  }, {
+    n: "Close-grip bench press",
+    equip: "Barbell · bench"
+  }, {
+    n: "Dips",
+    equip: "Dip bars or bench"
+  }, {
+    n: "Cable pushdown",
+    equip: "Cable machine",
+    diff: "easier"
+  }, {
+    n: "Bench dips",
+    equip: "Bench",
+    diff: "easier"
+  }],
+  "Standing calf raise": [{
+    n: "Standing calf raise",
+    equip: "Barbell, dumbbells, or machine"
+  }, {
+    n: "Smith machine calf raise",
+    equip: "Smith machine"
+  }, {
+    n: "Leg press calf raise",
+    equip: "Machine"
+  }, {
+    n: "Single-leg calf raise",
+    equip: "Bodyweight or dumbbell"
+  }],
+  "Single-leg standing calf raise (soleus)": [{
+    n: "Single-leg standing calf raise (soleus)",
+    equip: "Bodyweight or dumbbell"
+  }, {
+    n: "Seated calf raise",
+    equip: "Machine or barbell on knees"
+  }, {
+    n: "Bent-knee calf raise",
+    equip: "Bodyweight"
+  }],
+  "Hanging leg raises": [{
+    n: "Hanging leg raises",
+    equip: "Pull-up bar"
+  }, {
+    n: "Hanging knee raises",
+    equip: "Pull-up bar",
+    diff: "easier"
+  }, {
+    n: "Captain's chair knee raise",
+    equip: "Machine",
+    diff: "easier"
+  }, {
+    n: "Lying leg raise",
+    equip: "Floor",
+    diff: "easier"
+  }, {
+    n: "Cable crunch",
+    equip: "Cable machine"
+  }],
+  "Hanging leg raise / dead bug": [{
+    n: "Hanging leg raise / dead bug",
+    equip: "Pull-up bar or floor"
+  }, {
+    n: "Hanging leg raises",
+    equip: "Pull-up bar",
+    diff: "harder"
+  }, {
+    n: "Dead bugs",
+    equip: "Floor",
+    diff: "easier"
+  }, {
+    n: "Cable crunch",
+    equip: "Cable machine"
+  }, {
+    n: "Ab wheel rollout",
+    equip: "Ab wheel",
+    diff: "harder"
+  }],
+  "Farmer's carries": [{
+    n: "Farmer's carries",
+    equip: "Dumbbells or kettlebells"
+  }, {
+    n: "Trap bar carry",
+    equip: "Trap bar"
+  }, {
+    n: "Suitcase carry",
+    equip: "One dumbbell"
+  }, {
+    n: "Dead hang",
+    equip: "Pull-up bar",
+    diff: "easier"
+  }],
+  "Lateral raises": [{
+    n: "Lateral raises",
+    equip: "Dumbbells"
+  }, {
+    n: "Cable lateral raise",
+    equip: "Cable machine"
+  }, {
+    n: "Machine lateral raise",
+    equip: "Machine"
+  }, {
+    n: "Lean-away lateral raise",
+    equip: "Dumbbell"
+  }],
+  "Triceps pushdown / ext": [{
+    n: "Triceps pushdown / ext",
+    equip: "Cable or dumbbells"
+  }, {
+    n: "Cable pushdown",
+    equip: "Cable machine"
+  }, {
+    n: "Overhead triceps extension",
+    equip: "Dumbbell or cable"
+  }, {
+    n: "Skull crushers",
+    equip: "Barbell or dumbbells"
+  }]
+};
 const TECHNIQUE_CUES = {
   "Barbell bench press": ["Eyes under the bar, feet planted flat and wide enough to drive", "Squeeze shoulder blades back and down, pin them to the bench and keep them there", "Slight natural arch, glutes stay in contact with the bench", "Grip just wider than shoulder width; wrists stacked over elbows, not bent back", "Big breath in, brace your midsection before you unrack", "Lower under control to the mid-sternum, elbows tucked around 45 to 60 degrees, not flared to 90", "Touch, don't bounce. The bar shouldn't rebound off you", "Drive up and slightly back toward your face, pushing your feet into the floor", "Keep the shoulder blades pinned the whole set. Losing them is where shoulders get hurt", "Competition wide grip setup differs: bigger arch, wider grip, paused reps"],
   "Barbell back squat": ["Bar on the upper traps for high bar. Set it before you unrack, not after", "Hands as close as shoulder mobility allows; elbows under the bar, not flared back", "Pull the shoulder blades together to build a shelf for the bar", "Two or three steps back, no more. Don't wander out of the rack", "Stance shoulder width or slightly wider, toes turned out 20 to 30 degrees", "Big breath into the belly, brace hard, ribs down toward pelvis", "Screw the feet into the floor to create external rotation at the hips", "Break at the hips and knees together, knees tracking over the toes", "Descend as deep as you can hold a neutral spine. Depth without a rounded low back", "Drive the whole foot through the floor. Hips and chest rise together, don't let the hips shoot up first"],
@@ -1686,31 +2563,224 @@ const MOBILITY_PRINCIPLES = [{
   t: "The real fix is upstream",
   d: "No mobility routine undoes eight hours of sitting. Stand up hourly, and let the loaded glute and core work in your lifts do the heavy lifting."
 }];
+
+/* Mobility items tagged by slot.
+   "pre"  = activation. Wakes muscles up before you load them. Short, active,
+            no long static holds (holding a stretch before squatting can
+            temporarily reduce force output).
+   "post" = lengthening. Longer static work, done when you're warm.
+   "both" = works either side of a session. */
 const MOBILITY = [{
-  n: "Half-kneeling hip flexor stretch",
-  t: "45 s / side",
-  cue: "Squeeze down-leg glute, TUCK pelvis under — don't just lean and arch."
+  n: "Glute bridges",
+  t: "45 s",
+  slot: "pre",
+  targets: "Glutes, hip extension",
+  cue: "Drive through the heels to a full lockout, one-second squeeze at the top. If you feel it in your hamstrings, tuck the pelvis slightly and push the knees forward."
 }, {
   n: "90/90 hip switches",
   t: "60 s",
-  cue: "Internal-rotation work. Slow, don't force end range."
-}, {
-  n: "Glute bridges",
-  t: "45 s",
-  cue: "Heels, full lockout, 1-sec squeeze at top."
-}, {
-  n: "Bodyweight single-leg RDL",
-  t: "6–8 / side",
-  cue: "Hinge on one leg, keep pelvis level, move slow. Trains balance, glute, and ankle/Achilles control."
+  slot: "pre",
+  targets: "Hip internal and external rotation",
+  cue: "Sit with both knees bent at 90 degrees, front and back. Rotate slowly from one side to the other, keeping the chest tall. Don't force the end range."
 }, {
   n: "Dead bugs",
   t: "60 s",
-  cue: "Low back glued to floor. If it arches, shorten the range."
+  slot: "pre",
+  targets: "Deep core, anti-extension",
+  cue: "Low back glued to the floor the whole time. Extend the opposite arm and leg slowly. If the back arches off the floor, shorten the range."
 }, {
-  n: "Deep squat hold (optional)",
+  n: "Bodyweight single-leg RDL",
+  t: "6–8 / side",
+  slot: "pre",
+  targets: "Glutes, hamstrings, ankle stability",
+  cue: "Hinge on one leg, keep the pelvis level, move slowly. Trains balance and control as much as flexibility."
+}, {
+  n: "Band pull-aparts",
+  t: "45 s",
+  slot: "pre",
+  targets: "Rear delts, mid-back",
+  cue: "Light band at chest height. Pull apart by squeezing the shoulder blades together, not by yanking with the arms. Good before any pressing."
+}, {
+  n: "Cat-cow",
+  t: "45 s",
+  slot: "both",
+  targets: "Spinal segmentation, thoracic mobility",
+  cue: "Move one vertebra at a time rather than sagging and arching as a block. Breathe out as you round, in as you extend."
+}, {
+  n: "Half-kneeling hip flexor stretch",
+  t: "45 s / side",
+  slot: "post",
+  targets: "Hip flexors, quads",
+  cue: "Squeeze the down-leg glute and tuck the pelvis under before you lean. Most people just lean forward and arch the low back, which stretches nothing."
+}, {
+  n: "Deep squat hold",
   t: "30 s",
-  cue: "Heels down, elbows push knees out."
+  slot: "post",
+  targets: "Hips, ankles, adductors",
+  cue: "Heels down, elbows pushing the knees out, chest up. Hold something in front for balance if you need to."
+}, {
+  n: "Couch stretch",
+  t: "45 s / side",
+  slot: "post",
+  targets: "Hip flexors, quads",
+  cue: "Rear foot elevated against a wall or couch, pelvis tucked. Strongest hip flexor stretch there is. Back off if the knee complains."
+}, {
+  n: "Seated figure-4",
+  t: "45 s / side",
+  slot: "post",
+  targets: "Glutes, outer hip, piriformis",
+  cue: "Ankle across the opposite knee, sit tall, then hinge forward from the hips rather than rounding the back."
+}, {
+  n: "Doorway chest stretch",
+  t: "30 s / side",
+  slot: "post",
+  targets: "Chest, front delts",
+  cue: "Forearm flat on the door frame at shoulder height, then rotate your body away. Worth doing after any pressing day."
+}, {
+  n: "Eccentric heel drops",
+  t: "10 / side",
+  slot: "post",
+  targets: "Achilles tendon, calves",
+  cue: "Rise on both feet, lower on one, taking 3 to 4 seconds down with a full drop below the step. Tendons respond to slow loading, not speed."
 }];
+
+/* Movement repository. Everything users can add to their own routine,
+   beyond what ships in the default program. Same shape as MOBILITY. */
+const MOBILITY_LIBRARY = [{
+  n: "Ankle dorsiflexion rock",
+  t: "45 s / side",
+  slot: "pre",
+  targets: "Ankle mobility",
+  cue: "Half-kneeling, drive the knee forward over the toes with the heel flat. Key for squat depth."
+}, {
+  n: "Bird dog",
+  t: "45 s",
+  slot: "pre",
+  targets: "Core, anti-rotation",
+  cue: "Opposite arm and leg, keep the hips square to the floor. Slow beats far."
+}, {
+  n: "Scapular wall slides",
+  t: "45 s",
+  slot: "pre",
+  targets: "Shoulder, upper back",
+  cue: "Back against the wall, slide the arms up keeping contact. Great before overhead work."
+}, {
+  n: "Leg swings",
+  t: "30 s / side",
+  slot: "pre",
+  targets: "Hip mobility, dynamic",
+  cue: "Front to back, then side to side. Controlled swings, not momentum."
+}, {
+  n: "World's greatest stretch",
+  t: "30 s / side",
+  slot: "pre",
+  targets: "Hips, thoracic spine, hamstrings",
+  cue: "Deep lunge, elbow to instep, then rotate and reach up. Covers a lot at once."
+}, {
+  n: "Hip circles",
+  t: "30 s / side",
+  slot: "pre",
+  targets: "Hip joint capsule",
+  cue: "On all fours, circle the knee slowly through its full range."
+}, {
+  n: "Thoracic rotations",
+  t: "45 s / side",
+  slot: "pre",
+  targets: "Upper back rotation",
+  cue: "Side-lying or quadruped, open the chest and follow the hand with your eyes."
+}, {
+  n: "Monster walks",
+  t: "30 s",
+  slot: "pre",
+  targets: "Glute medius, hip abduction",
+  cue: "Band above the knees, step laterally keeping tension. Wakes up the side glute."
+}, {
+  n: "Standing hamstring stretch",
+  t: "45 s / side",
+  slot: "post",
+  targets: "Hamstrings",
+  cue: "Heel on a low step, hinge from the hips with a flat back. Rounding cheats it."
+}, {
+  n: "Pigeon pose",
+  t: "60 s / side",
+  slot: "post",
+  targets: "Glutes, hip external rotation",
+  cue: "Front shin angled across, back leg straight. Prop the hip if you can't get square."
+}, {
+  n: "Child's pose",
+  t: "60 s",
+  slot: "post",
+  targets: "Lats, low back, hips",
+  cue: "Knees wide, hips back to heels, reach long. Breathe into the low back."
+}, {
+  n: "Calf stretch on wall",
+  t: "45 s / side",
+  slot: "post",
+  targets: "Calves, Achilles",
+  cue: "Straight knee hits gastroc, bent knee hits soleus. Do both."
+}, {
+  n: "Thread the needle",
+  t: "45 s / side",
+  slot: "post",
+  targets: "Thoracic spine, rear shoulder",
+  cue: "From all fours, thread one arm under the other and rest on the shoulder."
+}, {
+  n: "Lying spinal twist",
+  t: "45 s / side",
+  slot: "post",
+  targets: "Low back, glutes, obliques",
+  cue: "On your back, drop the knees to one side, shoulders stay down. Relax into it."
+}, {
+  n: "Butterfly stretch",
+  t: "45 s",
+  slot: "post",
+  targets: "Adductors, inner thigh",
+  cue: "Soles together, hinge forward from the hips. Relevant if adductors give you trouble under load."
+}, {
+  n: "Wrist flexor and extensor stretch",
+  t: "30 s each",
+  slot: "post",
+  targets: "Forearms, wrists",
+  cue: "Arm straight, gently pull the fingers back then down. Useful after heavy pressing or front squats."
+}, {
+  n: "Neck CARs",
+  t: "30 s",
+  slot: "both",
+  targets: "Neck mobility",
+  cue: "Slow controlled circles through the full pain-free range. Small movements."
+}, {
+  n: "Shoulder CARs",
+  t: "30 s / side",
+  slot: "both",
+  targets: "Shoulder joint capsule",
+  cue: "Trace the biggest slow circle you can with the arm, keeping the ribs down."
+}, {
+  n: "Standing forward fold",
+  t: "45 s",
+  slot: "post",
+  targets: "Hamstrings, low back",
+  cue: "Soft knees, let the head hang heavy. Don't force the legs straight."
+}, {
+  n: "Frog stretch",
+  t: "60 s",
+  slot: "post",
+  targets: "Adductors, hips",
+  cue: "Knees wide on the floor, rock the hips back gently. Intense — ease in."
+}];
+const MOBILITY_SLOTS = [{
+  id: "pre",
+  label: "Before lifting",
+  blurb: "Activation. Wakes up the glutes, core, and hips so the right muscles do the work."
+}, {
+  id: "post",
+  label: "After lifting",
+  blurb: "Lengthening. Longer holds while you're warm, where they actually stick."
+}];
+function mobilityFor(slot, custom) {
+  const base = MOBILITY.filter(m => m.slot === slot || m.slot === "both");
+  const extra = (custom || []).filter(m => m.slot === slot || m.slot === "both");
+  return [...base, ...extra];
+}
 
 /* card themes per workout day */
 const CARD_THEMES = {
@@ -2259,7 +3329,7 @@ const REST_BY_TIER = [{
 /* Build the daily briefing: what today's session is, and how it compares
    to the last time this same workout was trained. */
 function buildBriefing(logs, wid) {
-  const W = WORKOUTS.find(x => x.id === wid);
+  const W = findWorkout(wid);
   if (!W) return null;
   const anchors = W.ex.filter(e => e.anchor);
 
@@ -2311,6 +3381,26 @@ function buildBriefing(logs, wid) {
     sinceTxt
   };
 }
+
+/* Warm-up ramp for an anchor lift, scaled to the working weight.
+   Ramping to 145 the same way you ramp to 285 wastes effort, so the number
+   of sets scales: 2 light, 3 moderate, 4 heavy. Reps taper as weight climbs
+   so the nervous system is primed without spending the effort the work sets need. */
+const BAR_WEIGHT = 45;
+function warmupRamp(workWeight) {
+  const w = parseFloat(workWeight);
+  if (!w || w <= BAR_WEIGHT) return null;
+  const round5 = x => Math.max(BAR_WEIGHT, Math.round(x / 5) * 5);
+  let pcts;
+  if (w < 135) pcts = [[null, 10], [0.6, 5]]; // light: bar + one
+  else if (w < 225) pcts = [[null, 10], [0.5, 5], [0.7, 3]]; // moderate
+  else pcts = [[null, 10], [0.45, 5], [0.65, 3], [0.8, 2]]; // heavy
+  return pcts.map(([p, reps]) => ({
+    w: p === null ? BAR_WEIGHT : round5(w * p),
+    reps,
+    isBar: p === null
+  }));
+}
 function restForAnchor(logs, wid, name) {
   const idx = tierIndexFor(logs, wid, name);
   if (idx < 0) return null;
@@ -2356,7 +3446,7 @@ const bestSet = sets => {
   });
   return best;
 };
-const labelToId = lbl => (WORKOUTS.find(w => w.label === lbl) || {}).id;
+const labelToId = lbl => (findWorkoutByLabel(lbl) || {}).id;
 const fmtSet = (x, hold) => {
   if (!x) return "–";
   if (hold) return (x.r || "–") + "s";
@@ -2365,7 +3455,7 @@ const fmtSet = (x, hold) => {
   return x.w + " × " + (x.r || "–");
 };
 const exHold = (wid, name) => {
-  const w = WORKOUTS.find(x => x.id === wid);
+  const w = findWorkout(wid);
   const e = w && w.ex.find(y => y.n === name);
   return !!(e && e.hold);
 };
@@ -2554,6 +3644,7 @@ function computeXP(logs) {
   const byDayWid = {};
   Object.keys(logs).forEach(k => {
     const wid = k.split("::")[0];
+    if (wid === "MOB") return; // mobility is awarded separately, not as a lifting session
     const name = k.slice(wid.length + 2);
     const hold = exHold(wid, name);
     (logs[k] || []).forEach(s => {
@@ -2584,7 +3675,9 @@ function computeXP(logs) {
     prXP: 0,
     prCount: 0,
     consistencyXP: 0,
-    weeks: 0
+    weeks: 0,
+    mobilityXP: 0,
+    mobilityDays: 0
   };
   const weeksSeen = {};
   const perDay = {};
@@ -2636,6 +3729,20 @@ function computeXP(logs) {
     perDay[sess.day] = (perDay[sess.day] || 0) + dayXP;
     total += dayXP;
   });
+
+  // mobility: 50 XP per calendar day on which any mobility was logged, capped once daily
+  const mobDays = {};
+  Object.keys(logs).forEach(k => {
+    if (k.indexOf("MOB::") !== 0) return;
+    (logs[k] || []).forEach(s => {
+      const d = localDay(s.date);
+      if (d) mobDays[d] = true;
+    });
+  });
+  const mobilityDays = Object.keys(mobDays).length;
+  breakdown.mobilityDays = mobilityDays;
+  breakdown.mobilityXP = mobilityDays * XP_MOBILITY;
+  total += breakdown.mobilityXP;
   return {
     total,
     breakdown,
@@ -2696,9 +3803,10 @@ function deriveRotIdx(logs) {
     });
   });
   if (!latestWid) return 0;
-  const idx = ROTATION.indexOf(latestWid);
+  const rot = rotationForId(latestWid);
+  const idx = rot.indexOf(latestWid);
   if (idx === -1) return 0;
-  return (idx + 1) % ROTATION.length;
+  return (idx + 1) % rot.length;
 }
 function collectEntries(logs) {
   const entries = [];
@@ -2745,7 +3853,7 @@ function buildSessionCard(logs, wid, day, sessionXP) {
     latest = entries[0];
     sess = entries.filter(e => e.wid === latest.wid && e.day === latest.day);
   }
-  const W = WORKOUTS.find(x => x.id === latest.wid) || {
+  const W = findWorkout(latest.wid) || {
     label: latest.wid
   };
   const TH = CARD_THEMES[latest.wid] || CARD_THEMES.UA;
@@ -2801,6 +3909,80 @@ function App() {
   const [draftRatings, setDraftRatings] = useState({});
   const [openNote, setOpenNote] = useState(null);
   const [completedEx, setCompletedEx] = useState({});
+  const [swaps, setSwaps] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("hf_swaps") || "{}");
+    } catch (e) {
+      return {};
+    }
+  });
+  const [swapFor, setSwapFor] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuSection, setMenuSection] = useState(null);
+  const [progressTab, setProgressTab] = useState("workouts");
+  const [mobSession, setMobSession] = useState(null);
+  const [mobDone, setMobDone] = useState({});
+  const [customMob, setCustomMob] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("hf_custom_mob") || "[]");
+    } catch (e) {
+      return [];
+    }
+  });
+  const [mobEditor, setMobEditor] = useState(false);
+  const [mobAddMode, setMobAddMode] = useState("lib");
+  const [showAllCommentary, setShowAllCommentary] = useState(false);
+  const [newMob, setNewMob] = useState({
+    n: "",
+    t: "",
+    slot: "pre"
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem("hf_custom_mob", JSON.stringify(customMob));
+    } catch (e) {}
+  }, [customMob]);
+  const [profileBw, setProfileBw] = useState(() => {
+    try {
+      return localStorage.getItem("hf_bw") || "210";
+    } catch (e) {
+      return "210";
+    }
+  });
+  const [profileSex, setProfileSex] = useState(() => {
+    try {
+      return localStorage.getItem("hf_sex") || "m";
+    } catch (e) {
+      return "m";
+    }
+  });
+  const [profileAge, setProfileAge] = useState(() => {
+    try {
+      return localStorage.getItem("hf_age") || "39";
+    } catch (e) {
+      return "39";
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem("hf_bw", profileBw);
+    } catch (e) {}
+  }, [profileBw]);
+  useEffect(() => {
+    try {
+      localStorage.setItem("hf_sex", profileSex);
+    } catch (e) {}
+  }, [profileSex]);
+  useEffect(() => {
+    try {
+      localStorage.setItem("hf_age", profileAge);
+    } catch (e) {}
+  }, [profileAge]);
+  useEffect(() => {
+    try {
+      localStorage.setItem("hf_swaps", JSON.stringify(swaps));
+    } catch (e) {}
+  }, [swaps]);
   const rotIdx = deriveRotIdx(logs);
   const [tab, setTab] = useState("train");
   const [toast, setToast] = useState("");
@@ -2811,6 +3993,7 @@ function App() {
   const [showImport, setShowImport] = useState(false);
   const [showFullLog, setShowFullLog] = useState(false);
   const [openCues, setOpenCues] = useState(null);
+  const [openWarmup, setOpenWarmup] = useState(null);
   const [pathId, setPathId] = useState(() => {
     try {
       return localStorage.getItem("hf_path") || "hybrid";
@@ -2818,8 +4001,57 @@ function App() {
       return "hybrid";
     }
   });
+  const [daysPerWeek, setDaysPerWeek] = useState(() => {
+    try {
+      return localStorage.getItem("hf_days") || "4";
+    } catch (e) {
+      return "4";
+    }
+  });
+  const [sessionLen, setSessionLen] = useState(() => {
+    try {
+      return localStorage.getItem("hf_len") || "60";
+    } catch (e) {
+      return "60";
+    }
+  });
+  const [emphasis, setEmphasis] = useState(() => {
+    try {
+      return localStorage.getItem("hf_emphasis") || "balanced";
+    } catch (e) {
+      return "balanced";
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem("hf_days", daysPerWeek);
+    } catch (e) {}
+  }, [daysPerWeek]);
+  useEffect(() => {
+    try {
+      localStorage.setItem("hf_len", sessionLen);
+    } catch (e) {}
+  }, [sessionLen]);
+  useEffect(() => {
+    try {
+      localStorage.setItem("hf_emphasis", emphasis);
+    } catch (e) {}
+  }, [emphasis]);
+  const PROG = PROGRAMS[daysPerWeek] || PROGRAMS["4"];
+  const WORKOUTS = PROG.workouts;
+  const ROTATION = PROG.rotation;
+  /* Switching programs can leave selId pointing at a workout that no longer
+     exists (e.g. "UA" after moving to the 3-day program). Resolve during
+     render, not in an effect: an effect runs after the render that would
+     already have crashed trying to read the missing workout. */
+  const safeSelId = WORKOUTS.some(x => x.id === selId) ? selId : ROTATION[0];
+  useEffect(() => {
+    if (safeSelId !== selId) setSelId(safeSelId);
+  }, [safeSelId, selId]);
   const [sessionCard, setSessionCard] = useState(null);
   const [showBrief, setShowBrief] = useState(false);
+  const [onboardStep, setOnboardStep] = useState(null); // null = not onboarding
+  const [onboardOpenDay, setOnboardOpenDay] = useState(null);
   useEffect(() => {
     try {
       localStorage.setItem("hf_path", pathId);
@@ -2844,12 +4076,19 @@ function App() {
       setLogs(loadedLogs);
       setSelId(ROTATION[deriveRotIdx(loadedLogs)] || "UA");
     }
+    /* Onboarding shows only on a genuinely fresh install: no saved state and
+       no logged history. Anyone with data already made these choices. */
+    try {
+      const seen = localStorage.getItem("hf_onboarded");
+      const hasHistory = loadedLogs && Object.keys(loadedLogs).length > 0;
+      if (!seen && !hasHistory) setOnboardStep(0);
+    } catch (e) {}
     setLoaded(true);
   }, []);
 
   /* daily briefing: show once per calendar day, on first open */
   useEffect(() => {
-    if (!loaded) return;
+    if (!loaded || onboardStep !== null) return;
     try {
       const today = localDay(new Date());
       if (localStorage.getItem("hf_brief") !== today) {
@@ -2857,7 +4096,7 @@ function App() {
         localStorage.setItem("hf_brief", today);
       }
     } catch (e) {}
-  }, [loaded]);
+  }, [loaded, onboardStep]);
 
   /* auto-persist */
   useEffect(() => {
@@ -2871,9 +4110,9 @@ function App() {
 
   /* init draft on workout switch */
   useEffect(() => {
-    const base = WORKOUTS.find(x => x.id === selId);
+    const base = WORKOUTS.find(x => x.id === safeSelId);
     if (!base) return;
-    const w = applyPath(base, pathId);
+    const w = applySwaps(applyLength(applyEmphasis(applyPath(base, pathId), emphasis), sessionLen), swaps);
     const d = {};
     w.ex.forEach(e => {
       d[exKey(w.id, e.n)] = Array.from({
@@ -2885,7 +4124,7 @@ function App() {
     });
     setDraft(d);
     setCompletedEx({});
-  }, [selId, pathId]);
+  }, [safeSelId, pathId, swaps, emphasis, sessionLen, daysPerWeek]);
   const setDraftCell = (k, i, field, val) => {
     setDraft(prev => {
       const rows = (prev[k] || []).map((row, idx) => idx === i ? {
@@ -2902,8 +4141,38 @@ function App() {
     setToast(msg);
     setTimeout(() => setToast(""), 2600);
   };
+  const saveMobility = () => {
+    if (!mobSession) return;
+    const items = mobilityFor(mobSession, customMob);
+    const doneItems = items.filter(m => mobDone[m.n]);
+    if (!doneItems.length) {
+      flash("Check off at least one item first.");
+      return;
+    }
+    const today = localDay(new Date());
+    const key = "MOB::" + (mobSession === "pre" ? "Before lifting" : "After lifting");
+    const already = (logs[key] || []).some(s => localDay(s.date) === today);
+    const nextLogs = {
+      ...logs,
+      [key]: [...(logs[key] || []), {
+        date: new Date().toISOString(),
+        sets: doneItems.map(m => ({
+          w: "",
+          r: m.t
+        })),
+        items: doneItems.map(m => m.n)
+      }].slice(-200)
+    };
+    setLogs(nextLogs);
+    // XP: 50 once per calendar day, regardless of how many mobility sessions
+    const earnedToday = Object.keys(logs).some(k => k.indexOf("MOB::") === 0 && (logs[k] || []).some(s => localDay(s.date) === today));
+    const xp = earnedToday ? 0 : XP_MOBILITY;
+    setMobSession(null);
+    setMobDone({});
+    flash(xp ? "Mobility logged. +" + xp + " XP" : "Mobility logged. XP already earned today.");
+  };
   const saveSession = () => {
-    const w = applyPath(WORKOUTS.find(x => x.id === selId), pathId);
+    const w = applySwaps(applyLength(applyEmphasis(applyPath(WORKOUTS.find(x => x.id === safeSelId), pathId), emphasis), sessionLen), swaps);
     const nextLogs = {
       ...logs
     };
@@ -2943,6 +4212,7 @@ function App() {
     try {
       xpInfo = sessionXPBreakdown(nextLogs, savedWid, savedDay);
     } catch (e) {}
+    setShowAllCommentary(false);
     let commentary = [];
     try {
       commentary = buildSessionCommentary(w, draft, draftNotes, logs, draftRatings);
@@ -3112,7 +4382,7 @@ function App() {
     className: "text-sm"
   }, "Loading…");
   const nextW = WORKOUTS.find(x => x.id === ROTATION[rotIdx]);
-  const sel = applyPath(WORKOUTS.find(x => x.id === selId), pathId);
+  const sel = applySwaps(applyLength(applyEmphasis(applyPath(WORKOUTS.find(x => x.id === safeSelId), pathId), emphasis), sessionLen), swaps);
   const anyHistory = Object.keys(logs).length > 0;
   return /*#__PURE__*/React.createElement("div", {
     style: {
@@ -3131,70 +4401,57 @@ function App() {
     style: {
       padding: "24px 20px 12px"
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, (() => {
+    const SUB = {
+      guide: "Guide",
+      quotes: "Quotes",
+      data: "History & backup"
+    };
+    const title = SUB[tab];
+    if (!title) return /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 26,
+        fontWeight: 700
+      }
+    }, "Stone");
+    return /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 12
+      }
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: () => {
+        setTab("train");
+        setMenuOpen(true);
+      },
+      "aria-label": "Back",
+      style: {
+        background: T.surface,
+        border: "1px solid " + T.line,
+        borderRadius: 10,
+        width: 38,
+        height: 38,
+        color: T.text,
+        fontSize: 18,
+        lineHeight: 1,
+        flexShrink: 0
+      }
+    }, "‹"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 22,
+        fontWeight: 700
+      }
+    }, title));
+  })()), tab === "train" && /*#__PURE__*/React.createElement("div", {
     style: {
-      color: T.muted,
-      fontSize: 11,
-      letterSpacing: 2,
-      textTransform: "uppercase",
-      fontWeight: 600
-    }
-  }, "Recomp · 4-day rolling"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "baseline",
-      justifyContent: "space-between",
-      marginTop: 4
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 26,
-      fontWeight: 700
-    }
-  }, "Stone"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      textAlign: "right"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      color: T.muted,
-      fontSize: 11,
-      textTransform: "uppercase"
-    }
-  }, "Up next"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      color: T.amber,
-      fontSize: 14,
-      fontWeight: 700
-    }
-  }, nextW.label)))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      padding: "0 20px 12px",
-      display: "flex",
-      gap: 6
-    }
-  }, [["train", "Train"], ["guide", "Guide"], ["mobility", "Mobility"], ["log", "Progress"], ["quotes", "Quotes"]].map(([id, lbl]) => /*#__PURE__*/React.createElement("button", {
-    key: id,
-    onClick: () => setTab(id),
-    style: {
-      border: "none",
-      padding: "6px 10px",
-      borderRadius: 999,
-      fontSize: 12.5,
-      fontWeight: 600,
-      whiteSpace: "nowrap",
-      background: tab === id ? T.amber : T.surface,
-      color: tab === id ? "#2A0A46" : T.muted
-    }
-  }, lbl))), tab === "train" && /*#__PURE__*/React.createElement("div", {
-    style: {
-      padding: "0 20px 60px"
+      padding: "0 20px 104px"
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       display: "grid",
-      gridTemplateColumns: "1fr 1fr 1fr 1fr",
-      gap: 8,
+      gridTemplateColumns: "repeat(" + ROTATION.length + ", 1fr)",
+      gap: 6,
       marginBottom: 16
     }
   }, ROTATION.map((id, i) => {
@@ -3213,17 +4470,17 @@ function App() {
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: 700,
         color: isSel ? T.text : T.muted
       }
-    }, w.label.split(" ")[1]), /*#__PURE__*/React.createElement("div", {
+    }, w.label.indexOf(" ") !== -1 ? w.label.split(" ")[1] : w.label), /*#__PURE__*/React.createElement("div", {
       style: {
         fontSize: 10,
         marginTop: 2,
         color: isNext ? T.amber : T.muted
       }
-    }, isNext ? "next" : w.label.split(" ")[0].toLowerCase()));
+    }, isNext ? "next" : w.label.indexOf(" ") !== -1 ? w.label.split(" ")[0].toLowerCase() : ""));
   })), /*#__PURE__*/React.createElement("button", {
     onClick: () => setSelId("BON"),
     style: {
@@ -3293,7 +4550,27 @@ function App() {
         color: T.emerald,
         marginRight: 6
       }
-    }, "✓"), e.n, e.anchor && /*#__PURE__*/React.createElement("span", {
+    }, "✓"), (() => {
+      const slotName = e.swappedFrom || e.n;
+      const hasAlts = (EXERCISE_ALTS[slotName] || []).length > 1;
+      if (!hasAlts) return /*#__PURE__*/React.createElement("span", null, e.n);
+      return /*#__PURE__*/React.createElement("span", {
+        onClick: () => setSwapFor({
+          wid: sel.id,
+          slot: slotName,
+          current: e.n
+        }),
+        style: {
+          cursor: "pointer"
+        }
+      }, e.n, /*#__PURE__*/React.createElement("span", {
+        style: {
+          color: "#7DD8FF",
+          marginLeft: 7,
+          fontSize: 13
+        }
+      }, "⇄"));
+    })(), e.anchor && /*#__PURE__*/React.createElement("span", {
       style: {
         fontSize: 10,
         fontWeight: 800,
@@ -3304,7 +4581,7 @@ function App() {
         color: "#2A0A10",
         verticalAlign: "middle"
       }
-    }, "🔺 ANCHOR"), e.bonus && /*#__PURE__*/React.createElement("span", {
+    }, "Anchor lift"), e.bonus && /*#__PURE__*/React.createElement("span", {
       style: {
         fontSize: 10,
         fontWeight: 800,
@@ -3321,7 +4598,7 @@ function App() {
         fontSize: 12,
         marginTop: 2
       }
-    }, e.s, " × ", e.r, " \xA0·\xA0 ", e.note), e.paired && /*#__PURE__*/React.createElement("div", {
+    }, e.s, " × ", e.r, e.note ? " · " + e.note : ""), e.paired && /*#__PURE__*/React.createElement("div", {
       style: {
         color: "#7DF9FF",
         fontSize: 11,
@@ -3350,6 +4627,57 @@ function App() {
           fontWeight: 700
         }
       }, "full rest between sets");
+    })(), e.anchor && !e.hold && (() => {
+      const typed = (draft[k] || []).map(r => parseFloat(r.w)).filter(x => !isNaN(x) && x > 0);
+      const basis = typed.length ? Math.max(...typed) : atBest ? parseFloat(atBest.w) : null;
+      const ramp = warmupRamp(basis);
+      if (!ramp) return null;
+      const open = openWarmup === k;
+      return /*#__PURE__*/React.createElement("div", {
+        style: {
+          marginTop: 6
+        }
+      }, /*#__PURE__*/React.createElement("button", {
+        onClick: () => setOpenWarmup(open ? null : k),
+        style: {
+          padding: "3px 9px",
+          borderRadius: 6,
+          fontSize: 11,
+          fontWeight: 700,
+          background: "transparent",
+          border: "1px solid " + T.line,
+          color: T.muted
+        }
+      }, open ? "▲ Hide warm-up" : "▼ Warm-up to " + Math.round(basis) + " lb"), open && /*#__PURE__*/React.createElement("div", {
+        style: {
+          marginTop: 6,
+          padding: 10,
+          borderRadius: 8,
+          background: T.bg,
+          border: "1px solid " + T.line
+        }
+      }, ramp.map((r, i) => /*#__PURE__*/React.createElement("div", {
+        key: i,
+        className: "mono",
+        style: {
+          display: "flex",
+          justifyContent: "space-between",
+          fontSize: 12,
+          padding: "3px 0",
+          color: T.text
+        }
+      }, /*#__PURE__*/React.createElement("span", {
+        style: {
+          color: T.muted
+        }
+      }, r.isBar ? "bar" : r.w + " lb"), /*#__PURE__*/React.createElement("span", null, "× ", r.reps))), /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 10,
+          color: T.muted,
+          marginTop: 6,
+          lineHeight: 1.5
+        }
+      }, "Short rests early, 1 to 2 min, stretching out as you approach your working weight.")));
     })(), TECHNIQUE_CUES[e.n] && /*#__PURE__*/React.createElement("button", {
       onClick: () => setOpenCues(openCues === e.n ? null : e.n),
       style: {
@@ -3671,9 +4999,458 @@ function App() {
     }
   }, !sel.bonus && sel.id === ROTATION[rotIdx] ? "Save & advance rotation" : "Save session")), tab === "mobility" && /*#__PURE__*/React.createElement("div", {
     style: {
-      padding: "0 20px 24px"
+      padding: "0 20px 104px"
     }
-  }, /*#__PURE__*/React.createElement(MobilityList, null), /*#__PURE__*/React.createElement("div", {
+  }, !mobSession ? /*#__PURE__*/React.createElement(React.Fragment, null, (() => {
+    const today = localDay(new Date());
+    const doneToday = Object.keys(logs).filter(k => k.indexOf("MOB::") === 0 && (logs[k] || []).some(x => localDay(x.date) === today));
+    return doneToday.length ? /*#__PURE__*/React.createElement("div", {
+      style: {
+        borderRadius: 14,
+        padding: 13,
+        background: "rgba(57,242,228,0.08)",
+        border: "1px solid " + T.emerald,
+        marginBottom: 14
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 13,
+        fontWeight: 700,
+        color: T.emerald
+      }
+    }, "✓ Done today"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        marginTop: 3
+      }
+    }, doneToday.map(k => k.slice(5)).join(" · "))) : null;
+  })(), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: T.muted,
+      marginBottom: 12,
+      lineHeight: 1.6
+    }
+  }, "Pick when you're doing it. The list changes to suit: activation before you lift, lengthening after."), MOBILITY_SLOTS.map(sl => /*#__PURE__*/React.createElement("button", {
+    key: sl.id,
+    onClick: () => {
+      setMobSession(sl.id);
+      setMobDone({});
+    },
+    style: {
+      width: "100%",
+      textAlign: "left",
+      borderRadius: 14,
+      padding: 15,
+      marginBottom: 8,
+      background: T.surface,
+      border: "1px solid transparent"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 16,
+      fontWeight: 700,
+      color: T.text
+    }
+  }, sl.label), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: T.amber,
+      fontSize: 13,
+      fontWeight: 700
+    }
+  }, "Start ›")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: T.muted,
+      marginTop: 4,
+      lineHeight: 1.5
+    }
+  }, sl.blurb), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: T.muted,
+      marginTop: 6
+    }
+  }, mobilityFor(sl.id, customMob).length, " movements"))), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setMobEditor(!mobEditor),
+    style: {
+      width: "100%",
+      borderRadius: 12,
+      padding: 11,
+      marginTop: 4,
+      fontSize: 13,
+      fontWeight: 700,
+      background: "transparent",
+      border: "1px solid " + T.line,
+      color: T.muted
+    }
+  }, mobEditor ? "▲ Done editing" : "＋ Add your own movement"), mobEditor && /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderRadius: 14,
+      padding: 14,
+      background: T.surface,
+      marginTop: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6,
+      marginBottom: 12
+    }
+  }, [["lib", "From library"], ["own", "Write your own"]].map(([v, lbl]) => /*#__PURE__*/React.createElement("button", {
+    key: v,
+    onClick: () => setMobAddMode(v),
+    style: {
+      flex: 1,
+      borderRadius: 8,
+      padding: "7px 0",
+      fontSize: 12,
+      fontWeight: 700,
+      background: mobAddMode === v ? T.surfaceHi : "transparent",
+      border: "1px solid " + (mobAddMode === v ? T.amber : T.line),
+      color: mobAddMode === v ? T.text : T.muted
+    }
+  }, lbl))), mobAddMode === "lib" ? (() => {
+    const added = (customMob || []).map(m => m.n);
+    const groups = MOBILITY_SLOTS.map(sl => ({
+      sl,
+      items: MOBILITY_LIBRARY.filter(m => (m.slot === sl.id || m.slot === "both") && !MOBILITY.some(d => d.n === m.n))
+    }));
+    return /*#__PURE__*/React.createElement("div", null, groups.map(g => /*#__PURE__*/React.createElement("div", {
+      key: g.sl.id,
+      style: {
+        marginBottom: 12
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 10,
+        color: T.muted,
+        letterSpacing: 1,
+        textTransform: "uppercase",
+        fontWeight: 700,
+        marginBottom: 6
+      }
+    }, g.sl.label), g.items.map(m => {
+      const on = added.indexOf(m.n) !== -1;
+      return /*#__PURE__*/React.createElement("button", {
+        key: m.n,
+        onClick: () => {
+          if (on) setCustomMob(customMob.filter(x => x.n !== m.n));else {
+            setCustomMob([...customMob, {
+              ...m,
+              custom: true
+            }]);
+            flash("Added " + m.n + ".");
+          }
+        },
+        style: {
+          width: "100%",
+          textAlign: "left",
+          borderRadius: 10,
+          padding: 11,
+          marginBottom: 6,
+          background: on ? "rgba(57,242,228,0.07)" : T.bg,
+          border: "1px solid " + (on ? T.emerald : T.line)
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        style: {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 8
+        }
+      }, /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontSize: 13,
+          fontWeight: 700,
+          color: on ? T.emerald : T.text
+        }
+      }, on ? "✓ " : "", m.n), /*#__PURE__*/React.createElement("span", {
+        className: "mono",
+        style: {
+          fontSize: 11,
+          color: T.muted,
+          flexShrink: 0
+        }
+      }, m.t)), m.targets && /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 11,
+          color: T.cardAAccent,
+          marginTop: 3,
+          fontWeight: 700
+        }
+      }, m.targets), m.cue && /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 11,
+          color: T.muted,
+          marginTop: 3,
+          lineHeight: 1.5
+        }
+      }, m.cue));
+    }))));
+  })() : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("input", {
+    value: newMob.n,
+    onChange: e => setNewMob({
+      ...newMob,
+      n: e.target.value
+    }),
+    placeholder: "Movement name",
+    style: {
+      width: "100%",
+      borderRadius: 8,
+      padding: "9px 10px",
+      fontSize: 13,
+      outline: "none",
+      background: T.bg,
+      color: T.text,
+      border: "1px solid " + T.line,
+      marginBottom: 8
+    }
+  }), /*#__PURE__*/React.createElement("input", {
+    value: newMob.t,
+    onChange: e => setNewMob({
+      ...newMob,
+      t: e.target.value
+    }),
+    placeholder: "Duration, e.g. 45 s / side",
+    style: {
+      width: "100%",
+      borderRadius: 8,
+      padding: "9px 10px",
+      fontSize: 13,
+      outline: "none",
+      background: T.bg,
+      color: T.text,
+      border: "1px solid " + T.line,
+      marginBottom: 8
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6,
+      marginBottom: 10
+    }
+  }, MOBILITY_SLOTS.map(sl => /*#__PURE__*/React.createElement("button", {
+    key: sl.id,
+    onClick: () => setNewMob({
+      ...newMob,
+      slot: sl.id
+    }),
+    style: {
+      flex: 1,
+      borderRadius: 8,
+      padding: "7px 0",
+      fontSize: 12,
+      fontWeight: 700,
+      background: newMob.slot === sl.id ? T.surfaceHi : "transparent",
+      border: "1px solid " + (newMob.slot === sl.id ? T.amber : T.line),
+      color: newMob.slot === sl.id ? T.text : T.muted
+    }
+  }, sl.label))), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      const n = newMob.n.trim();
+      if (!n) {
+        flash("Give it a name first.");
+        return;
+      }
+      setCustomMob([...customMob, {
+        n,
+        t: newMob.t.trim() || "30 s",
+        slot: newMob.slot,
+        custom: true
+      }]);
+      setNewMob({
+        n: "",
+        t: "",
+        slot: "pre"
+      });
+      flash("Added.");
+    },
+    style: {
+      width: "100%",
+      borderRadius: 10,
+      padding: 11,
+      fontSize: 14,
+      fontWeight: 700,
+      border: "none",
+      background: T.amber,
+      color: "#2A0A46"
+    }
+  }, "Add movement")), customMob.length > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 14,
+      paddingTop: 12,
+      borderTop: "1px solid " + T.line
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: T.muted,
+      marginBottom: 6
+    }
+  }, "In your routine (", customMob.length, ")"), customMob.map((m, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      padding: "7px 0",
+      borderBottom: i < customMob.length - 1 ? "1px solid " + T.line : "none"
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13,
+      color: T.text
+    }
+  }, m.n), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: T.muted
+    }
+  }, m.t, " · ", m.slot === "pre" ? "before" : m.slot === "post" ? "after" : "both")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setCustomMob(customMob.filter((_, j) => j !== i)),
+    style: {
+      background: "transparent",
+      border: "none",
+      color: T.red,
+      fontSize: 16
+    }
+  }, "✕")))))) : (() => {
+    const sl = MOBILITY_SLOTS.find(x => x.id === mobSession);
+    const items = mobilityFor(mobSession, customMob);
+    const doneCount = items.filter(m => mobDone[m.n]).length;
+    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: 4
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 18,
+        fontWeight: 800
+      }
+    }, sl.label), /*#__PURE__*/React.createElement("button", {
+      onClick: () => {
+        setMobSession(null);
+        setMobDone({});
+      },
+      style: {
+        background: "transparent",
+        border: "none",
+        color: T.muted,
+        fontSize: 13,
+        fontWeight: 700
+      }
+    }, "Cancel")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        marginBottom: 10
+      }
+    }, doneCount, " of ", items.length, " done"), mobSession === "pre" && /*#__PURE__*/React.createElement("div", {
+      style: {
+        borderRadius: 12,
+        padding: 12,
+        background: T.cardA,
+        border: "1px solid " + T.cardALine,
+        marginBottom: 12
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        lineHeight: 1.6
+      }
+    }, "This is activation, not a warm-up. It wakes up the glutes, core, and hips so the right muscles do the work. You still need to ramp the bar itself once you start your first lift.")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        height: 6,
+        borderRadius: 3,
+        background: T.surface,
+        marginBottom: 14,
+        overflow: "hidden"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: (items.length ? doneCount / items.length * 100 : 0) + "%",
+        height: "100%",
+        background: T.emerald
+      }
+    })), items.map((m, i) => {
+      const on = !!mobDone[m.n];
+      return /*#__PURE__*/React.createElement("button", {
+        key: i,
+        onClick: () => setMobDone(p => ({
+          ...p,
+          [m.n]: !p[m.n]
+        })),
+        style: {
+          width: "100%",
+          textAlign: "left",
+          borderRadius: 14,
+          padding: 14,
+          marginBottom: 8,
+          background: on ? "rgba(57,242,228,0.07)" : T.surface,
+          border: "1px solid " + (on ? T.emerald : "transparent")
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        style: {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 8
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 15,
+          fontWeight: 700,
+          color: on ? T.emerald : T.text
+        }
+      }, on ? "✓ " : "", m.n), /*#__PURE__*/React.createElement("span", {
+        className: "mono",
+        style: {
+          fontSize: 12,
+          color: T.muted,
+          flexShrink: 0
+        }
+      }, m.t)), m.targets && /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 11,
+          color: T.cardAAccent,
+          marginTop: 4,
+          fontWeight: 700
+        }
+      }, m.targets), m.cue && /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 12,
+          color: T.muted,
+          marginTop: 5,
+          lineHeight: 1.5
+        }
+      }, m.cue));
+    }), /*#__PURE__*/React.createElement("button", {
+      onClick: saveMobility,
+      style: {
+        width: "100%",
+        borderRadius: 14,
+        padding: 15,
+        marginTop: 8,
+        fontSize: 15,
+        fontWeight: 800,
+        border: "none",
+        background: T.amber,
+        color: "#2A0A46"
+      }
+    }, "Finish mobility"));
+  })(), /*#__PURE__*/React.createElement("div", {
     style: {
       marginTop: 24
     }
@@ -3712,7 +5489,7 @@ function App() {
     const q = quoteOfTheDay();
     return /*#__PURE__*/React.createElement("div", {
       style: {
-        padding: "0 20px 40px"
+        padding: "0 20px 104px"
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
@@ -3785,71 +5562,9 @@ function App() {
     }, "— ", x.a))));
   })(), tab === "guide" && /*#__PURE__*/React.createElement("div", {
     style: {
-      padding: "0 20px 40px"
+      padding: "0 20px 104px"
     }
   }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      borderRadius: 16,
-      padding: 16,
-      background: T.cardA,
-      border: "1px solid " + T.cardALine,
-      marginBottom: 14
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontWeight: 700,
-      fontSize: 13,
-      marginBottom: 2,
-      color: T.cardAAccent
-    }
-  }, "Training path"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: T.muted,
-      marginBottom: 10
-    }
-  }, "Same lifts and rotation. This changes sets, reps, rest, and how much accessory work is in the main block."), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 6
-    }
-  }, PATH_IDS.map(id => {
-    const P = PATHS[id],
-      on = pathId === id;
-    return /*#__PURE__*/React.createElement("button", {
-      key: id,
-      onClick: () => setPathId(id),
-      style: {
-        textAlign: "left",
-        borderRadius: 12,
-        padding: 12,
-        background: on ? T.surfaceHi : "transparent",
-        border: "1px solid " + (on ? T.amber : T.line)
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 13,
-        fontWeight: 700,
-        color: on ? T.text : T.muted
-      }
-    }, P.label, on ? "  ✓" : ""), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 11,
-        color: T.muted,
-        marginTop: 3,
-        lineHeight: 1.5
-      }
-    }, P.blurb), on && /*#__PURE__*/React.createElement("div", {
-      className: "mono",
-      style: {
-        fontSize: 10,
-        color: T.emerald,
-        marginTop: 6,
-        lineHeight: 1.6
-      }
-    }, "anchor ", P.anchor.sets, "×", P.anchor.reps, ", rest ", P.anchor.rest, /*#__PURE__*/React.createElement("br", null), "accessories ", P.accessory.sets, "×", P.accessory.reps, ", rest ", P.accessory.rest, /*#__PURE__*/React.createElement("br", null), P.progression));
-  }))), /*#__PURE__*/React.createElement("div", {
     style: {
       borderRadius: 16,
       padding: 16,
@@ -3991,27 +5706,61 @@ function App() {
     }
   }, para)))), tab === "log" && /*#__PURE__*/React.createElement("div", {
     style: {
-      padding: "0 20px 40px"
+      padding: "0 20px 104px"
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      color: T.muted,
-      fontSize: 12,
-      marginBottom: 12
+      display: "flex",
+      borderBottom: "1px solid " + T.line,
+      marginBottom: 16
     }
-  }, "Saved on this device. Tap a month to review; export as a backup."), /*#__PURE__*/React.createElement(LevelCard, {
+  }, [["workouts", "Workouts"], ["performance", "Performance"]].map(([id, lbl]) => /*#__PURE__*/React.createElement("button", {
+    key: id,
+    onClick: () => setProgressTab(id),
+    style: {
+      flex: 1,
+      background: "transparent",
+      border: "none",
+      padding: "10px 0 11px",
+      fontSize: 14,
+      fontWeight: 700,
+      color: progressTab === id ? T.text : T.muted,
+      borderBottom: "2px solid " + (progressTab === id ? T.amber : "transparent"),
+      marginBottom: -1
+    }
+  }, lbl))), progressTab === "workouts" ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(AllTimeStats, {
+    logs: logs
+  }), /*#__PURE__*/React.createElement(SessionFeed, {
+    logs: logs
+  })) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(LevelCard, {
     logs: logs
   }), /*#__PURE__*/React.createElement(Calendar, {
     logs: logs
   }), /*#__PURE__*/React.createElement(Trends, {
     logs: logs
   }), /*#__PURE__*/React.createElement(StrengthStandards, {
-    logs: logs
+    logs: logs,
+    bw: profileBw,
+    sex: profileSex,
+    age: profileAge,
+    setBw: setProfileBw,
+    setSex: setProfileSex,
+    setAge: setProfileAge
   }), /*#__PURE__*/React.createElement(LiftBalance, {
     logs: logs
   }), /*#__PURE__*/React.createElement(ShareCard, {
     logs: logs
-  }), /*#__PURE__*/React.createElement("button", {
+  }))), tab === "data" && /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "0 20px 104px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: T.muted,
+      fontSize: 12,
+      marginBottom: 14
+    }
+  }, "Your full history, plus backup and restore. Everything stays on this device."), /*#__PURE__*/React.createElement("button", {
     onClick: () => setShowFullLog(!showFullLog),
     style: {
       width: "100%",
@@ -4193,7 +5942,897 @@ function App() {
       color: resetArm ? "#fff" : T.muted,
       border: "1px solid " + (resetArm ? T.red : T.line)
     }
-  }, resetArm ? "Tap again to confirm — clears ALL logs" : "Clear all logs")), showBrief && !sessionCard && (() => {
+  }, resetArm ? "Tap again to confirm — clears ALL logs" : "Clear all logs")), onboardStep !== null && (() => {
+    const finish = () => {
+      try {
+        localStorage.setItem("hf_onboarded", "1");
+      } catch (e) {}
+      setOnboardStep(null);
+    };
+    const STEPS = 5;
+    const Shell = ({
+      kicker,
+      title,
+      sub,
+      children,
+      back,
+      next,
+      nextLabel
+    }) => /*#__PURE__*/React.createElement("div", {
+      style: {
+        position: "fixed",
+        inset: 0,
+        background: T.bg,
+        zIndex: 120,
+        display: "flex",
+        flexDirection: "column"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        padding: "26px 20px 0",
+        maxWidth: 480,
+        width: "100%",
+        margin: "0 auto"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        gap: 4,
+        marginBottom: 20
+      }
+    }, Array.from({
+      length: STEPS
+    }).map((_, i) => /*#__PURE__*/React.createElement("div", {
+      key: i,
+      style: {
+        flex: 1,
+        height: 3,
+        borderRadius: 2,
+        background: i <= onboardStep ? T.amber : T.surface
+      }
+    }))), kicker && /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 10,
+        color: T.muted,
+        letterSpacing: 2,
+        textTransform: "uppercase",
+        fontWeight: 700
+      }
+    }, kicker), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 25,
+        fontWeight: 800,
+        marginTop: 4,
+        lineHeight: 1.2
+      }
+    }, title), sub && /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 13,
+        color: T.muted,
+        marginTop: 8,
+        lineHeight: 1.6
+      }
+    }, sub)), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1,
+        overflowY: "auto",
+        padding: "18px 20px 10px",
+        maxWidth: 480,
+        width: "100%",
+        margin: "0 auto"
+      }
+    }, children), /*#__PURE__*/React.createElement("div", {
+      style: {
+        padding: "10px 20px calc(20px + env(safe-area-inset-bottom))",
+        maxWidth: 480,
+        width: "100%",
+        margin: "0 auto",
+        display: "flex",
+        gap: 8
+      }
+    }, back !== null && /*#__PURE__*/React.createElement("button", {
+      onClick: back,
+      style: {
+        borderRadius: 12,
+        padding: "14px 18px",
+        fontSize: 14,
+        fontWeight: 700,
+        background: "transparent",
+        border: "1px solid " + T.line,
+        color: T.muted
+      }
+    }, "Back"), /*#__PURE__*/React.createElement("button", {
+      onClick: next,
+      style: {
+        flex: 1,
+        borderRadius: 12,
+        padding: 14,
+        fontSize: 15,
+        fontWeight: 800,
+        border: "none",
+        background: T.amber,
+        color: "#2A0A46"
+      }
+    }, nextLabel || "Continue")));
+    const pick = (on, onClick, label, blurb) => /*#__PURE__*/React.createElement("button", {
+      key: label,
+      onClick: onClick,
+      style: {
+        width: "100%",
+        textAlign: "left",
+        borderRadius: 14,
+        padding: 15,
+        marginBottom: 8,
+        background: on ? T.surfaceHi : T.surface,
+        border: "1px solid " + (on ? T.amber : "transparent")
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 16,
+        fontWeight: 700,
+        color: T.text
+      }
+    }, label, on ? "  ✓" : ""), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        marginTop: 3,
+        lineHeight: 1.5
+      }
+    }, blurb));
+    if (onboardStep === 0) return /*#__PURE__*/React.createElement(Shell, {
+      title: "Welcome to Stone",
+      sub: "A strength and mobility tracker with the programming built in. No account, no server, no subscription. Everything you log stays on this device.",
+      back: null,
+      next: () => setOnboardStep(1),
+      nextLabel: "Set up my program"
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        borderRadius: 14,
+        padding: 15,
+        background: T.surface,
+        marginBottom: 8
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 14,
+        fontWeight: 700,
+        color: T.text
+      }
+    }, "Built around the anchor lifts"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        marginTop: 4,
+        lineHeight: 1.6
+      }
+    }, "Every day starts with a heavy compound, done while you're fresh. That's what builds real strength. Everything after it supports that work.")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        borderRadius: 14,
+        padding: 15,
+        background: T.surface,
+        marginBottom: 8
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 14,
+        fontWeight: 700,
+        color: T.text
+      }
+    }, "It adapts to you"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        marginTop: 4,
+        lineHeight: 1.6
+      }
+    }, "Rest times scale to your strength on each lift. Warm-up ramps are calculated from the weight you're about to lift.")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        borderRadius: 14,
+        padding: 15,
+        background: T.surface
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 14,
+        fontWeight: 700,
+        color: T.text
+      }
+    }, "Mobility counts"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        marginTop: 4,
+        lineHeight: 1.6
+      }
+    }, "Activation before you lift, lengthening after. It's tracked and earns XP like any session.")));
+    if (onboardStep === 1) return /*#__PURE__*/React.createElement(Shell, {
+      kicker: "Step 1 of 4",
+      title: "How often do you train?",
+      sub: "This sets how the work is split up, not a schedule you have to keep. The days cycle in order, so you just do the next one whenever you train.",
+      back: () => setOnboardStep(0),
+      next: () => setOnboardStep(2)
+    }, Object.keys(PROGRAMS).map(d => pick(daysPerWeek === d, () => setDaysPerWeek(d), PROGRAMS[d].label, PROGRAMS[d].blurb)));
+    if (onboardStep === 2) return /*#__PURE__*/React.createElement(Shell, {
+      kicker: "Step 2 of 4",
+      title: "How long do you have?",
+      sub: "Heavy lifts need real rest between sets, so a shorter session means fewer exercises rather than rushing the ones that matter.",
+      back: () => setOnboardStep(1),
+      next: () => setOnboardStep(3)
+    }, Object.keys(SESSION_LENGTHS).sort().reverse().map(l => pick(sessionLen === l, () => setSessionLen(l), SESSION_LENGTHS[l].label, SESSION_LENGTHS[l].blurb)));
+    if (onboardStep === 3) return /*#__PURE__*/React.createElement(Shell, {
+      kicker: "Step 3 of 4",
+      title: "Anywhere you want more?",
+      sub: "The anchors stay the same either way. This only changes which accessory work fills the remaining slots.",
+      back: () => setOnboardStep(2),
+      next: () => setOnboardStep(4),
+      nextLabel: "See my program"
+    }, Object.keys(EMPHASES).map(em => pick(emphasis === em, () => setEmphasis(em), EMPHASES[em].label, EMPHASES[em].blurb)));
+    return /*#__PURE__*/React.createElement(Shell, {
+      kicker: "Step 4 of 4",
+      title: "Your program",
+      sub: "Tap any exercise name with a ⇄ to swap it for a version that suits your equipment or ability. You can change all of this later under More.",
+      back: () => setOnboardStep(3),
+      next: finish,
+      nextLabel: "Start training"
+    }, ROTATION.map(id => {
+      const base = WORKOUTS.find(x => x.id === id);
+      const wk = applyLength(applyEmphasis(applyPath(base, pathId), emphasis), sessionLen);
+      const open = onboardOpenDay === id;
+      return /*#__PURE__*/React.createElement("div", {
+        key: id,
+        style: {
+          marginBottom: 8
+        }
+      }, /*#__PURE__*/React.createElement("button", {
+        onClick: () => setOnboardOpenDay(open ? null : id),
+        style: {
+          width: "100%",
+          textAlign: "left",
+          borderRadius: 14,
+          padding: 14,
+          background: T.surface,
+          border: "1px solid " + (open ? T.line : "transparent")
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        style: {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between"
+        }
+      }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 15,
+          fontWeight: 700,
+          color: T.text
+        }
+      }, wk.label), /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 12,
+          color: T.muted,
+          marginTop: 2
+        }
+      }, wk.tag)), /*#__PURE__*/React.createElement("span", {
+        style: {
+          color: T.muted,
+          fontSize: 12,
+          flexShrink: 0
+        }
+      }, wk.ex.length, " exercises ", open ? "▲" : "▼"))), open && /*#__PURE__*/React.createElement("div", {
+        style: {
+          borderRadius: 12,
+          padding: 12,
+          background: T.bg,
+          border: "1px solid " + T.line,
+          marginTop: 6
+        }
+      }, wk.ex.map((e, i) => {
+        const slotName = e.swappedFrom || e.n;
+        const hasAlts = (EXERCISE_ALTS[slotName] || []).length > 1;
+        const shown = swaps[wk.id + "::" + slotName] || e.n;
+        return /*#__PURE__*/React.createElement("div", {
+          key: i,
+          style: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 8,
+            padding: "7px 0",
+            borderBottom: i < wk.ex.length - 1 ? "1px solid " + T.line : "none"
+          }
+        }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+          onClick: hasAlts ? () => setSwapFor({
+            wid: wk.id,
+            slot: slotName,
+            current: shown
+          }) : undefined,
+          style: {
+            fontSize: 13,
+            color: T.text,
+            cursor: hasAlts ? "pointer" : "default"
+          }
+        }, shown, hasAlts && /*#__PURE__*/React.createElement("span", {
+          style: {
+            color: "#7DD8FF",
+            marginLeft: 6,
+            fontSize: 12
+          }
+        }, "⇄")), e.anchor && /*#__PURE__*/React.createElement("span", {
+          style: {
+            fontSize: 9,
+            fontWeight: 800,
+            marginLeft: 6,
+            padding: "1px 5px",
+            borderRadius: 5,
+            background: "#FF5C8A",
+            color: "#2A0A10"
+          }
+        }, "Anchor")), /*#__PURE__*/React.createElement("span", {
+          className: "mono",
+          style: {
+            fontSize: 11,
+            color: T.muted,
+            flexShrink: 0
+          }
+        }, e.s, " × ", e.r));
+      })));
+    }));
+  })(), menuOpen && /*#__PURE__*/React.createElement("div", {
+    onClick: () => {
+      setMenuOpen(false);
+      setMenuSection(null);
+    },
+    style: {
+      position: "fixed",
+      inset: 0,
+      background: "rgba(10,5,25,0.9)",
+      zIndex: 90,
+      display: "flex",
+      alignItems: "flex-start",
+      justifyContent: "center",
+      padding: "0 0 20px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    onClick: ev => ev.stopPropagation(),
+    style: {
+      maxWidth: 480,
+      width: "100%",
+      background: T.bg,
+      borderBottomLeftRadius: 20,
+      borderBottomRightRadius: 20,
+      padding: 18,
+      maxHeight: "92vh",
+      overflowY: "auto",
+      border: "1px solid " + T.line
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: 14
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 20,
+      fontWeight: 800
+    }
+  }, "More"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setMenuOpen(false);
+      setMenuSection(null);
+    },
+    style: {
+      background: "transparent",
+      border: "none",
+      color: T.muted,
+      fontSize: 22,
+      lineHeight: 1
+    }
+  }, "✕")), [{
+    id: "profile",
+    label: "Profile",
+    sub: "Bodyweight, age, sex",
+    expandable: true
+  }, {
+    id: "guide",
+    label: "Guide",
+    sub: "Plan, principles, technique"
+  }, {
+    id: "program",
+    label: "Program",
+    sub: PROG.label + " · " + SESSION_LENGTHS[sessionLen].label + " · " + EMPHASES[emphasis].label,
+    expandable: true
+  }, {
+    id: "path",
+    label: "Training path",
+    sub: PATHS[pathId] ? PATHS[pathId].label : "Strength + Hypertrophy",
+    expandable: true
+  }, {
+    id: "quotes",
+    label: "Quotes",
+    sub: "Daily quote and the full list"
+  }, {
+    id: "data",
+    label: "History & backup",
+    sub: "Full log, export, import, clear data"
+  }].map(row => {
+    const open = menuSection === row.id;
+    return /*#__PURE__*/React.createElement("div", {
+      key: row.id,
+      style: {
+        marginBottom: 8
+      }
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: () => {
+        if (row.id === "guide" || row.id === "quotes" || row.id === "data") {
+          setTab(row.id);
+          setMenuOpen(false);
+          setMenuSection(null);
+        } else {
+          setMenuSection(open ? null : row.id);
+        }
+      },
+      style: {
+        width: "100%",
+        textAlign: "left",
+        borderRadius: 12,
+        padding: 13,
+        background: open ? T.surfaceHi : T.surface,
+        border: "1px solid " + (open ? T.line : "transparent")
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 8
+      }
+    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 15,
+        fontWeight: 700,
+        color: T.text
+      }
+    }, row.label), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        marginTop: 2
+      }
+    }, row.sub)), /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: T.muted,
+        fontSize: 13,
+        flexShrink: 0
+      }
+    }, row.expandable ? open ? "▲" : "▼" : "›"))), open && row.id === "profile" && /*#__PURE__*/React.createElement("div", {
+      style: {
+        borderRadius: 12,
+        padding: 13,
+        background: T.surface,
+        marginTop: 6
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        flexWrap: "wrap"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 12,
+        color: T.muted
+      }
+    }, "Bodyweight"), /*#__PURE__*/React.createElement("input", {
+      type: "number",
+      inputMode: "decimal",
+      value: profileBw,
+      onChange: e => setProfileBw(e.target.value),
+      className: "mono",
+      style: {
+        width: 66,
+        borderRadius: 8,
+        padding: "6px 8px",
+        fontSize: 13,
+        outline: "none",
+        background: T.bg,
+        color: T.text,
+        border: "1px solid " + T.line
+      }
+    }), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 12,
+        color: T.muted
+      }
+    }, "lb"), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        marginLeft: 6
+      }
+    }, "Age"), /*#__PURE__*/React.createElement("input", {
+      type: "number",
+      inputMode: "numeric",
+      value: profileAge,
+      onChange: e => setProfileAge(e.target.value),
+      className: "mono",
+      style: {
+        width: 52,
+        borderRadius: 8,
+        padding: "6px 8px",
+        fontSize: 13,
+        outline: "none",
+        background: T.bg,
+        color: T.text,
+        border: "1px solid " + T.line
+      }
+    })), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        gap: 6,
+        marginTop: 10
+      }
+    }, [["m", "Male"], ["f", "Female"]].map(([v, lbl]) => /*#__PURE__*/React.createElement("button", {
+      key: v,
+      onClick: () => setProfileSex(v),
+      style: {
+        flex: 1,
+        borderRadius: 8,
+        padding: "6px 0",
+        fontSize: 12,
+        fontWeight: 700,
+        background: profileSex === v ? T.surfaceHi : "transparent",
+        border: "1px solid " + (profileSex === v ? T.amber : T.line),
+        color: profileSex === v ? T.text : T.muted
+      }
+    }, lbl))), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted,
+        marginTop: 8,
+        lineHeight: 1.5
+      }
+    }, "Used only to place your lifts against strength standards. Never leaves your device.")), open && row.id === "program" && /*#__PURE__*/React.createElement("div", {
+      style: {
+        borderRadius: 12,
+        padding: 13,
+        background: T.surface,
+        marginTop: 6
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted,
+        textTransform: "uppercase",
+        letterSpacing: 1,
+        fontWeight: 700,
+        marginBottom: 7
+      }
+    }, "Days per week"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        gap: 6,
+        marginBottom: 6
+      }
+    }, Object.keys(PROGRAMS).map(d => /*#__PURE__*/React.createElement("button", {
+      key: d,
+      onClick: () => setDaysPerWeek(d),
+      style: {
+        flex: 1,
+        borderRadius: 8,
+        padding: "8px 0",
+        fontSize: 13,
+        fontWeight: 700,
+        background: daysPerWeek === d ? T.surfaceHi : "transparent",
+        border: "1px solid " + (daysPerWeek === d ? T.amber : T.line),
+        color: daysPerWeek === d ? T.text : T.muted
+      }
+    }, d))), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted,
+        marginBottom: 12,
+        lineHeight: 1.5
+      }
+    }, PROG.blurb), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted,
+        textTransform: "uppercase",
+        letterSpacing: 1,
+        fontWeight: 700,
+        marginBottom: 7
+      }
+    }, "Time per session"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        gap: 6,
+        marginBottom: 6
+      }
+    }, Object.keys(SESSION_LENGTHS).sort().map(l => /*#__PURE__*/React.createElement("button", {
+      key: l,
+      onClick: () => setSessionLen(l),
+      style: {
+        flex: 1,
+        borderRadius: 8,
+        padding: "8px 0",
+        fontSize: 13,
+        fontWeight: 700,
+        background: sessionLen === l ? T.surfaceHi : "transparent",
+        border: "1px solid " + (sessionLen === l ? T.amber : T.line),
+        color: sessionLen === l ? T.text : T.muted
+      }
+    }, SESSION_LENGTHS[l].label))), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted,
+        marginBottom: 12,
+        lineHeight: 1.5
+      }
+    }, SESSION_LENGTHS[sessionLen].blurb), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted,
+        textTransform: "uppercase",
+        letterSpacing: 1,
+        fontWeight: 700,
+        marginBottom: 7
+      }
+    }, "Emphasis"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        flexDirection: "column",
+        gap: 6
+      }
+    }, Object.keys(EMPHASES).map(em => /*#__PURE__*/React.createElement("button", {
+      key: em,
+      onClick: () => setEmphasis(em),
+      style: {
+        textAlign: "left",
+        borderRadius: 10,
+        padding: 10,
+        background: emphasis === em ? T.surfaceHi : "transparent",
+        border: "1px solid " + (emphasis === em ? T.amber : T.line)
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 13,
+        fontWeight: 700,
+        color: emphasis === em ? T.text : T.muted
+      }
+    }, EMPHASES[em].label, emphasis === em ? "  ✓" : ""), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted,
+        marginTop: 2
+      }
+    }, EMPHASES[em].blurb)))), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted,
+        marginTop: 10,
+        lineHeight: 1.5
+      }
+    }, "Your logged history is kept whatever you pick. Each exercise keeps its own record."), /*#__PURE__*/React.createElement("button", {
+      onClick: () => {
+        setMenuOpen(false);
+        setMenuSection(null);
+        setOnboardOpenDay(null);
+        setOnboardStep(0);
+      },
+      style: {
+        width: "100%",
+        borderRadius: 10,
+        padding: 10,
+        marginTop: 10,
+        fontSize: 12,
+        fontWeight: 700,
+        background: "transparent",
+        border: "1px solid " + T.line,
+        color: T.muted
+      }
+    }, "Run setup again")), open && row.id === "path" && /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        flexDirection: "column",
+        gap: 6,
+        marginTop: 6
+      }
+    }, PATH_IDS.map(id => {
+      const P = PATHS[id],
+        on = pathId === id;
+      return /*#__PURE__*/React.createElement("button", {
+        key: id,
+        onClick: () => setPathId(id),
+        style: {
+          textAlign: "left",
+          borderRadius: 12,
+          padding: 12,
+          background: on ? T.surfaceHi : "transparent",
+          border: "1px solid " + (on ? T.amber : T.line)
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 13,
+          fontWeight: 700,
+          color: on ? T.text : T.muted
+        }
+      }, P.label, on ? "  ✓" : ""), /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 11,
+          color: T.muted,
+          marginTop: 3,
+          lineHeight: 1.5
+        }
+      }, P.blurb), on && /*#__PURE__*/React.createElement("div", {
+        className: "mono",
+        style: {
+          fontSize: 10,
+          color: T.emerald,
+          marginTop: 6,
+          lineHeight: 1.6
+        }
+      }, "anchor ", P.anchor.sets, "×", P.anchor.reps, ", rest ", P.anchor.rest, /*#__PURE__*/React.createElement("br", null), "accessories ", P.accessory.sets, "×", P.accessory.reps, /*#__PURE__*/React.createElement("br", null), P.progression));
+    })));
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderRadius: 12,
+      padding: 12,
+      background: T.cardA,
+      border: "1px solid " + T.cardALine,
+      marginTop: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      color: T.muted,
+      lineHeight: 1.6
+    }
+  }, "Everything Stone records stays on this device. No account, no server, nothing collected.")))), swapFor && (() => {
+    const alts = EXERCISE_ALTS[swapFor.slot] || [];
+    const slotKey = swapFor.wid + "::" + swapFor.slot;
+    const choose = name => {
+      setSwaps(p => {
+        const next = {
+          ...p
+        };
+        if (name === swapFor.slot) delete next[slotKey];else next[slotKey] = name;
+        return next;
+      });
+      setSwapFor(null);
+    };
+    return /*#__PURE__*/React.createElement("div", {
+      onClick: () => setSwapFor(null),
+      style: {
+        position: "fixed",
+        inset: 0,
+        background: "rgba(10,5,25,0.9)",
+        zIndex: 80,
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: "center"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      onClick: ev => ev.stopPropagation(),
+      style: {
+        maxWidth: 480,
+        width: "100%",
+        background: T.bg,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        padding: 18,
+        maxHeight: "88vh",
+        overflowY: "auto",
+        border: "1px solid " + T.line
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 10,
+        color: T.muted,
+        letterSpacing: 2,
+        textTransform: "uppercase",
+        fontWeight: 700
+      }
+    }, "Swap"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 22,
+        fontWeight: 800,
+        marginTop: 2
+      }
+    }, swapFor.slot), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        marginTop: 2,
+        marginBottom: 14
+      }
+    }, "Pick the version that fits your equipment and ability."), alts.map(a => {
+      const on = a.n === swapFor.current;
+      return /*#__PURE__*/React.createElement("button", {
+        key: a.n,
+        onClick: () => choose(a.n),
+        style: {
+          width: "100%",
+          textAlign: "left",
+          borderRadius: 14,
+          padding: 14,
+          marginBottom: 8,
+          background: on ? T.surfaceHi : T.surface,
+          border: "1px solid " + (on ? T.amber : "transparent")
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        style: {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 8
+        }
+      }, /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontSize: 15,
+          fontWeight: 700,
+          color: T.text
+        }
+      }, a.n), /*#__PURE__*/React.createElement("span", {
+        style: {
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          flexShrink: 0
+        }
+      }, a.diff && /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontSize: 10,
+          fontWeight: 700,
+          padding: "2px 7px",
+          borderRadius: 6,
+          border: "1px solid " + (a.diff === "harder" ? "#FFC98A" : "#7DD8FF"),
+          color: a.diff === "harder" ? "#FFC98A" : "#7DD8FF"
+        }
+      }, a.diff), on && /*#__PURE__*/React.createElement("span", {
+        style: {
+          color: T.amber,
+          fontSize: 18,
+          fontWeight: 800
+        }
+      }, "✓"))), /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 12,
+          color: T.muted,
+          marginTop: 4
+        }
+      }, a.equip));
+    }), /*#__PURE__*/React.createElement("div", {
+      style: {
+        borderRadius: 12,
+        padding: 12,
+        background: T.cardA,
+        border: "1px solid " + T.cardALine,
+        marginTop: 6
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        lineHeight: 1.6
+      }
+    }, "Your choice sticks until you change it. Each variation keeps its own history, so swapping never mixes up your PRs.")), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setSwapFor(null),
+      style: {
+        width: "100%",
+        borderRadius: 12,
+        padding: 12,
+        marginTop: 12,
+        fontSize: 14,
+        fontWeight: 700,
+        background: "transparent",
+        border: "1px solid " + T.line,
+        color: T.muted
+      }
+    }, "Cancel")));
+  })(), showBrief && !sessionCard && (() => {
     const q = quoteOfTheDay();
     const brief = buildBriefing(logs, ROTATION[rotIdx]);
     if (!brief) return null;
@@ -4361,52 +7000,7 @@ function App() {
       color: "#FFC98A",
       marginBottom: 8
     }
-  }, "🏆 PR on ", sessionCard.prs.join(", ")), sessionCard.commentary && sessionCard.commentary.length > 0 && /*#__PURE__*/React.createElement("div", {
-    style: {
-      borderRadius: 14,
-      padding: 14,
-      background: T.cardA,
-      border: "1px solid " + T.cardALine,
-      marginTop: 10
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: T.cardAAccent,
-      letterSpacing: 1.5,
-      textTransform: "uppercase",
-      fontWeight: 700,
-      marginBottom: 10
-    }
-  }, "How it went"), sessionCard.commentary.map((c, i) => /*#__PURE__*/React.createElement("div", {
-    key: i,
-    style: {
-      marginBottom: i < sessionCard.commentary.length - 1 ? 12 : 0
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 13,
-      fontWeight: 700,
-      color: T.text
-    }
-  }, c.name), c.lines.map((l, j) => /*#__PURE__*/React.createElement("div", {
-    key: j,
-    style: {
-      display: "flex",
-      gap: 6,
-      fontSize: 12,
-      lineHeight: 1.5,
-      marginTop: 4,
-      color: l.tone === "warn" ? "#FFB27A" : l.tone === "good" ? T.emerald : T.muted
-    }
-  }, /*#__PURE__*/React.createElement("span", null, l.tone === "warn" ? "⚠" : l.tone === "good" ? "▲" : "·"), /*#__PURE__*/React.createElement("span", null, l.t))), c.note && /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      fontStyle: "italic",
-      color: T.muted,
-      marginTop: 4
-    }
-  }, "\"", c.note, "\"")))), sessionCard.xp && typeof sessionCard.xp.total === "number" && sessionCard.xp.total > 0 && /*#__PURE__*/React.createElement("div", {
+  }, "🏆 PR on ", sessionCard.prs.join(", ")), sessionCard.xp && typeof sessionCard.xp.total === "number" && sessionCard.xp.total > 0 && /*#__PURE__*/React.createElement("div", {
     style: {
       borderRadius: 14,
       padding: 14,
@@ -4491,7 +7085,87 @@ function App() {
         marginTop: 5
       }
     }, (lv.needForNext - lv.intoLevel).toLocaleString(), " XP to level ", lv.level + 1));
-  })()), sessionCard.url && /*#__PURE__*/React.createElement("img", {
+  })()), sessionCard.commentary && sessionCard.commentary.length > 0 && (() => {
+    const flagged = sessionCard.commentary.filter(c => c.lines.some(l => l.tone !== "neutral") || c.note);
+    const shown = showAllCommentary ? sessionCard.commentary : flagged.slice(0, 3);
+    const hiddenCount = sessionCard.commentary.length - shown.length;
+    return /*#__PURE__*/React.createElement("div", {
+      style: {
+        borderRadius: 14,
+        padding: 14,
+        background: T.cardA,
+        border: "1px solid " + T.cardALine,
+        marginTop: 10
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.cardAAccent,
+        letterSpacing: 1.5,
+        textTransform: "uppercase",
+        fontWeight: 700,
+        marginBottom: 10
+      }
+    }, "How it went"), shown.map((c, i) => /*#__PURE__*/React.createElement("div", {
+      key: i,
+      style: {
+        marginBottom: i < shown.length - 1 ? 10 : 0
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 13,
+        fontWeight: 700,
+        color: T.text
+      }
+    }, c.name), c.lines.map((l, j) => /*#__PURE__*/React.createElement("div", {
+      key: j,
+      style: {
+        display: "flex",
+        gap: 6,
+        fontSize: 12,
+        lineHeight: 1.45,
+        marginTop: 3,
+        color: l.tone === "warn" ? "#FFB27A" : l.tone === "good" ? T.emerald : T.muted
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        flexShrink: 0
+      }
+    }, l.tone === "warn" ? "⚠" : l.tone === "good" ? "▲" : "·"), /*#__PURE__*/React.createElement("span", null, l.t))), c.note && /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        fontStyle: "italic",
+        color: T.muted,
+        marginTop: 3
+      }
+    }, "\"", c.note, "\""))), !showAllCommentary && hiddenCount > 0 && /*#__PURE__*/React.createElement("button", {
+      onClick: () => setShowAllCommentary(true),
+      style: {
+        width: "100%",
+        marginTop: 10,
+        padding: "7px 0",
+        borderRadius: 8,
+        fontSize: 12,
+        fontWeight: 700,
+        background: "transparent",
+        border: "1px solid " + T.cardALine,
+        color: T.muted
+      }
+    }, "Show all ", sessionCard.commentary.length, " exercises"), showAllCommentary && /*#__PURE__*/React.createElement("button", {
+      onClick: () => setShowAllCommentary(false),
+      style: {
+        width: "100%",
+        marginTop: 10,
+        padding: "7px 0",
+        borderRadius: 8,
+        fontSize: 12,
+        fontWeight: 700,
+        background: "transparent",
+        border: "1px solid " + T.cardALine,
+        color: T.muted
+      }
+    }, "Show less"));
+  })(), sessionCard.url && /*#__PURE__*/React.createElement("img", {
     src: sessionCard.url,
     alt: "session card",
     style: {
@@ -4526,7 +7200,142 @@ function App() {
       border: "1px solid " + T.line,
       color: T.muted
     }
-  }, "Done"))), toast && /*#__PURE__*/React.createElement("div", {
+  }, "Done"))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "fixed",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 40,
+      background: "rgba(20,9,38,0.97)",
+      borderTop: "1px solid " + T.line,
+      paddingBottom: "env(safe-area-inset-bottom)"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      maxWidth: 480,
+      margin: "0 auto",
+      display: "flex"
+    }
+  }, [{
+    id: "train",
+    label: "Train",
+    icon: c => /*#__PURE__*/React.createElement("g", {
+      fill: "none",
+      stroke: c,
+      strokeWidth: "2",
+      strokeLinecap: "round",
+      strokeLinejoin: "round"
+    }, /*#__PURE__*/React.createElement("path", {
+      d: "M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "m2.5 21.5 1.4-1.4"
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "m20.1 3.9 1.4-1.4"
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "m9.6 14.4 4.8-4.8"
+    }))
+  }, {
+    id: "mobility",
+    label: "Mobility",
+    icon: c => /*#__PURE__*/React.createElement("g", {
+      fill: "none",
+      stroke: c,
+      strokeWidth: "2",
+      strokeLinecap: "round",
+      strokeLinejoin: "round"
+    }, /*#__PURE__*/React.createElement("circle", {
+      cx: "12",
+      cy: "5",
+      r: "1",
+      fill: c
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "m9 20 3-6 3 6"
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "m6 8 6 2 6-2"
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M12 10v4"
+    }))
+  }, {
+    id: "log",
+    label: "Progress",
+    icon: c => /*#__PURE__*/React.createElement("g", {
+      fill: c
+    }, /*#__PURE__*/React.createElement("rect", {
+      x: "3",
+      y: "13",
+      width: "3.6",
+      height: "8",
+      rx: "1"
+    }), /*#__PURE__*/React.createElement("rect", {
+      x: "10.2",
+      y: "8",
+      width: "3.6",
+      height: "13",
+      rx: "1"
+    }), /*#__PURE__*/React.createElement("rect", {
+      x: "17.4",
+      y: "3.5",
+      width: "3.6",
+      height: "17.5",
+      rx: "1"
+    }))
+  }, {
+    id: "__more",
+    label: "More",
+    icon: c => /*#__PURE__*/React.createElement("g", {
+      fill: c
+    }, /*#__PURE__*/React.createElement("circle", {
+      cx: "5",
+      cy: "12",
+      r: "2.1"
+    }), /*#__PURE__*/React.createElement("circle", {
+      cx: "12",
+      cy: "12",
+      r: "2.1"
+    }), /*#__PURE__*/React.createElement("circle", {
+      cx: "19",
+      cy: "12",
+      r: "2.1"
+    }))
+  }].map(t => {
+    const SUBPAGES = ["guide", "quotes", "data"];
+    const onSubpage = SUBPAGES.indexOf(tab) !== -1;
+    const active = t.id === "__more" ? menuOpen || onSubpage : tab === t.id && !menuOpen;
+    const col = active ? T.amber : T.muted;
+    return /*#__PURE__*/React.createElement("button", {
+      key: t.id,
+      onClick: () => {
+        if (t.id === "__more") setMenuOpen(true);else {
+          setMenuOpen(false);
+          setTab(t.id);
+        }
+      },
+      style: {
+        flex: 1,
+        background: "transparent",
+        border: "none",
+        padding: "9px 0 10px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 4
+      }
+    }, /*#__PURE__*/React.createElement("svg", {
+      viewBox: "0 0 24 24",
+      width: "23",
+      height: "23"
+    }, t.icon(col)), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 10.5,
+        fontWeight: 700,
+        color: col,
+        letterSpacing: 0.2
+      }
+    }, t.label));
+  }))), toast && /*#__PURE__*/React.createElement("div", {
     style: {
       position: "fixed",
       left: 0,
@@ -4534,7 +7343,8 @@ function App() {
       display: "flex",
       justifyContent: "center",
       padding: "0 20px",
-      bottom: 24
+      bottom: 88,
+      zIndex: 45
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -4551,53 +7361,6 @@ function App() {
 }
 
 /* ---------------- mobility list ---------------- */
-function MobilityList() {
-  const [done, setDone] = useState({});
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 8
-    }
-  }, MOBILITY.map((m, i) => /*#__PURE__*/React.createElement("button", {
-    key: i,
-    onClick: () => setDone(p => ({
-      ...p,
-      [i]: !p[i]
-    })),
-    style: {
-      borderRadius: 16,
-      padding: 16,
-      textAlign: "left",
-      background: done[i] ? "#241A4E" : T.surface,
-      border: "1px solid " + (done[i] ? T.emerald : "transparent")
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontWeight: 600,
-      color: done[i] ? T.emerald : T.text
-    }
-  }, m.n), /*#__PURE__*/React.createElement("div", {
-    className: "mono",
-    style: {
-      fontSize: 12,
-      color: T.muted
-    }
-  }, m.t)), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      marginTop: 4,
-      color: T.muted
-    }
-  }, m.cue))));
-}
-
 /* ---------------- calendar ---------------- */
 function Stat({
   label,
@@ -4641,7 +7404,15 @@ function Calendar({
     LA: "#39F2E4",
     UB: "#B85CFF",
     LB: "#FFB86B",
-    BON: "#8A7BB0"
+    BON: "#8A7BB0",
+    FA: "#FF5FB8",
+    FB: "#39F2E4",
+    FC: "#B85CFF",
+    P1: "#FF5FB8",
+    L1: "#39F2E4",
+    U1: "#B85CFF",
+    L2: "#FFB86B",
+    MOB: "#6FE6C4"
   };
   const WNAME = {
     UA: "Upper A",
@@ -4867,6 +7638,89 @@ function Calendar({
 }
 
 /* ---------------- trends (overall + per-exercise w/ recent sessions) ---------------- */
+/* Multi-series chart: each workout day gets its own line, all sharing one
+   time axis, so you can compare how each day is trending against the others. */
+function MultiLineChart({
+  series
+}) {
+  const w = 320,
+    h = 150,
+    padL = 34,
+    padR = 10,
+    padT = 12,
+    padB = 22;
+  const all = series.flatMap(s => s.points);
+  if (all.length < 2) return /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: T.muted,
+      fontSize: 12,
+      padding: "8px 0"
+    }
+  }, "Log a few sessions to see trends per day.");
+  const times = all.map(p => p.t);
+  const tMin = Math.min(...times),
+    tMax = Math.max(...times);
+  const tSpan = tMax - tMin || 1;
+  const vals = all.map(p => p.v);
+  const vMin = Math.min(...vals),
+    vMax = Math.max(...vals);
+  const vSpan = vMax - vMin || 1;
+  const innerW = w - padL - padR,
+    innerH = h - padT - padB;
+  const X = t => padL + innerW * ((t - tMin) / tSpan);
+  const Y = v => padT + innerH * (1 - (v - vMin) / vSpan);
+  return /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 " + w + " " + h,
+    style: {
+      width: "100%",
+      height: "auto"
+    }
+  }, /*#__PURE__*/React.createElement("line", {
+    x1: padL,
+    y1: h - padB,
+    x2: w - padR,
+    y2: h - padB,
+    stroke: T.line,
+    strokeWidth: "1"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: padL,
+    y1: padT,
+    x2: padL,
+    y2: h - padB,
+    stroke: T.line,
+    strokeWidth: "1"
+  }), /*#__PURE__*/React.createElement("text", {
+    x: 4,
+    y: padT + 4,
+    fill: T.muted,
+    fontSize: "9"
+  }, Math.round(vMax / 1000), "k"), /*#__PURE__*/React.createElement("text", {
+    x: 4,
+    y: h - padB,
+    fill: T.muted,
+    fontSize: "9"
+  }, Math.round(vMin / 1000), "k"), series.map(s => {
+    if (!s.points.length) return null;
+    const pts = s.points.slice().sort((a, b) => a.t - b.t);
+    const path = pts.map((p, i) => (i === 0 ? "M" : "L") + X(p.t).toFixed(1) + " " + Y(p.v).toFixed(1)).join(" ");
+    return /*#__PURE__*/React.createElement("g", {
+      key: s.id
+    }, pts.length > 1 && /*#__PURE__*/React.createElement("path", {
+      d: path,
+      fill: "none",
+      stroke: s.color,
+      strokeWidth: "2",
+      strokeLinejoin: "round",
+      strokeLinecap: "round"
+    }), pts.map((p, i) => /*#__PURE__*/React.createElement("circle", {
+      key: i,
+      cx: X(p.t),
+      cy: Y(p.v),
+      r: "2.5",
+      fill: s.color
+    })));
+  }));
+}
 function LineChart({
   points,
   color
@@ -4951,21 +7805,6 @@ function Trends({
       marginBottom: 16
     }
   }, "Trends appear once you log sessions.");
-  const dayVol = {};
-  entries.forEach(e => {
-    let v = 0;
-    e.sets.forEach(x => {
-      const w = parseFloat(x.w),
-        r = parseFloat(x.r);
-      if (!isNaN(w) && !isNaN(r)) v += w * r;
-    });
-    dayVol[e.day] = (dayVol[e.day] || 0) + v;
-  });
-  const days = Object.keys(dayVol).sort();
-  const overall = days.map(d => ({
-    label: d,
-    v: Math.round(dayVol[d])
-  }));
   const cur = exNames.includes(selEx) ? selEx : exNames[0];
   const exEntries = entries.filter(e => e.exName === cur).sort((a, b) => new Date(a.date) - new Date(b.date));
   const exPoints = exEntries.map(e => {
@@ -4981,6 +7820,50 @@ function Trends({
   };
   const rangeTxt = arr => arr.length >= 2 ? dayLabel(arr[0].label) + " → " + dayLabel(arr[arr.length - 1].label) : "";
   const exHoldCur = exEntries.length ? exHold(exEntries[0].wid, exEntries[0].exName) : false;
+
+  /* volume per session, split out by workout day so each gets its own line */
+  const WCOLOR = {
+    UA: "#FF5FB8",
+    LA: "#39F2E4",
+    UB: "#B85CFF",
+    LB: "#FFB86B"
+  };
+  const byWidDay = {};
+  entries.forEach(e => {
+    if (e.wid === "BON") return;
+    let v = 0;
+    e.sets.forEach(x => {
+      const wt = parseFloat(x.w),
+        r = parseFloat(x.r);
+      if (!isNaN(r)) v += (isNaN(wt) || wt === 0 ? 1 : wt) * r;
+    });
+    const key = e.wid + "|" + e.day;
+    if (!byWidDay[key]) byWidDay[key] = {
+      wid: e.wid,
+      day: e.day,
+      v: 0
+    };
+    byWidDay[key].v += v;
+  });
+  /* Derive from what's actually in the log rather than the current program's
+     rotation: history can contain workouts from a program you've since left. */
+  const loggedWids = [];
+  Object.values(byWidDay).forEach(o => {
+    if (loggedWids.indexOf(o.wid) === -1) loggedWids.push(o.wid);
+  });
+  const daySeries = loggedWids.map(wid => {
+    const W = findWorkout(wid);
+    return {
+      id: wid,
+      label: W ? W.label : wid,
+      color: WCOLOR[wid] || T.muted,
+      points: Object.values(byWidDay).filter(o => o.wid === wid).map(o => ({
+        t: new Date(o.day + "T12:00:00").getTime(),
+        v: Math.round(o.v)
+      })).sort((a, b) => a.t - b.t)
+    };
+  });
+  const anyDayData = daySeries.some(s => s.points.length);
   return /*#__PURE__*/React.createElement("div", {
     style: {
       marginBottom: 16
@@ -4996,23 +7879,47 @@ function Trends({
     style: {
       fontWeight: 700,
       fontSize: 13,
-      marginBottom: 4
+      marginBottom: 8
     }
-  }, "Overall volume ", /*#__PURE__*/React.createElement("span", {
+  }, "Volume by workout day ", /*#__PURE__*/React.createElement("span", {
     style: {
       color: T.muted,
       fontWeight: 400
     }
-  }, "· lb per session")), /*#__PURE__*/React.createElement(LineChart, {
-    points: overall,
-    color: T.emerald
+  }, "· lb per session")), anyDayData ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(MultiLineChart, {
+    series: daySeries
   }), /*#__PURE__*/React.createElement("div", {
     style: {
-      color: T.muted,
-      fontSize: 10,
-      marginTop: 2
+      display: "flex",
+      flexWrap: "wrap",
+      gap: 10,
+      marginTop: 8
     }
-  }, rangeTxt(overall))), /*#__PURE__*/React.createElement("div", {
+  }, daySeries.filter(s => s.points.length).map(s => /*#__PURE__*/React.createElement("div", {
+    key: s.id,
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 5
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 10,
+      height: 3,
+      borderRadius: 2,
+      background: s.color
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      color: T.muted
+    }
+  }, s.label))))) : /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: T.muted,
+      fontSize: 12
+    }
+  }, "No sessions logged yet.")), /*#__PURE__*/React.createElement("div", {
     style: {
       borderRadius: 16,
       padding: 16,
@@ -5117,6 +8024,328 @@ function Trends({
 }
 
 /* ---------------- strength standards (vs. other men) ---------------- */
+/* Month-grouped feed of every session, newest first. Answers "what did I do
+   on the 5th", which the per-exercise log doesn't. */
+function SessionFeed({
+  logs
+}) {
+  const byDayWid = {};
+  Object.keys(logs).forEach(k => {
+    const wid = k.split("::")[0];
+    const name = k.slice(wid.length + 2);
+    const hold = exHold(wid, name);
+    (logs[k] || []).forEach(s => {
+      const day = localDay(s.date);
+      if (!day) return;
+      const id = day + "|" + wid;
+      if (!byDayWid[id]) byDayWid[id] = {
+        day,
+        wid,
+        date: s.date,
+        vol: 0,
+        sets: 0,
+        ex: [],
+        mobItems: []
+      };
+      const B = byDayWid[id];
+      if (wid === "MOB") {
+        B.mobItems = B.mobItems.concat(s.items || []);
+        return;
+      }
+      B.vol += sessionVolumeOf(s.sets, hold);
+      B.sets += (s.sets || []).length;
+      const best = bestSet(s.sets);
+      B.ex.push({
+        name,
+        best,
+        hold,
+        note: s.note,
+        pain: s.pain
+      });
+    });
+  });
+  const sessions = Object.values(byDayWid).sort((a, b) => new Date(b.date) - new Date(a.date));
+  if (!sessions.length) return /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: T.muted,
+      fontSize: 13,
+      padding: "20px 0",
+      lineHeight: 1.6
+    }
+  }, "No sessions logged yet. Finish a workout and it'll show up here.");
+
+  // PR detection per session, against everything logged before it
+  const prFor = sess => {
+    const names = [];
+    sess.ex.forEach(e => {
+      const key = exKey(sess.wid, e.name);
+      const before = (logs[key] || []).filter(h => new Date(h.date) < new Date(sess.date));
+      if (!before.length || !e.best) return;
+      let priorBest = null;
+      before.forEach(h => {
+        const b = bestSet(h.sets);
+        if (b && (!priorBest || metricFor(b, e.hold) > metricFor(priorBest, e.hold))) priorBest = b;
+      });
+      if (priorBest && metricFor(e.best, e.hold) > metricFor(priorBest, e.hold)) names.push(e.name);
+    });
+    return names;
+  };
+  const months = [];
+  sessions.forEach(s => {
+    const [y, m] = s.day.split("-").map(Number);
+    const label = new Date(y, m - 1, 1).toLocaleDateString(undefined, {
+      month: "long",
+      year: "numeric"
+    });
+    let group = months[months.length - 1];
+    if (!group || group.label !== label) {
+      group = {
+        label,
+        items: []
+      };
+      months.push(group);
+    }
+    group.items.push(s);
+  });
+  return /*#__PURE__*/React.createElement("div", null, months.map(mo => /*#__PURE__*/React.createElement("div", {
+    key: mo.label,
+    style: {
+      marginBottom: 18
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 15,
+      fontWeight: 800,
+      color: T.text,
+      marginBottom: 10
+    }
+  }, mo.label), mo.items.map((s, i) => {
+    const isMob = s.wid === "MOB";
+    const W = findWorkout(s.wid);
+    const TH = CARD_THEMES[s.wid] || {
+      horizon: T.emerald
+    };
+    const prs = isMob ? [] : prFor(s);
+    const [yy, mm, dd] = s.day.split("-").map(Number);
+    const dateTxt = new Date(yy, mm - 1, dd).toLocaleDateString(undefined, {
+      weekday: "short",
+      month: "short",
+      day: "numeric"
+    });
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      style: {
+        display: "flex",
+        borderRadius: 14,
+        overflow: "hidden",
+        marginBottom: 8,
+        background: T.surface
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: 5,
+        background: isMob ? T.emerald : TH.horizon,
+        flexShrink: 0
+      }
+    }), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1,
+        padding: 13
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "baseline",
+        justifyContent: "space-between",
+        gap: 8
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 15,
+        fontWeight: 700,
+        color: T.text
+      }
+    }, isMob ? "Mobility" : W ? W.label : s.wid), prs.length > 0 && /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 10,
+        fontWeight: 800,
+        padding: "2px 7px",
+        borderRadius: 6,
+        background: "#FFC98A",
+        color: "#2A1A05",
+        flexShrink: 0
+      }
+    }, "🏆 PR")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        marginTop: 2
+      }
+    }, dateTxt, !isMob && W ? " · " + W.tag : ""), isMob ? /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 12,
+        color: T.muted,
+        marginTop: 8,
+        lineHeight: 1.5
+      }
+    }, s.mobItems.length, " movement", s.mobItems.length === 1 ? "" : "s", s.mobItems.length ? " · " + s.mobItems.slice(0, 3).join(", ") + (s.mobItems.length > 3 ? "…" : "") : "") : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        gap: 18,
+        marginTop: 9
+      }
+    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 10,
+        color: T.muted,
+        textTransform: "uppercase",
+        letterSpacing: 0.5
+      }
+    }, "Volume"), /*#__PURE__*/React.createElement("div", {
+      className: "mono",
+      style: {
+        fontSize: 14,
+        fontWeight: 700,
+        color: T.text
+      }
+    }, Math.round(s.vol).toLocaleString(), " lb")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 10,
+        color: T.muted,
+        textTransform: "uppercase",
+        letterSpacing: 0.5
+      }
+    }, "Sets"), /*#__PURE__*/React.createElement("div", {
+      className: "mono",
+      style: {
+        fontSize: 14,
+        fontWeight: 700,
+        color: T.text
+      }
+    }, s.sets)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 10,
+        color: T.muted,
+        textTransform: "uppercase",
+        letterSpacing: 0.5
+      }
+    }, "Exercises"), /*#__PURE__*/React.createElement("div", {
+      className: "mono",
+      style: {
+        fontSize: 14,
+        fontWeight: 700,
+        color: T.text
+      }
+    }, s.ex.length))), /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: 9,
+        paddingTop: 9,
+        borderTop: "1px solid " + T.line
+      }
+    }, s.ex.slice(0, 4).map((e, j) => /*#__PURE__*/React.createElement("div", {
+      key: j,
+      style: {
+        display: "flex",
+        justifyContent: "space-between",
+        gap: 8,
+        fontSize: 12,
+        padding: "2px 0"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: prs.indexOf(e.name) !== -1 ? "#FFC98A" : T.muted
+      }
+    }, prs.indexOf(e.name) !== -1 ? "🏆 " : "", e.name), /*#__PURE__*/React.createElement("span", {
+      className: "mono",
+      style: {
+        color: T.text,
+        flexShrink: 0
+      }
+    }, e.best ? fmtSet(e.best, e.hold) : "—"))), s.ex.length > 4 && /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        color: T.muted,
+        marginTop: 3
+      }
+    }, "+", s.ex.length - 4, " more")), s.ex.some(e => e.note || e.pain === "discomfort") && /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginTop: 8
+      }
+    }, s.ex.filter(e => e.note || e.pain === "discomfort").map((e, j) => /*#__PURE__*/React.createElement("div", {
+      key: j,
+      style: {
+        fontSize: 11,
+        color: e.pain === "discomfort" ? "#FF9EB8" : T.muted,
+        fontStyle: e.note ? "italic" : "normal",
+        marginTop: 2
+      }
+    }, e.pain === "discomfort" ? "⚠ " : "", e.name, e.note ? ": \u201c" + e.note + "\u201d" : " · discomfort noted"))))));
+  }))));
+}
+
+/* All-time totals across everything logged. */
+function AllTimeStats({
+  logs
+}) {
+  const days = {};
+  let vol = 0,
+    sets = 0,
+    mobDays = {};
+  Object.keys(logs).forEach(k => {
+    const wid = k.split("::")[0];
+    const name = k.slice(wid.length + 2);
+    const hold = exHold(wid, name);
+    (logs[k] || []).forEach(s => {
+      const d = localDay(s.date);
+      if (!d) return;
+      if (wid === "MOB") {
+        mobDays[d] = true;
+        return;
+      }
+      days[d + "|" + wid] = true;
+      vol += sessionVolumeOf(s.sets, hold);
+      sets += (s.sets || []).length;
+    });
+  });
+  const sessionCount = Object.keys(days).length;
+  const xp = computeXP(logs);
+  const lv = levelFromXP(xp.total);
+  const prTotal = xp.breakdown.prCount;
+  const rows = [["Sessions logged", sessionCount.toLocaleString()], ["Total volume", Math.round(vol).toLocaleString() + " lb"], ["Total sets", sets.toLocaleString()], ["Personal records", prTotal.toLocaleString()], ["Mobility days", Object.keys(mobDays).length.toLocaleString()], ["Level", String(lv.level)]];
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderRadius: 16,
+      padding: 16,
+      background: T.surface,
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontWeight: 700,
+      fontSize: 13,
+      marginBottom: 10
+    }
+  }, "All-time"), rows.map(([label, val], i) => /*#__PURE__*/React.createElement("div", {
+    key: label,
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      fontSize: 13,
+      padding: "7px 0",
+      borderBottom: i < rows.length - 1 ? "1px solid " + T.line : "none"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: T.muted
+    }
+  }, label), /*#__PURE__*/React.createElement("span", {
+    className: "mono",
+    style: {
+      color: T.text,
+      fontWeight: 700
+    }
+  }, val))));
+}
 function LevelCard({
   logs
 }) {
@@ -5288,7 +8517,7 @@ function LevelCard({
       fontWeight: 700,
       marginBottom: 6
     }
-  }, "Where it came from"), row("Sessions logged (" + b.sessions + " × 100)", b.sessionXP.toLocaleString()), row("Volume progression", b.volumeXP.toLocaleString()), row("Personal records (" + b.prCount + " × 75)", b.prXP.toLocaleString(), T.emerald), row("Weekly consistency (" + b.weeks + " × 50)", b.consistencyXP.toLocaleString())), /*#__PURE__*/React.createElement("div", {
+  }, "Where it came from"), row("Sessions logged (" + b.sessions + " × 100)", b.sessionXP.toLocaleString()), row("Volume progression", b.volumeXP.toLocaleString()), row("Personal records (" + b.prCount + " × 75)", b.prXP.toLocaleString(), T.emerald), row("Weekly consistency (" + b.weeks + " × 50)", b.consistencyXP.toLocaleString()), row("Mobility days (" + b.mobilityDays + " × 50)", b.mobilityXP.toLocaleString())), /*#__PURE__*/React.createElement("div", {
     style: {
       borderRadius: 14,
       padding: 14,
@@ -5341,45 +8570,14 @@ function LevelCard({
   }, "Close"))));
 }
 function StrengthStandards({
-  logs
+  logs,
+  bw,
+  sex,
+  age,
+  setBw,
+  setSex,
+  setAge
 }) {
-  const [bw, setBw] = useState(() => {
-    try {
-      const v = localStorage.getItem("hf_bw");
-      return v || "210";
-    } catch (e) {
-      return "210";
-    }
-  });
-  const [sex, setSex] = useState(() => {
-    try {
-      return localStorage.getItem("hf_sex") || "m";
-    } catch (e) {
-      return "m";
-    }
-  });
-  const [age, setAge] = useState(() => {
-    try {
-      return localStorage.getItem("hf_age") || "39";
-    } catch (e) {
-      return "39";
-    }
-  });
-  useEffect(() => {
-    try {
-      localStorage.setItem("hf_bw", bw);
-    } catch (e) {}
-  }, [bw]);
-  useEffect(() => {
-    try {
-      localStorage.setItem("hf_sex", sex);
-    } catch (e) {}
-  }, [sex]);
-  useEffect(() => {
-    try {
-      localStorage.setItem("hf_age", age);
-    } catch (e) {}
-  }, [age]);
   const bwNum = parseFloat(bw) || 0;
   const aFac = ageFactor(age);
   const baseTable = sex === "f" ? STANDARDS_RATIOS_F : STANDARDS_RATIOS;
@@ -5771,7 +8969,7 @@ function ShareCard({
     entries.sort((a, b) => new Date(b.date) - new Date(a.date));
     const latest = entries[0];
     const sess = entries.filter(e => e.wid === latest.wid && e.day === latest.day);
-    const W = WORKOUTS.find(x => x.id === latest.wid) || {
+    const W = findWorkout(latest.wid) || {
       label: latest.wid
     };
     const TH = CARD_THEMES[latest.wid] || CARD_THEMES.UA;
